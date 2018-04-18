@@ -1,0 +1,20 @@
+Package: umap
+Title: Implementation of umap in R
+Version: 0.0.1.0
+Authors@R: person("Tomasz", "Konopka", , "tokonopka@gmail.com", role = c("aut", "cre"))
+Author: Tomasz Konopka [aut, cre]
+Maintainer: Tomasz Konopka <tokonopka@gmail.com>
+Description: Implementation of umap in R.
+Depends:
+    R (>= 3.1.2)
+Imports:
+    jsonlite,
+    stats,
+    utils
+License: file LICENSE
+LazyData: true
+Suggests:
+    knitr,
+    testthat
+VignetteBuilder: knitr
+RoxygenNote: 6.0.1
