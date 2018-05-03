@@ -8,10 +8,11 @@ Description: Implementation of umap in R.
 Depends:
     R (>= 3.1.2)
 Imports:
-    jsonlite,
+    Rcpp (>= 0.12.6),
     stats,
     utils
 License: file LICENSE
+LinkingTo: Rcpp
 LazyData: true
 Suggests:
     knitr,

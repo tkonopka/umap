@@ -3,12 +3,17 @@
 \docType{data}
 \name{umap.defaults}
 \alias{umap.defaults}
-\title{default configuration for umap}
-\format{An object of class \code{umap.config} of length 11.}
+\title{Default configuration for umap}
+\format{An object of class \code{umap.config} of length 18.}
 \usage{
 umap.defaults
 }
+\arguments{
+\item{n.neighbors}{integer}
+
+\item{n.components}{integer}
+}
 \description{
-default configuration for umap
+Default
 }
 \keyword{datasets}

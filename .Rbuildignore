@@ -11,4 +11,11 @@ tests
 ## Temporary files
 ^R/.+~$
 ^vignettes/.+~$
+^vignettes/cache
+^vignettes/figure
+^vignettes/mnist
+^vignettes/.*rprof$
+^vignettes/.*html$
+^vignettes/.*png$
+
 

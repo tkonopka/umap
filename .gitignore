@@ -7,3 +7,20 @@
 */*.log
 */*.pdf
 */*.out
+
+## ignore compiled cpp
+*o
+*so
+
+
+## ignore cache files from knitr
+vignettes/*.md
+vignettes/*html
+vignettes/cache*
+*png
+*rprof
+
+## ignore certain files meant for local calculations only
+vignettes/mnist*
+
+

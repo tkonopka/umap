@@ -1,5 +1,7 @@
 ## tests for configuration updating
 
+cat("\ntest_config\n")
+
 
 test_that("assemble umap configuration from default object and arguments", {
   cc = umap.check.config()
@@ -7,5 +9,4 @@ test_that("assemble umap configuration from default object and arguments", {
   cc100 = umap.check.config(config=umap.defaults, n.neighbors=100)
   expect_equal(cc100$n.neighbors, 100)
 })
-
 

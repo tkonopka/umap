@@ -1,4 +1,20 @@
-## tests knn manipulations
+## tests for universal functions (umap_universal.R)
+
+cat("\ntest_knn\n")
+
+
+
+## ############################################################################
+## Tests for exact nearest neighbors extraction
+
+
+test_that("k nearest neighbors complains when k is too large or too small", {
+  ## da is a distance matrix (not necessarily metric)
+  da = matrix(0, ncol=5, nrow=5)
+  expect_error(knn.from.dist(da, 6))
+  expect_error(knn.from.dist(da, 0))
+  expect_silent(knn.from.dist(da, 3))
+})
 
 
 test_that("k nearest neighbors information", {
@@ -19,17 +35,121 @@ test_that("k nearest neighbors information", {
   ## object 4 - nearest items are 5,2
   da[4,5] = da[5,4] = 1
   
-  result = knn.info(da, 2)
+  result = knn.from.dist(da, 3)
 
   ## these matrices constructed manually by visual inspection of da
-  expected.indexes = matrix(c(2,3, 1,4, 1,4, 5,2, 4,1),
-                            byrow=TRUE, nrow=5, ncol=2)
-  expected.distances = matrix(c(1,2, 1,2, 2,3, 1,2, 1,4),
-                              byrow=TRUE, nrow=5, ncol=2)
+  expected.indexes = matrix(c(1,2,3, 2,1,4, 3,1,4, 4,5,2, 5,4,1),
+                            byrow=TRUE, nrow=5, ncol=3)
+  expected.distances = matrix(c(0,1,2, 0,1,2, 0,2,3, 0,1,2, 0,1,4),
+                              byrow=TRUE, nrow=5, ncol=3)
 
   expect_equal(result$indexes, expected.indexes)
   expect_equal(result$distances, expected.distances)
 })
 
 
+
+
+## ############################################################################
+## Tests for approximate nearest neighbors extraction
+
+
+test_that("k nearest neighbors complains when k is too large or too small", {
+  ## da is a distance matrix (not necessarily metric)
+  da = matrix(0, ncol=5, nrow=5)
+  expect_error(knn.from.data(da, 6, eucd))
+  expect_error(knn.from.data(da, 0, eucd))
+  expect_silent(knn.from.data(da, 3, eucd))
+})
+
+
+test_that("knn returns a reasonable set of data", {
+
+  ## dd is a matrix with points on a plane
+  dd = matrix(0, ncol=2, nrow=10)
+  ## cluster 1 with points near (1,1)
+  dd[1,] = c(1, 1)
+  dd[2,] = c(1, 2)
+  dd[3,] = c(2, 1)
+  ## cluster with points near (10, 10)
+  dd[4,] = c(10,10)
+  dd[5,] = c(10,11)
+  dd[6,] = c(12,12)
+  ## cluster with points near (20, 20)
+  dd[7,] = c(20,20)
+  dd[8,] = c(20,21)
+  dd[9,] = c(21,20)
+  dd[10,] = c(21,21)
+  
+  result = knn.from.data(dd, 3, eucd)
+  expect_equal(dim(result$indexes), c(10, 3))
+  expect_equal(dim(result$distances), c(10, 3))
+})
+
+
+test_that("knn for large dataset queries a small number of distances", {
+  dlarge = matrix(0, ncol=2, nrow=400)
+  dlarge[,1] = runif(nrow(dlarge), -2, 2)
+  dlarge[,2] = runif(nrow(dlarge), -2, 2)
+  result = knn.from.data(dlarge, 4, eucd, subsample=0.75)
+
+  ## all self distances are zero
+  expect_equal(sum(result$distances[,1]), 0)
+  ## distance to nearest neighbor should be small
+  expect_lt(mean(result$distances[,2]), 0.5)
+})
+
+
+
+
+if (FALSE) {
+
+
+  library(Rcpp)
+  ##' force (clip) a value into a finite range
+  ##'
+  ##' @param x numeric; single value or a vector
+  ##' @param xmax maximum value for x
+  ##'
+  ##' @return numeric values in range [-xmax, xmax]
+  clip4 = function(x) {
+    x[x>4] = 4
+    x[x<(-4)] = -4
+    x
+  }
+
+  cppFunction("
+NumericVector c4(NumericVector x) {
+  for (int i=0; i<x.size(); i++) {
+    if (x[i]>4) {
+      x[i] = 4;
+    } else if (x[i]<-4) {
+      x[i] = -4;
+    }
+  }
+  return x;
+}
+")
+
+
+    cppFunction("
+NumericVector c42(NumericVector x, double d1, double d2) {
+  double xsize = x.size();
+  for (int i=0; i<xsize; i++) {
+    x[i] *= d1;
+    if (x[i]>4) {
+      x[i] = 4;
+    } else if (x[i]<-4) {
+      x[i] = -4;
+    }
+    x[1] *= d2;
+  }
+  return x;
+}
+")
+
+
+
+  
+}
 

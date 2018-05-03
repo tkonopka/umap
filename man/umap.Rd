@@ -2,12 +2,12 @@
 % Please edit documentation in R/umap.R
 \name{umap}
 \alias{umap}
-\title{compute a manifold approximation and projection}
+\title{Computes a manifold approximation and projection}
 \usage{
 umap(d, config = umap.defaults, method = c("naive", "cmdscale"), ...)
 }
 \arguments{
-\item{d}{matrix}
+\item{d}{matrix, input data}
 
 \item{config}{object of class umap.config}
 
@@ -16,5 +16,5 @@ umap(d, config = umap.defaults, method = c("naive", "cmdscale"), ...)
 \item{...}{list of settings; overwrite settings in config}
 }
 \description{
-compute a manifold approximation and projection
+Computes a manifold approximation and projection
 }
