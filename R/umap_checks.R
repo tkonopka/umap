@@ -2,7 +2,6 @@
 ## functions for argument checking
 
 
-
 ##' Validator functions for umap settings
 ##'
 ##' @param config list with umap arguments
@@ -26,11 +25,15 @@ umap.check.config = function(config=umap.defaults, ...) {
   if (!config$input %in% c("data", "dist")) {
     umap.error("setting 'data' must be either 'data' or 'dist'")
   }
+
+  if (!is.finite(config$local.connectivity) | config$local.connectivity <= 0) {
+    umap.error("setting 'local.connectivity' must be >= 0")
+  }
   
   ## replace a distance description by a function
   if (class(config$metric.function)!="function") {
     if (config$metric.function=="euclidean") {
-      config$metric.function = eucd
+      config$metric.function = dEuclidean
     } else {
       stop("unrecognized distance description: ", config$metric.function, "\n", .call=FALSE)
     }
@@ -47,6 +50,6 @@ umap.check.config = function(config=umap.defaults, ...) {
 ##'
 ##' @param x string for error message
 umap.error = function(x) {
-  stop(paste0("umap config: ", x, "\n"), .call=FALSE)
+  stop(paste0("umap: ", x, "\n"), .call=FALSE)
 }
 

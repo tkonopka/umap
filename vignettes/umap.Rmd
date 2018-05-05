@@ -1,0 +1,192 @@
+---
+title: Uniform Manifold Approximation and Projection in R
+vignette: >
+  %\VignetteEngine{knitr::knitr}
+  %\VignetteIndexEntry{UMAP}
+  %\usepackage[UTF-8]{inputenc}
+---
+
+<style>
+h1.title {
+  margin-top: 1em;
+  margin-bottom: 1.5em;
+}
+h2, h3 {
+  margin-top: 2em;
+  margin-bottom: 0.7em;
+}
+p {
+  font-size: 18px;
+  margin-bottom: 0.7em;
+}
+pre {
+  font-size: 16px;
+  line-height: 1.5;
+}
+</style>
+
+
+
+```{r, echo=FALSE}
+## block with some startup/background objects functions
+
+iris.colors = c("#1f77b4", "#d62728", "#7f7f7f")
+iris.colors = c("#ff7f00", "#e377c2", "#17becf")
+plot.iris = function(layout, labels,
+                     main="A UMAP visualization of the Iris dataset",
+                     pad=0.02, cex=0.65, pch=19,
+                     cex.main=1, cex.legend=1) {
+  par(mar=c(0.2,0.7,1.2,0.7), ps=10)
+  xylim = range(layout)
+  xylim = xylim + ((xylim[2]-xylim[1])*pad)*c(-0.5, 0.5)
+  plot(xylim, xylim, type="n", axes=F, frame=F)
+  xylim = par()$usr
+  rect(xylim[1], xylim[1], xylim[2], xylim[2], border="#aaaaaa", lwd=0.2)
+  points(layout[,1], layout[,2], col=iris.colors[as.integer(labels)],
+         cex=cex, pch=pch)
+  mtext(side=3, main, cex=cex.main)
+
+  labels.u = unique(labels)
+  legend("topright", legend=as.character(labels.u),
+         col=iris.colors[as.integer(labels.u)],
+          bty="n", pch=pch, cex=cex.legend)
+  
+}
+
+set.seed(123456789)
+```
+
+
+
+## Introduction
+
+UMAP stands for Uniform Manifold Approximation and Projection. It is an algorithm for dimensional reduction proposed by [McInnes and Healy](https://arxiv.org/abs/1802.03426).
+
+[To do.]
+
+
+This vignette demonstrates how to use the `umap` R package to perform dimensional reduction
+and visualization.
+
+
+## Usage
+
+To begin, let's load the package.
+
+```{r}
+library(umap)
+```
+
+For a practical demonstration, let's use the Iris dataset. This dataset is accessible through object `iris`.
+
+```{r}
+head(iris, 3)
+```
+
+The first four columns contain data, the last column contains a label. It will be useful to 
+separate the data from the labels, so let's create objects for those components.
+
+```{r}
+iris.data = iris[, grep("Sepal|Petal", colnames(iris))]
+iris.labels = iris[, "Species"]
+```
+
+Let's now apply the UMAP transformation.
+
+```{r iris.umap, cache=TRUE}
+iris.umap = umap(iris.data)
+```
+
+The output is here a matrix with coordinates for each point in the original dataset.
+We can now visualize the dataset on a 2D plane. 
+
+```{r, fig.width=4, fig.height=4, dpi=150}
+plot.iris(iris.umap, iris.labels)
+```
+
+(The custom plot function, `plot.iris`, is available at the end of this vignette.)
+
+
+
+
+## Tuning UMAP
+
+The example above uses function `umap` with a single argument - the input dataset. The transformation is performed with default settings. However, the algorithm can be tuned in several ways. There are two strategies for tuning: via configuration objects and via additional arguments.
+
+
+### Configuration objects
+
+The default configuration object is called `umap.defaults`. This is a list encoding default values for all the parameters used within the algorithm.
+
+```{r defaults, eval=FALSE}
+umap.defaults
+```
+
+```{r defaults2, eval=TRUE, echo=FALSE, collapse=TRUE}
+umap.defaults
+```	
+
+This object is a list with key-value pairs shown. To obtain some minimal information about each of field, see the documentation in `help(umap.defaults)`, or see the original publication.
+
+
+To create a custom configuration, create a copy of the defaults and then update any of the fields. For example, let's change the seed for random number generation.
+
+```{r custom.config, eval=TRUE}
+custom.config = umap.defaults
+custom.config$seed = 123123
+```
+
+We can observe the changed settings by inspecting the object again
+
+```{r, eval=FALSE}
+custom.config
+```
+```{r, eval=TRUE, echo=FALSE, collapse=TRUE}
+custom.config
+```
+
+To perform the UMAP projection with these settings, we can run the projection again and pass the configuration object as a second argument.
+
+```{r custom2, fig.width=4, fig.height=4, dpi=150}
+iris.umap.2 = umap(iris.data, custom.config)
+plot.iris(iris.umap.2, iris.labels,
+          main="Another UMAP visualization (different seed)")
+```
+
+
+
+
+### Additional arguments
+
+Another way to customize the algorithm is to specify the non-default parameters explicitly. To achieve equivalent results to the above, we can thus use
+
+```{r custom3, eval=FALSE}
+iris.umap.3 = umap(iris.data, seed=123123)
+```
+
+The coordinates in this new output object should match the ones from `iris.umap.2` (check it!)
+
+
+
+
+
+
+&nbsp;
+
+## Appendix
+
+The custom plot function used to visualize the Iris dataset:
+
+```{r show.plot.iris}
+plot.iris
+```
+
+
+
+Summary of R session:
+
+```{r}
+sessionInfo()
+```
+
+&nbsp;

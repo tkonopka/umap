@@ -5,22 +5,48 @@
 
 using namespace Rcpp;
 
-// c4
-NumericVector c4(NumericVector x, double inner, double outer);
-RcppExport SEXP _umap_c4(SEXP xSEXP, SEXP innerSEXP, SEXP outerSEXP) {
+// clip4
+NumericVector clip4(NumericVector x, double inner, double outer);
+RcppExport SEXP _umap_clip4(SEXP xSEXP, SEXP innerSEXP, SEXP outerSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< NumericVector >::type x(xSEXP);
     Rcpp::traits::input_parameter< double >::type inner(innerSEXP);
     Rcpp::traits::input_parameter< double >::type outer(outerSEXP);
-    rcpp_result_gen = Rcpp::wrap(c4(x, inner, outer));
+    rcpp_result_gen = Rcpp::wrap(clip4(x, inner, outer));
+    return rcpp_result_gen;
+END_RCPP
+}
+// dEuclidean
+double dEuclidean(NumericVector x, NumericVector y);
+RcppExport SEXP _umap_dEuclidean(SEXP xSEXP, SEXP ySEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type x(xSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    rcpp_result_gen = Rcpp::wrap(dEuclidean(x, y));
+    return rcpp_result_gen;
+END_RCPP
+}
+// dEuc2
+double dEuc2(NumericVector x, NumericVector y);
+RcppExport SEXP _umap_dEuc2(SEXP xSEXP, SEXP ySEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type x(xSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    rcpp_result_gen = Rcpp::wrap(dEuc2(x, y));
     return rcpp_result_gen;
 END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_umap_c4", (DL_FUNC) &_umap_c4, 3},
+    {"_umap_clip4", (DL_FUNC) &_umap_clip4, 3},
+    {"_umap_dEuclidean", (DL_FUNC) &_umap_dEuclidean, 2},
+    {"_umap_dEuc2", (DL_FUNC) &_umap_dEuc2, 2},
     {NULL, NULL, 0}
 };
 

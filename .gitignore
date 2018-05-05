@@ -16,7 +16,9 @@
 ## ignore cache files from knitr
 vignettes/*.md
 vignettes/*html
-vignettes/cache*
+vignettes/*cache*
+vignettes/*files*
+
 *png
 *rprof
 

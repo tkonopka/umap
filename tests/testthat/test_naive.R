@@ -7,7 +7,7 @@ source("synthetic.R")
 ## create a configuration for testing
 conf.testing = umap.defaults
 conf.testing$n.neighbors = 5
-conf.testing$metric.function = eucd
+conf.testing$metric.function = dEuclidean
 
 
 test_that("synthetic fuzzy simplicial set (from dist)", {

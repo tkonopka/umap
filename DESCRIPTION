@@ -1,20 +1,20 @@
 Package: umap
-Title: Implementation of umap in R
-Version: 0.0.1.0
+Title: Implementation of Uniform Manifold Approximation and Projection in R
+Version: 0.1.0.0
 Authors@R: person("Tomasz", "Konopka", , "tokonopka@gmail.com", role = c("aut", "cre"))
 Author: Tomasz Konopka [aut, cre]
 Maintainer: Tomasz Konopka <tokonopka@gmail.com>
-Description: Implementation of umap in R.
+Description: Uniform Manifold Approximation and Projection is a technique for dimension reduction.
 Depends:
     R (>= 3.1.2)
 Imports:
     Rcpp (>= 0.12.6),
-    stats,
-    utils
-License: file LICENSE
+    stats
+License: MIT + file LICENSE
 LinkingTo: Rcpp
 LazyData: true
 Suggests:
+    Cairo,
     knitr,
     testthat
 VignetteBuilder: knitr

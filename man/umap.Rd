@@ -4,7 +4,7 @@
 \alias{umap}
 \title{Computes a manifold approximation and projection}
 \usage{
-umap(d, config = umap.defaults, method = c("naive", "cmdscale"), ...)
+umap(d, config = umap.defaults, method = c("naive"), ...)
 }
 \arguments{
 \item{d}{matrix, input data}

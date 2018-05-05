@@ -2,7 +2,7 @@
 % Please edit documentation in R/umap_naive.R
 \name{smooth.knn.dist}
 \alias{smooth.knn.dist}
-\title{compute a}
+\title{compute a "smooth" distance to the kth neighbor and approximate first neighbor}
 \usage{
 smooth.knn.dist(k.dist, neighbors, iterations = 64, local.connectivity = 1,
   bandwidth = 1, tolerance = 1e-05, min.dist.scale = 0.001)
@@ -24,8 +24,8 @@ smooth.knn.dist(k.dist, neighbors, iterations = 64, local.connectivity = 1,
 }
 \value{
 list with two vectors, distances to the kth neighbor,
-and distnace to the first nearest neighbor
+and distance to the first nearest neighbor
 }
 \description{
-compute a
+compute a "smooth" distance to the kth neighbor and approximate first neighbor
 }

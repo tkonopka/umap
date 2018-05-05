@@ -67,6 +67,11 @@ test_that("coo signals input must be matrix", {
 ## Tests for simplifying (i.e. reducing, thresholding) coo matrices
 
 
+test_that("simplify must act on a coo", {
+  expect_error(reduce.coo(1:5))
+})
+
+
 test_that("simplify coo with zeros, default settings", {
   result = reduce.coo(coo(conmat))
   expected = matrix(0, ncol=3, nrow=6)

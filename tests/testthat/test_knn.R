@@ -34,15 +34,21 @@ test_that("k nearest neighbors information", {
   da[3,5] = da[5,3] = 12
   ## object 4 - nearest items are 5,2
   da[4,5] = da[5,4] = 1
+  da.dist = as.dist(da)
   
+  ## compute knn from matrix and from dist
   result = knn.from.dist(da, 3)
+  resultd = knn.from.dist(da.dist, 3)
+  ## the results should be numerically equal, but (dist) introduces rownames
+  ## check for numerical equality only (not attributes)
+  expect_equal(result, resultd, check.attributes=FALSE)
 
+  ## check content of the matrices
   ## these matrices constructed manually by visual inspection of da
   expected.indexes = matrix(c(1,2,3, 2,1,4, 3,1,4, 4,5,2, 5,4,1),
                             byrow=TRUE, nrow=5, ncol=3)
   expected.distances = matrix(c(0,1,2, 0,1,2, 0,2,3, 0,1,2, 0,1,4),
                               byrow=TRUE, nrow=5, ncol=3)
-
   expect_equal(result$indexes, expected.indexes)
   expect_equal(result$distances, expected.distances)
 })
@@ -54,12 +60,30 @@ test_that("k nearest neighbors information", {
 ## Tests for approximate nearest neighbors extraction
 
 
-test_that("k nearest neighbors complains when k is too large or too small", {
-  ## da is a distance matrix (not necessarily metric)
+test_that("knn from data complains when k is too large or too small", {
+  ## da is a dummy matrix
   da = matrix(0, ncol=5, nrow=5)
-  expect_error(knn.from.data(da, 6, eucd))
-  expect_error(knn.from.data(da, 0, eucd))
-  expect_silent(knn.from.data(da, 3, eucd))
+  expect_error(knn.from.data(da, 6, dEuclidean))
+  expect_error(knn.from.data(da, 0, dEuclidean))
+  expect_silent(knn.from.data(da, 3, dEuclidean))
+})
+
+
+test_that("knn from data complains about k (large dataset)", {
+  ## da is a dummy, but large, matrix 
+  da = matrix(0, ncol=5, nrow=5000)
+  expect_error(knn.from.data(da, 6000, dEuclidean))
+  expect_error(knn.from.data(da, 0, dEuclidean))
+  expect_error(knn.from.data(da, -0.5, dEuclidean))
+})
+
+
+test_that("knn from data complains about subsampling (large dataset)", {
+  ## da is a dummy, but large, matrix 
+  da = matrix(0, ncol=5, nrow=5000)
+  expect_error(knn.from.data(da, 5, dEuclidean, subsample.k=NA))
+  expect_error(knn.from.data(da, 5, dEuclidean, subsample.k=-0.2))
+  expect_error(knn.from.data(da, 5, dEuclidean, subsample.k=6000))
 })
 
 
@@ -81,7 +105,7 @@ test_that("knn returns a reasonable set of data", {
   dd[9,] = c(21,20)
   dd[10,] = c(21,21)
   
-  result = knn.from.data(dd, 3, eucd)
+  result = knn.from.data(dd, 3, dEuclidean)
   expect_equal(dim(result$indexes), c(10, 3))
   expect_equal(dim(result$distances), c(10, 3))
 })
@@ -91,7 +115,7 @@ test_that("knn for large dataset queries a small number of distances", {
   dlarge = matrix(0, ncol=2, nrow=400)
   dlarge[,1] = runif(nrow(dlarge), -2, 2)
   dlarge[,2] = runif(nrow(dlarge), -2, 2)
-  result = knn.from.data(dlarge, 4, eucd, subsample=0.75)
+  result = knn.from.data(dlarge, 4, dEuclidean, subsample=0.75)
 
   ## all self distances are zero
   expect_equal(sum(result$distances[,1]), 0)

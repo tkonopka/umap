@@ -6,12 +6,14 @@
 .git
 
 ## For testing
-tests
+## tests
 
 ## Temporary files
 ^R/.+~$
 ^vignettes/.+~$
 ^vignettes/cache
+^vignettes/.*cache
+^vignettes/.*files
 ^vignettes/figure
 ^vignettes/mnist
 ^vignettes/.*rprof$

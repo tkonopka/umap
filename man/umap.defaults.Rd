@@ -8,12 +8,54 @@
 \usage{
 umap.defaults
 }
-\arguments{
-\item{n.neighbors}{integer}
-
-\item{n.components}{integer}
-}
 \description{
-Default
+A list with parameters customizing a UMAP projection. Each component of the
+list is an effective argument for umap().
+}
+\details{
+n.neighbors: integer; number of nearest neighbors
+
+n.components: integer; dimension of target (output) space
+
+metric.function: character or functions; determines how distances between
+data points are computed.
+
+n.epochs: integer; number of iterations performed during
+layout optimization
+
+input: character, use either "data" or "dist"; determines whether the primary
+input argument to umap() is treated as a data matrix or as a distance matrix
+
+init: character or matrix. The default string "random" instructs the algorithm
+to create an initial layout based on random coordinates. This setting.can also
+be set to a matrix, in which case layout optimization begins from the provided
+coordinates.
+
+min.dist: numeric; determines how close points appear in the final layout
+
+set.op.mix.ratio: numeric in range [0,1]; determines who the knn-graph
+is used to create a fuzzy simplicial graph
+
+local.connectivity: numeric; used during construction of fuzzy simplicail set
+
+bandwidth: numeric; used during construction of fuzzy simplicial set
+
+alpha: numeric; initial value of "learning rate" of layout optimization
+
+beta: numeric; determines, together with alpha, the learning rate of layout optimization
+
+negative.sample.rate: integer; determines how many non-neighbor points are
+used per point and per iteration during layout optimization
+
+a: numeric; contributes to gradient calculations during layout optimization.
+When left at NA, a suitable value will be estimated automatically.
+
+b: numeric; contributes to gradient calculationss during layout optimization.
+
+spread: numeric; used during automatic estimation of a/b parameters.
+
+seed: integer; seed for random number generation
+
+verbose: logical or integer; determines whether to show progress messages
 }
 \keyword{datasets}

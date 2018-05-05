@@ -8,8 +8,30 @@
 #' @param outer numeric constan
 #'
 #' @return numeric vector of same length as x, containing outer*clip4(inner*x)
-#' @export
-c4 <- function(x, inner, outer) {
-    .Call('_umap_c4', PACKAGE = 'umap', x, inner, outer)
+#' 
+clip4 <- function(x, inner, outer) {
+    .Call('_umap_clip4', PACKAGE = 'umap', x, inner, outer)
+}
+
+#' compute Euclidean distance between two vectors
+#'
+#' @param x numeric vector
+#' @param y numeric vector
+#'
+#' @return euclidean norm of x-y
+#'
+dEuclidean <- function(x, y) {
+    .Call('_umap_dEuclidean', PACKAGE = 'umap', x, y)
+}
+
+#' compute squared Euclidean distance between two vectors
+#'
+#' @param x numeric vector
+#' @param y numeric vector
+#'
+#' @return square of euclidean distance 
+#'
+dEuc2 <- function(x, y) {
+    .Call('_umap_dEuc2', PACKAGE = 'umap', x, y)
 }
 

@@ -79,8 +79,8 @@ knn.from.data = function(d, k, metric.function, subsample.k=0.5) {
   V = nrow(d)
   ## number of neighbors
   k = floor(k)
-  
-  if (!is.finite(k) | k > nrow(d) | k<=1) {
+
+  if (!is.finite(k) | k>V | k<=1) {
     stop("k must be greater than 1 and smaller than the number of items\n")
   }
   if (!is.finite(subsample.k) | subsample.k<0) {

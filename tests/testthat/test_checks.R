@@ -27,8 +27,17 @@ test_that("checking config replaced metric.function by a function", {
 })
 
 
-test_that("checking config complains about unknown functions", {
+test_that("config complains about unknown functions", {
   conf = umap.defaults
   conf$metric.function = "badfunction"
+  expect_error(umap.check.config(conf))
+})
+
+
+test_that("config complains about local connectivity", {
+  conf = umap.defaults
+  conf$local.connectivity = 0
+  expect_error(umap.check.config(conf))
+  conf$local.connectivity = -0.2
   expect_error(umap.check.config(conf))
 })

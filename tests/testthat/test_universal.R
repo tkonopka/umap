@@ -104,20 +104,6 @@ test_that("epochs per sample for a matrix", {
 
 
 ## ############################################################################
-## Tests for squared euclidean distance
-
-
-test_that("square distance", {
-  a = c(1, 3)
-  b = c(2, 4)
-  result = eucd2(a, b)
-  expect_equal(2, result)
-})
-
-
-
-
-## ############################################################################
 ## Tests for value clipping
 
 

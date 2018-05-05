@@ -1,5 +1,13 @@
 ## package umap
 ## a from-scratch implementation of UMAP algorithm
+##
+## This implementation is based on, but modifies slightly, an original implementation
+## by Leland McInnes.
+##
+## The original implementation is available at https://github.com/lmcinnes/umap.
+##
+## The original implementation was published under a BSD license.
+##
 
 
 ##' create an embedding 
@@ -9,9 +17,9 @@
 ##'
 ##' @export
 umap.naive = function(d, config) {
-
+  
   if (config$verbose) {
-    cat(paste(Sys.time(), "\tcomputing a,b\n"))
+    message.w.date("starting umap")
   }
   if (is.na(config$a) | is.na(config$b)) {
     config[c("a", "b")] = find.ab.params(config$spread, config$min.dist)
@@ -19,16 +27,16 @@ umap.naive = function(d, config) {
   
   ## create a graph representation
   if (config$verbose) {
-    cat(paste(Sys.time(), "\tcreating graph\n"))
+    message.w.date("creating graph")
   }
   graph = naive.fuzzy.simplicial.set(d, config)
   if (config$verbose) {
-    cat(paste(Sys.time(), "\tcreating embedding\n"))
+    message.w.date("creating embedding")
   }
   embedding = naive.simplicial.set.embedding(graph, config)
-
+  
   if (config$verbose) {
-    cat(paste(Sys.time(), "\tdone\n"))
+    message.w.date("done")
   }
   
   embedding
@@ -104,60 +112,66 @@ naive.optimize.embedding = function(embedding, config, eps) {
     ##(2*gamma*b) / ((0.001+codist2)*(a*(codist2^b)+1))
     (p2gb) / ((0.001+d2)*(a*(d2^b)+1))
   }
+
+  ## copies of eps data into vectors (for lookup performance)
+  eps.from = eps[, "from"]
+  eps.to = eps[, "to"]
+  eps.val = eps[, "eps"]
   
   ## epns is short for "epochs per negative sample"
-  epns = eps[, "eps"]/config$negative.sample.rate
+  epns = eps.val/config$negative.sample.rate
   ## eon2s is short for "epochs of next negative sample"
   eon2s = epns
   ## eons is short for "epochs of next sample"
-  eons = eps[, "eps"]
+  eons = eps.val
   
   for (n in 1:config$n.epochs) {
     ## set the learning rate for this epoch
     alpha = config$alpha * (1 - ((n-1)/config$n.epochs))
     if (config$verbose) {
-      cat(paste(Sys.time(), "\tepoch ", n, "\n"))
+      if (n %% config$verbose == 0) {
+        message.w.date(paste0("epoch: ", n))
+      }
     }
     
     ## identify links in graph that require attention, then process those in loop
     ihits = which(eons<=n)
     for (i in ihits) {
       ## extract details of graph link
-      j = eps[i, "from"]
-      k = eps[i, "to"]
-      ieps = eps[i, "eps"]
+      j = eps.from[i]
+      k = eps.to[i]
+      ieps = eps.val[i]
       
       ## extract two points to work with
       current = embedding[j,]
       other = embedding[k,]
-      codiff = current-other
-
+      co.diff = current-other
+      
       ## adjust those points, based on their distance
-      codist2 = eucmag2(codiff)
-      gradcoeff = gradcoeff1(codist2)
-      ##grad.d = alpha*clip4(gradcoeff*codiff)
-      grad.d = c4(codiff, gradcoeff, alpha)
-      ##embedding[j,] = current = current + grad.d
+      co.dist2 = sum(co.diff*co.diff)
+      ##gradcoeff = gradcoeff1(co.dist2)
+      gradcoeff = (m2ab*(co.dist2^bm1)) / (a*(co.dist2^b)+1)
+      ##grad.d = alpha*clip(gradcoeff*codiff)
+      grad.d = clip4(co.diff, gradcoeff, alpha)
       current = current + grad.d
       embedding[k,] = other - grad.d
       
       ## prepare for next epoch
       eons[i] = eons[i]+ieps
-
+      
       ## corrent the current point based on a set of other randomly selected points
       nns = floor((n-eon2s[i])/epns[i])
-      nns.random = 1+floor(runif(nns, 1, V))
+      nns.random = 1+floor(stats::runif(nns, 1, V))
       for (k in nns.random) {
         other = embedding[k,]
-        codiff = current-other
-        codist2 = eucmag2(codiff)
-        gradcoeff = gradcoeff2(codist2)
+        co.diff = current-other
+        co.dist2 = sum(co.diff*co.diff)
+        ##gradcoeff = gradcoeff2(co.dist2)
+        gradcoeff = (p2gb) / ((0.001+co.dist2)*(a*(co.dist2^b)+1))
         ## original code had this check here, but is this really necessary?
-        ##if (!is.finite(gradcoeff)) {
-        ##  gradcoeff = 4
-        ##}        
-        ##grad.d = alpha*clip4(gradcoeff*codiff)
-        grad.d = c4(codiff, gradcoeff, alpha)
+        ##if (!is.finite(gradcoeff)) { gradcoeff = 4 }
+        ##grad.d = alpha*clip(gradcoeff*co.diff)
+        grad.d = clip4(co.diff, gradcoeff, alpha)
         current = current + grad.d
       }
       embedding[j,] = current
@@ -181,11 +195,11 @@ naive.optimize.embedding = function(embedding, config, eps) {
 ##'
 ##' @return matrix 
 naive.fuzzy.simplicial.set = function(d, config) {
-
+  
   if (class(d)!="matrix") {
     d = as.matrix(d)
   }
-
+  
   ## prepare constants
   V = nrow(d)
   mix.ratio = config$set.op.mix.ratio
@@ -193,20 +207,12 @@ naive.fuzzy.simplicial.set = function(d, config) {
   nk = config$n.neighbors
   connectivity = config$local.connectivity
 
-  if (config$verbose) {
-    cat(paste(Sys.time(), "\tcomputing kinfo\n"))
-  }
-  
   ## extract neighbor information
   n.info = knn.info(d, config)
   ## construct a smooth map to non-integer neighbors
   n.smooth = smooth.knn.dist(n.info$distance, nk,
                              local.connectivity=connectivity,
                              bandwidth=bandwidth)
-
-  if (config$verbose) {
-    cat(paste(Sys.time(), "\tcomputing connectivity coo\n"))
-  }
 
   ## construct a weighted connectivity matrix (manually)
   conn = base::vector("list", V)
@@ -232,18 +238,14 @@ naive.fuzzy.simplicial.set = function(d, config) {
   conn = list(coo=conn, names=rownames(d), n.elements=V)
   class(conn) = "coo"
   
-  if (config$verbose) {
-    cat(paste(Sys.time(), "\tmatrix computations\n"))
-  }
-  
   connT = t.coo(conn)
-  ## here product is really indended as a element-by-element product
-  ## not matrix multiplication
+  ## here product is indended as a element-by-element product
   connP = multiply.coo(conn, connT)
   
+  ## formula with standard matrix objects:
+  ##result = mix.ratio*(conn+connT-connP) + (1-mix.ratio)*(connP)
   result = add.coo(add.coo(conn, connT), connP, b=-1)
   result = add.coo(result, connP, a=mix.ratio, b=(1-mix.ratio))
-  ##result = mix.ratio*(conn+connT-connP) + (1-mix.ratio)*(connP)
   
   reduce.coo(result)
 }
@@ -251,7 +253,7 @@ naive.fuzzy.simplicial.set = function(d, config) {
 
 
 
-##' compute a
+##' compute a "smooth" distance to the kth neighbor and approximate first neighbor
 ##'
 ##' @param k.dist matrix with distances to k neighbors
 ##' @param neighbors numeric, number of neighbors to approximate for
@@ -262,20 +264,13 @@ naive.fuzzy.simplicial.set = function(d, config) {
 ##' @param min.dist.scale numeric, minimum distance to nearest neighbor (for display)
 ##'
 ##' @return list with two vectors, distances to the kth neighbor,
-##' and distnace to the first nearest neighbor 
+##' and distance to the first nearest neighbor 
 smooth.knn.dist = function(k.dist, neighbors,
                            iterations=64,
                            local.connectivity=1,
                            bandwidth=1,
                            tolerance = 1e-5,
                            min.dist.scale=1e-3) {
-  
-  if (class(k.dist)!="matrix") {
-    stop("k.dist must be a matrix\n")
-  }
-  if (local.connectivity<=0){
-    stop("local.connectivity must be positive\n")
-  }
   
   target = log2(neighbors)*bandwidth
   result = rho = rep(0, nrow(k.dist))
