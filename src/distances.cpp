@@ -4,8 +4,6 @@
 using namespace Rcpp;
 
 
-
-
 //' compute Euclidean distance between two vectors
 //'
 //' @param x numeric vector
@@ -22,6 +20,7 @@ double dEuclidean(NumericVector x, NumericVector y) {
   }
   return sqrt(sumsquares);
 }
+
 
 
 
