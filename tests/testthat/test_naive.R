@@ -44,3 +44,4 @@ test_that("synthetic fuzzy simplicial set (from data)", {
   expect_equal(expected.graph, graph$coo[1:3, ], tolerance=1e-4)
 })
 
+

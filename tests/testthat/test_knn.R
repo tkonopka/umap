@@ -1,7 +1,7 @@
 ## tests for universal functions (umap_universal.R)
 
 cat("\ntest_knn\n")
-
+source("synthetic.R")
 
 
 ## ############################################################################
@@ -115,65 +115,28 @@ test_that("knn for large dataset queries a small number of distances", {
   dlarge = matrix(0, ncol=2, nrow=400)
   dlarge[,1] = runif(nrow(dlarge), -2, 2)
   dlarge[,2] = runif(nrow(dlarge), -2, 2)
-  result = knn.from.data(dlarge, 4, dEuclidean, subsample=0.75)
-
+  result = knn.from.data(dlarge, 4, dEuclidean, subsample=4)
+  result.dist = knn.from.dist(dist(dlarge), 4)
+  #c(mean(result.dist$distances[,2]), mean(result$distances[,2]))
+  #c(mean(result.dist$distances[,3]), mean(result$distances[,3]))
+  
   ## all self distances are zero
   expect_equal(sum(result$distances[,1]), 0)
   ## distance to nearest neighbor should be small
-  expect_lt(mean(result$distances[,2]), 0.5)
+  expect_lt(mean(result$distances[,2]), 0.4)
 })
 
 
 
-
-if (FALSE) {
-
-
-  library(Rcpp)
-  ##' force (clip) a value into a finite range
-  ##'
-  ##' @param x numeric; single value or a vector
-  ##' @param xmax maximum value for x
-  ##'
-  ##' @return numeric values in range [-xmax, xmax]
-  clip4 = function(x) {
-    x[x>4] = 4
-    x[x<(-4)] = -4
-    x
-  }
-
-  cppFunction("
-NumericVector c4(NumericVector x) {
-  for (int i=0; i<x.size(); i++) {
-    if (x[i]>4) {
-      x[i] = 4;
-    } else if (x[i]<-4) {
-      x[i] = -4;
-    }
-  }
-  return x;
-}
-")
+## ############################################################################
+## Tests with degenerate neighbors
 
 
-    cppFunction("
-NumericVector c42(NumericVector x, double d1, double d2) {
-  double xsize = x.size();
-  for (int i=0; i<xsize; i++) {
-    x[i] *= d1;
-    if (x[i]>4) {
-      x[i] = 4;
-    } else if (x[i]<-4) {
-      x[i] = -4;
-    }
-    x[1] *= d2;
-  }
-  return x;
-}
-")
-
-
-
-  
-}
+test_that("knn works with degenerate neighbors", {
+  ## syn1 has so many same-location points, that first nearest neighbor
+  ## should always be at distance 0
+  ## NOTE: because of the size of syn1, this test takes around 1s to run
+  result = knn.from.data(syn1, 4, dEuclidean)
+  expect_equal(mean(result$distances[,2]), 0)
+})
 

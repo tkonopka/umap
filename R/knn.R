@@ -99,6 +99,7 @@ knn.from.data = function(d, k, metric.function, subsample.k=0.5) {
   ## some preset series
   Vseq = 1:V
   kseq = 1:k
+  Vkseq = rep(Vseq, each=k)
   
   ## internal helper; creates a set of (neighbor-1) indexes that does not include x
   pick.random.k = function(x) {
@@ -109,23 +110,33 @@ knn.from.data = function(d, k, metric.function, subsample.k=0.5) {
   ## compute distances between vertex i and a set of vertices j
   get.distances = function(i,j) {
     current = d[i,]
-    ##sapply(j, function(x) { metric.function(current, d[x,]) })
     apply(d[j, ,drop=FALSE], 1, metric.function, current)
   }
   
   ## helper; create a matrix with col 1 -> indexes to neighbors, col 2 -> distances
   ## param i - index of source vertex
   ## neighbors - indeces of other vertices
-  make.working.rep = function(i, neighbors) {
+  make.working.rep.old = function(i, neighbors) {
     current = d[i,]
     result = cbind(neighbors, get.distances(i, neighbors))
     colnames(result) = NULL
     result
   }
+  make.working.rep = function(i, neighbors) {
+    matrix(c(neighbors, get.distances(i, neighbors)), ncol=2)
+  }
   
-  ## create a working representation using a list
+  ## trim matrices to k rows
+  trim.to.k = function(x) {
+    if (nrow(x)>k) {
+      x = x[order(x[,2])[kseq],]
+    }
+    x
+  }
+  
+  ## create a neighborhoods using a list
   ## each element will be a matrix. Col 1 -> indexes to neighbors, Col2 -> distances 
-  work = lapply(as.list(1:V), function(i) {
+  B = lapply(as.list(1:V), function(i) {
     neighbors = c(i, pick.random.k(i))
     result = make.working.rep(i, neighbors)
     ## set distance to self as negative
@@ -134,29 +145,40 @@ knn.from.data = function(d, k, metric.function, subsample.k=0.5) {
     result[order(result[,2]),]
     result
   })
-
+  ## create reverse neighborhoods
+  make.revB = function() {
+    result = unlist(lapply(B, function(x) { x[kseq,1]}))
+    split(Vkseq, result)
+  }
+  
   ## get indeces of neighbors for an index or a set of indeces
   get.neighbors = function(x) {
     x[,1]
   }
   get.neighbors.set = function(j) {
-    unique(unlist(lapply(work[j], get.neighbors)))
+    unique(unlist(lapply(B[j], get.neighbors)))
+  }
+  get.Bbar.set = function(j) {
+    b.set = unlist(lapply(B[j], get.neighbors))
+    rev.set = unlist(revB[j])
+    unique(c(b.set, rev.set))
   }
   
   ## helper; starts with a working matrix and suggests better neighbors
-  get.better.neighbors = function(i, workmat) {
+  get.better.neighbors = function(i) {
+    mat = B[[i]]
     ## identify neighbors from this matrix, pick a few
-    i.neighbors = workmat[,1]
-    selection = sample(i.neighbors[kseq], subsample.k, replace=F)
+    i.neighbors = unique(c(mat[,1], revB[[i]]))
+    selection = sample(i.neighbors, subsample.k, replace=F)
     ## identify neighbors not already in i.neighbors
-    selection.neighbors = get.neighbors.set(selection)
+    selection.neighbors = get.Bbar.set(selection)
     selection = setdiff(selection.neighbors, i.neighbors)
     if (length(selection)==0) {
       return (NULL)
     }
     ## compute distances to the candidates, but return only the good ones
     result = make.working.rep(i, selection)    
-    result = result[result[,2] < workmat[k,2], ,drop=FALSE]
+    result = result[result[,2] < mat[k,2], ,drop=FALSE]
     if (nrow(result)==0) {
       return (NULL)
     }
@@ -168,37 +190,29 @@ knn.from.data = function(d, k, metric.function, subsample.k=0.5) {
   ## keep track of vertices that have found good neighbors and those that require work
   process = rep(TRUE, V)
   while (sum(process)>0) {
+    continue = 0
     epoch = epoch + 1
-    work.new = work
+    revB = make.revB()
     for (i in which(process)) {
-      better = get.better.neighbors(i, work[[i]])
+      better = get.better.neighbors(i)
       if (!is.null(better)) {
-        inew = rbind(work[[i]], better)
-        ##work[[i]] = rbind(work[[i]], better)
-        iorder = order(inew[,2])[kseq]
-        inew = inew[iorder,]
-        process[inew[kseq,1]] = TRUE
-        work.new[[i]] = inew
+        ## update the representation of the i'th neighborhood
+        B[[i]] = rbind(B[[i]], better)
+        process[B[[i]][,1]] = TRUE
       } else {
         process[i] = FALSE
       }
     }
-    ## at beginning, process all nodes
-    if (epoch<4) {
-      process = rep(TRUE, V)
-    }
-    work = work.new
+    B = lapply(B, trim.to.k)
   }
+
+  ## make sure neighbors are sorted (trim.to.k does not guarantee that)
+  B = lapply(B, function(x) { x[order(x[,2])[kseq],] })
   
-  ## trim the work matrices to the few best candidates
-  work.trimmed = lapply(work, function(w) {
-    w[order(w[,2])[1:k],]
-  })
-  
-  ## convert from working representation into output representation
-  indexes = lapply(work.trimmed, function(x) { x[,1]} )
+  ## convert from matrix representations 
+  indexes = lapply(B, function(x) { x[,1]} )
   indexes = do.call(rbind, indexes)
-  distances = lapply(work.trimmed, function(x) { x[,2]})
+  distances = lapply(B, function(x) { x[,2]})
   distances = do.call(rbind, distances)
   ## by definition, distances to self are zero
   distances[,1] = 0
