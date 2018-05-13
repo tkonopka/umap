@@ -24,14 +24,3 @@ dEuclidean <- function(x, y) {
     .Call('_umap_dEuclidean', PACKAGE = 'umap', x, y)
 }
 
-#' compute squared Euclidean distance between two vectors
-#'
-#' @param x numeric vector
-#' @param y numeric vector
-#'
-#' @return square of euclidean distance 
-#'
-dEuc2 <- function(x, y) {
-    .Call('_umap_dEuc2', PACKAGE = 'umap', x, y)
-}
-

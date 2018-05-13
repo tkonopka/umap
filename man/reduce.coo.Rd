@@ -2,18 +2,16 @@
 % Please edit documentation in R/coo.R
 \name{reduce.coo}
 \alias{reduce.coo}
-\title{Remove some entires in a coo matrix where values are below a threshold}
+\title{Remove some entires in a coo matrix where values are zero}
 \usage{
-reduce.coo(x, threshold = 0)
+reduce.coo(x)
 }
 \arguments{
 \item{x}{coo object}
-
-\item{threshold}{numeric}
 }
 \value{
 matrix based on x, perhaps with some lines in original removed
 }
 \description{
-Remove some entires in a coo matrix where values are below a threshold
+Remove some entires in a coo matrix where values are zero
 }

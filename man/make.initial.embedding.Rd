@@ -4,12 +4,14 @@
 \alias{make.initial.embedding}
 \title{Create an initial embedding for a graph}
 \usage{
-make.initial.embedding(V, config)
+make.initial.embedding(V, config, g = NULL)
 }
 \arguments{
 \item{V}{integer, number of vertices}
 
 \item{config}{list with settings}
+
+\item{g}{coo object with graph connectivity}
 }
 \value{
 matrix with an embedding

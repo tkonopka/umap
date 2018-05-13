@@ -5,6 +5,8 @@
 .gitignore
 .git
 
+^README
+
 ## For testing
 ## tests
 

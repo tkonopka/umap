@@ -44,6 +44,48 @@ knn.info = function(d, config) {
 
 
 
+##' Make an initial embedding with random coordinates
+##'
+##' @param V integer, number of vertices (rows)
+##' @param d integer, number of diemsions (columns)
+##' @param lims numeric vector with lower and upper bounds
+##'
+##' @return matrix (V,d) with random numbers
+make.random.embedding = function(V, d, lims=c(-10, 10)) {
+  matrix(stats::runif(V*d, lims[1], lims[2]), nrow=V, ncol=d)
+}
+
+
+
+
+##' Create a spectral embedding for a connectivity graph
+##'
+##' @param V integer, number of vertices in embedding
+##' @param d integer, number of dimensions
+##' @param g coo object
+##'
+##' @return embedding matrix
+make.spectral.embedding = function(V, d, g) {
+
+  ## identify connected components in graph coo
+  gcomp = concomp.coo(g)
+
+  if (gcomp$n.components==1) {
+    result = spectral.coo(g, d+1)
+  } else {
+    compsizes = sort(table(gcomp$components), decreasing=T)
+    largestcomp = names(compsizes)[1]
+    glarge = subset.coo(g, (1:V)[gcomp$components==largestcomp])
+    gspectral = spectral.coo(glarge, d+1)
+    gextent = range(gspectral)
+    ## make a random embedding, then fill in
+    result = make.random.embedding(V, d, range(gspectral))
+    result[gcomp$components==largestcomp,] = gspectral[, 1:d, drop=FALSE]
+  }
+
+  result[, 1:d, drop=FALSE]
+}
+
 
 ##' Create an initial embedding for a graph
 ##'
@@ -51,9 +93,10 @@ knn.info = function(d, config) {
 ##'
 ##' @param V integer, number of vertices
 ##' @param config list with settings
+##' @param g coo object with graph connectivity
 ##'
 ##' @return matrix with an embedding
-make.initial.embedding = function(V, config) {
+make.initial.embedding = function(V, config, g=NULL) {
 
   numcomp = config$n.components
   
@@ -61,15 +104,18 @@ make.initial.embedding = function(V, config) {
   if (class(config$init) == "matrix") {
     result = config$init
   } else {
-    result = matrix(stats::runif(V*numcomp, -10, 10),
-                    nrow=V, ncol=numcomp)
+    if (config$init=="spectral" & V > (2*(numcomp+1)+1)) {
+      result = make.spectral.embedding(V, numcomp, g)
+    } else {
+      result = make.random.embedding(V, numcomp)
+    }
   }
   
   if (nrow(result)!=V) {
     umap.error("initial embedding is incompatible")
   }
   if (ncol(result)!=numcomp) {
-    umap.error("initial embedding is incompatible")
+    umap.error("initial embedding is incompatible (dimension)")
   }
   
   result 

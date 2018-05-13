@@ -49,13 +49,13 @@ syn0.umap[9,] =  c( -1.83912037,  -6.35611235)
 
 
 ## syn1 is a manually create dataset with degenerate neighbors
-syn1 = matrix(0, ncol=3, nrow=1400)
-syn1G1 = 100 + (1:400)
-syn1G2 = 900 + (1:400)
+syn1 = matrix(0, ncol=3, nrow=1200)
+syn1G1 = 100 + (1:300)
+syn1G2 = 900 + (1:300)
 syn1[syn1G1, 1] = 1
-syn1[syn1G1, 1] = 1
+syn1[syn1G1, 2] = 1
 syn1[syn1G1, 3] = 2
 syn1[syn1G2, 1] = 3
-syn1[syn1G2, 1] = 1.5
+syn1[syn1G2, 2] = 1.5
 syn1[syn1G2, 3] = 1
 

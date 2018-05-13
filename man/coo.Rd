@@ -2,7 +2,7 @@
 % Please edit documentation in R/coo.R
 \name{coo}
 \alias{coo}
-\title{Create a coo representation of a matrix}
+\title{Create a coo representation of a square matrix}
 \usage{
 coo(x)
 }
@@ -13,5 +13,5 @@ coo(x)
 matrix with three columns (from index, to index, value)
 }
 \description{
-Create a coo representation of a matrix
+Create a coo representation of a square matrix
 }

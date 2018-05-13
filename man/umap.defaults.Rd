@@ -26,10 +26,11 @@ layout optimization
 input: character, use either "data" or "dist"; determines whether the primary
 input argument to umap() is treated as a data matrix or as a distance matrix
 
-init: character or matrix. The default string "random" instructs the algorithm
-to create an initial layout based on random coordinates. This setting.can also
-be set to a matrix, in which case layout optimization begins from the provided
-coordinates.
+init: character or matrix. The default string "spectral" computes an initial
+embedding using eigenvectors of the connectivity graph matrix. An alternative is
+the string "random", which creates an initial layout based on random coordinates. 
+This setting.can also be set to a matrix, in which case layout optimization
+begins from the provided coordinates.
 
 min.dist: numeric; determines how close points appear in the final layout
 

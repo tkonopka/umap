@@ -30,23 +30,10 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// dEuc2
-double dEuc2(NumericVector x, NumericVector y);
-RcppExport SEXP _umap_dEuc2(SEXP xSEXP, SEXP ySEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< NumericVector >::type x(xSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
-    rcpp_result_gen = Rcpp::wrap(dEuc2(x, y));
-    return rcpp_result_gen;
-END_RCPP
-}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_umap_clip4", (DL_FUNC) &_umap_clip4, 3},
     {"_umap_dEuclidean", (DL_FUNC) &_umap_dEuclidean, 2},
-    {"_umap_dEuc2", (DL_FUNC) &_umap_dEuc2, 2},
     {NULL, NULL, 0}
 };
 

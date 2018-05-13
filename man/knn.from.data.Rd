@@ -24,5 +24,7 @@ avg.
 }
 \description{
 This implementation uses a randomization scheme and thus produces
-results that are nondeterministic and only approximately correct.
+results that are nondeterministic and only approximately correct. The
+algorithm is roughly inspired by Dong et al, but there are differences.
+This is a rough implementation and improvements are possible.
 }

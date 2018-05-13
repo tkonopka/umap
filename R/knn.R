@@ -61,7 +61,9 @@ knn.from.dist = function(d, k) {
 ##' get information about approximate k nearest neighbors from a data matrix
 ##'
 ##' This implementation uses a randomization scheme and thus produces
-##' results that are nondeterministic and only approximately correct.
+##' results that are nondeterministic and only approximately correct. The
+##' algorithm is roughly inspired by Dong et al, but there are differences.
+##' This is a rough implementation and improvements are possible.
 ##'
 ##' @param d matrix with data
 ##' @param k integer, number of neighbors
@@ -116,12 +118,6 @@ knn.from.data = function(d, k, metric.function, subsample.k=0.5) {
   ## helper; create a matrix with col 1 -> indexes to neighbors, col 2 -> distances
   ## param i - index of source vertex
   ## neighbors - indeces of other vertices
-  make.working.rep.old = function(i, neighbors) {
-    current = d[i,]
-    result = cbind(neighbors, get.distances(i, neighbors))
-    colnames(result) = NULL
-    result
-  }
   make.working.rep = function(i, neighbors) {
     matrix(c(neighbors, get.distances(i, neighbors)), ncol=2)
   }

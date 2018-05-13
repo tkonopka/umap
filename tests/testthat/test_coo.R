@@ -86,20 +86,10 @@ test_that("simplify coo with zeros, default settings", {
 })
 
 
-test_that("simplify coo, using a higher threshold", {
-  result = reduce.coo(coo(conmat), threshold=3.5)
-  expected = matrix(0, ncol=3, nrow=4)
-  expected[1,] = c(1,2,4)
-  expected[2,] = c(1,3,7)
-  expected[3,] = c(2,3,8)
-  expected[4,] = c(3,2,6)
-  colnames(expected) = c("from", "to", "value")
-  expect_equal(expected, result$coo)
-})
-
-
 test_that("simplify coo, to just one row", {
-  result = reduce.coo(coo(conmat), threshold=7.5)
+  mat = matrix(0, ncol=5, nrow=5)
+  mat[2,3] = 8
+  result = reduce.coo(coo(mat))
   expected = matrix(0, ncol=3, nrow=1)
   expected[1,] = c(2,3,8)
   colnames(expected) = c("from", "to", "value")
@@ -205,3 +195,26 @@ test_that("add to a zero matrix", {
   expected = c1
   expect_equal(expected, result)
 })
+
+
+
+## ############################################################################
+## Tests for coo multiplication (matrix and a vector)
+
+
+test_that("matrix multiplication performs checks on input", {
+  expect_error(vectormultiplication.coo(1:4, 1:4))
+  c1 = coo(conmat)
+  expect_error(vectormultiplication.coo(c1, 1:2))
+})
+
+
+test_that("matrix multiplication gives correct output", {
+  c1 = reduce.coo(coo(conmat))
+  v = 1:3
+  result = vectormultiplication.coo(c1, v)
+  expected = c(sum(conmat[1,]*v), sum(conmat[2,]*v), sum(conmat[3,]*v)) 
+  expect_equal(result, expected)
+})
+
+

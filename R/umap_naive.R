@@ -59,7 +59,7 @@ umap.naive = function(d, config) {
 naive.simplicial.set.embedding = function(g, config) {
 
   ## create an initial embedding
-  result = make.initial.embedding(g$n.elements, config)
+  result = make.initial.embedding(g$n.elements, config, g)
   
   total.weight = sum(g$coo[, "value"])
   
@@ -74,6 +74,7 @@ naive.simplicial.set.embedding = function(g, config) {
               eps=make.epochs.per.sample(g$coo[, "value"], config$n.epochs))
   
   result = naive.optimize.embedding(result, config, eps)
+  rownames(result) = g$names
   
   result
 }
@@ -97,13 +98,13 @@ naive.optimize.embedding = function(embedding, config, eps) {
   ## extract some variables from config
   a = config$a
   b = config$b
-  gamma = config$gamma
   ## precompute some combinations
   bm1 = b-1
   m2ab = -2*a*b
-  p2gb = 2*gamma*b
+  p2gb = 2*(config$gamma)*b
   
-  ## helpers, compute gradients using a squared-distance
+  ## two helpers for gradients
+  ## these helpers are elegant, but speed is better without extra function call
   gradcoeff1 = function(d2) {
     ##(-2*a*b*(codist2^bm1)) / (a*(codist2^b)+1)
     (m2ab*(d2^bm1)) / (a*(d2^b)+1)

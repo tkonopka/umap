@@ -18,6 +18,7 @@ test_that("umap gives error with inappropriate method argument", {
 test_that("umap gives reproducible output when seed is set", {
   conf = umap.defaults
   conf$seed = 102030405
+  conf$n.epochs = 5
   ## start rng in this environment
   set.seed(9001)
   r1 = runif(1)
@@ -41,4 +42,26 @@ test_that("umap gives log messages in verbose mode", {
   conf$n.epochs = 5
   expect_message(umap(i4, conf))
 })
+
+
+test_that("umap gives output with rownames", {
+  conf = umap.defaults
+  conf$n.epochs = 5
+  data = i4
+  rownames(data) = paste0("S", 1:nrow(i4))
+  result = umap(data, conf)
+  expect_equal(rownames(result), rownames(data))
+})
+
+
+test_that("umap spectral layout on two component data", {
+  ## create dataset with 
+  ilarge = rbind(i4, i4+100)  
+  conf = umap.defaults
+  conf$n.epochs = 5
+  result = umap(ilarge, conf)
+  expect_equal(dim(result), c(nrow(ilarge), 2))
+})
+
+
 

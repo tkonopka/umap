@@ -3,7 +3,7 @@
 
 
 
-##' Create a coo representation of a matrix
+##' Create a coo representation of a square matrix
 ##'
 ##' @param x square matrix
 ##'
@@ -27,10 +27,26 @@ coo = function(x) {
   ## for convention, sort by (from, to)
   coo = coo[order(coo[,1], coo[,2]),]
   
-  ## construct object 
-  result = list(coo=coo, names=rownames(x), n.elements=nrow(x))
+  ## construct object
+  make.coo(coo, rownames(x), nrow(x))
+}
+
+
+
+
+##' Helper to construct coo objects
+##'
+##'
+##' @param x coo matrix
+##' @param names character vector
+##' @param n.elements integer
+##'
+##' @return coo object
+make.coo = function(x, names, n.elements) {
+  x = x[,1:3]
+  colnames(x) = c("from", "to", "value")
+  result = list(coo=x, names=names, n.elements=n.elements)
   class(result) = "coo"
-  
   result
 }
 
@@ -59,7 +75,7 @@ stop.coo = function(msg1, msg2="") {
 ##' @param msg character, message to print alongside error
 check.coo = function(x, msg="") {
   if (class(x)!="coo") {
-    stop.coo("error: expecting object of class coo ", msg)
+    stop.coo("expecting object of class coo ", msg)
   }
 }
 
@@ -85,15 +101,14 @@ check.compatible.coo = function(x, y, msg="") {
 ## Utility functions on coo objects
 
 
-##' Remove some entires in a coo matrix where values are below a threshold
+##' Remove some entires in a coo matrix where values are zero
 ##'
 ##' @param x coo object
-##' @param threshold numeric
 ##'
 ##' @return matrix based on x, perhaps with some lines in original removed
-reduce.coo = function(x, threshold=0) {
+reduce.coo = function(x) {
   check.coo(x, "reduce")
-  bad.rows = x$coo[, "value"] <= threshold | !is.finite(x$coo[, "value"])
+  bad.rows = x$coo[, "value"] == 0 | !is.finite(x$coo[, "value"])
   x$coo = x$coo[!bad.rows,, drop=FALSE]
   rownames(x$coo) = NULL
   x
@@ -107,8 +122,6 @@ reduce.coo = function(x, threshold=0) {
 ##' @param x coo object
 ##'
 ##' @return another coo object describing a transposed matrix
-##'
-##' @export
 t.coo = function(x) {
   check.coo(x, "transpose")
   old.from = x$coo[, "from"]
@@ -129,8 +142,6 @@ t.coo = function(x) {
 ##' @param a numeric, scalar for multiplication
 ##'
 ##' @return new coo object with produce a*x*y
-##'
-##' @export
 multiply.coo = function(x, y, a=1) {
   check.coo(x, "multiply")
   check.coo(y, "multiply")
@@ -150,6 +161,7 @@ multiply.coo = function(x, y, a=1) {
 
 
 
+
 ##' Add two coo objects element-wise
 ##'
 ##' @param x coo object
@@ -158,8 +170,6 @@ multiply.coo = function(x, y, a=1) {
 ##' @param b numeric, scalar for addition
 ##' 
 ##' @return new coo object with (a*x) + (b*y)
-##'
-##' @export
 add.coo = function(x, y, a=1, b=1) {
   check.coo(x, "add")
   check.coo(y, "add")
@@ -178,3 +188,30 @@ add.coo = function(x, y, a=1, b=1) {
 }
 
 
+
+##' Matrix multiplication of a coo matrix with a vector
+##'
+##' @param x coo object
+##' @param v numeric vector
+##'
+##' @return new vector x*v
+vectormultiplication.coo = function(x, v) {
+  check.coo(x, "matrixveector")
+  if (length(v)!= x$n.elements) {
+    stop.coo("incompatible multiplication")
+  }
+
+  ## split the coo matrix by "from"
+  x.to = split(x$coo[, "to"], x$coo[, "from"])
+  x.value = split(x$coo[, "value"], x$coo[, "from"])
+  
+  ## perform the multiplication
+  result = rep(0, length(v))
+  for (i in names(x.to)) {
+    xi = x[[i]]
+    index.from = as.integer(i)
+    result[index.from] = sum(v[x.to[[i]]]*x.value[[i]])
+  }
+  names(result) = names(v)
+  result
+}
