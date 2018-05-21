@@ -218,3 +218,13 @@ test_that("matrix multiplication gives correct output", {
 })
 
 
+
+## ############################################################################
+## Tests for conversion back to matrix
+
+
+test_that("matrix to coo and back", {
+  c1 = reduce.coo(coo(conmat))
+  c1mat = coo2mat(c1)
+  expect_equal(conmat, c1mat)
+})

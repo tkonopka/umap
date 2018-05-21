@@ -10,36 +10,40 @@
 ##
 
 
-##' create an embedding 
+##' Create a umap embedding
+##'
+##' This implementation is called naive because it is a rather straightforward
+##' translation of the original python code.
 ##'
 ##' @param d distance object
 ##' @param config list with settings
 ##'
+##' @return list, one element of which is matrix with embedding coordinates
 ##' @export
 umap.naive = function(d, config) {
   
-  if (config$verbose) {
-    message.w.date("starting umap")
-  }
+  verbose = config$verbose
+  
+  ## prep parameters
+  message.w.date("starting umap", verbose)
   if (is.na(config$a) | is.na(config$b)) {
     config[c("a", "b")] = find.ab.params(config$spread, config$min.dist)
   }
   
+  if (class(d)!="matrix") {
+    d = as.matrix(d)
+  }
+    
   ## create a graph representation
-  if (config$verbose) {
-    message.w.date("creating graph")
-  }
-  graph = naive.fuzzy.simplicial.set(d, config)
-  if (config$verbose) {
-    message.w.date("creating embedding")
-  }
+  message.w.date("creating graph of nearest neighbors", verbose)
+  knn =  knn.info(d, config)
+  graph = naive.fuzzy.simplicial.set(knn, config)
+  message.w.date("creating embedding", verbose)
   embedding = naive.simplicial.set.embedding(graph, config)
+  embedding = center.embedding(embedding)
+  message.w.date("done", verbose)
   
-  if (config$verbose) {
-    message.w.date("done")
-  }
-  
-  embedding
+  list(layout=embedding, knn=knn)
 }
 
 
@@ -60,6 +64,11 @@ naive.simplicial.set.embedding = function(g, config) {
 
   ## create an initial embedding
   result = make.initial.embedding(g$n.elements, config, g)
+  rownames(result) = g$names
+
+  if (config$n.epochs==0) {
+    return(result)
+  }
   
   total.weight = sum(g$coo[, "value"])
   
@@ -105,14 +114,12 @@ naive.optimize.embedding = function(embedding, config, eps) {
   
   ## two helpers for gradients
   ## these helpers are elegant, but speed is better without extra function call
-  gradcoeff1 = function(d2) {
-    ##(-2*a*b*(codist2^bm1)) / (a*(codist2^b)+1)
-    (m2ab*(d2^bm1)) / (a*(d2^b)+1)
-  }
-  gradcoeff2 = function(d2) {
-    ##(2*gamma*b) / ((0.001+codist2)*(a*(codist2^b)+1))
-    (p2gb) / ((0.001+d2)*(a*(d2^b)+1))
-  }
+  #gradcoeff1 = function(d2) {
+  #  (m2ab*(d2^bm1)) / (a*(d2^b)+1)
+  #}
+  #gradcoeff2 = function(d2) {
+  #  (p2gb) / ((0.001+d2)*(a*(d2^b)+1))
+  #}
 
   ## copies of eps data into vectors (for lookup performance)
   eps.from = eps[, "from"]
@@ -126,13 +133,15 @@ naive.optimize.embedding = function(embedding, config, eps) {
   ## eons is short for "epochs of next sample"
   eons = eps.val
   
-  for (n in 1:config$n.epochs) {
+  for (n in seq_len(config$n.epochs)) {
+    if (!is.null(config$save)) {
+      save(embedding, file=paste0(config$save, ".", n, ".Rda"))
+    }
+    
     ## set the learning rate for this epoch
     alpha = config$alpha * (1 - ((n-1)/config$n.epochs))
     if (config$verbose) {
-      if (n %% config$verbose == 0) {
-        message.w.date(paste0("epoch: ", n))
-      }
+      message.w.date(paste0("epoch: ", n), (n %% config$verbose) == 0)
     }
     
     ## identify links in graph that require attention, then process those in loop
@@ -191,27 +200,23 @@ naive.optimize.embedding = function(embedding, config, eps) {
 
 ##' create a simplicial set from a distance object
 ##'
-##' @param d distance object
+##' @param knn list with inform about nearest neighbors (output of knn.info)
 ##' @param config list with settings
 ##'
 ##' @return matrix 
-naive.fuzzy.simplicial.set = function(d, config) {
-  
-  if (class(d)!="matrix") {
-    d = as.matrix(d)
-  }
+naive.fuzzy.simplicial.set = function(knn, config) {
   
   ## prepare constants
-  V = nrow(d)
+  V = nrow(knn$indexes)
   mix.ratio = config$set.op.mix.ratio
   bandwidth = config$bandwidth
   nk = config$n.neighbors
   connectivity = config$local.connectivity
 
   ## extract neighbor information
-  n.info = knn.info(d, config)
+  ##n.info = knn.info(d, config)
   ## construct a smooth map to non-integer neighbors
-  n.smooth = smooth.knn.dist(n.info$distance, nk,
+  n.smooth = smooth.knn.dist(knn$distance, nk,
                              local.connectivity=connectivity,
                              bandwidth=bandwidth)
 
@@ -221,10 +226,10 @@ naive.fuzzy.simplicial.set = function(d, config) {
     conn.i = rep(0, nk)
     nearest.i = n.smooth$nearest[i]
     smooth.i = n.smooth$distances[i]
-    coo.i = cbind(from=i, to=n.info$indexes[i,], value=0)
+    coo.i = cbind(from=i, to=knn$indexes[i,], value=0)
     for (j in 1:nk) {
-      distance.ij = n.info$distances[i,j]
-      if (n.info$indexes[i,j]==i) {
+      distance.ij = knn$distances[i,j]
+      if (knn$indexes[i,j]==i) {
         val = 0
       } else if (distance.ij-nearest.i<=0) {
         val = 1
@@ -236,7 +241,7 @@ naive.fuzzy.simplicial.set = function(d, config) {
     conn[[i]] = coo.i
   }
   conn = do.call(rbind, conn)
-  conn = list(coo=conn, names=rownames(d), n.elements=V)
+  conn = list(coo=conn, names=rownames(knn$indexes), n.elements=V)
   class(conn) = "coo"
   
   connT = t.coo(conn)

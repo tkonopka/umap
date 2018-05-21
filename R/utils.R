@@ -6,12 +6,15 @@
 ## Logging
 
 
-##' Send a message with a prefix with a data
+##' Send a message() with a prefix with a data
 ##'
 ##' @param x character
-message.w.date = function(x) {
-  message(paste("[",Sys.time(), "]  ", x))
+##' @param verbose logical
+##' 
+message.w.date = function(x, verbose=FALSE) {
+  if (verbose) {
+    message(paste0("[",Sys.time(), "]  ", x))
+  }
 }
-
 
 

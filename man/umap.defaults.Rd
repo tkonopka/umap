@@ -4,7 +4,7 @@
 \name{umap.defaults}
 \alias{umap.defaults}
 \title{Default configuration for umap}
-\format{An object of class \code{umap.config} of length 18.}
+\format{An object of class \code{umap.config} of length 19.}
 \usage{
 umap.defaults
 }
@@ -56,6 +56,8 @@ b: numeric; contributes to gradient calculationss during layout optimization.
 spread: numeric; used during automatic estimation of a/b parameters.
 
 seed: integer; seed for random number generation
+
+knn.repeat: number of times to restart knn search
 
 verbose: logical or integer; determines whether to show progress messages
 }

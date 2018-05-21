@@ -57,6 +57,27 @@ test_that("k nearest neighbors information", {
 
 
 ## ############################################################################
+## Tests for well-formed output
+
+
+test_that("knn.info should preserve rownames", {
+  result = knn.from.data(syn0, 3, dEuclidean)
+  expect_equal(rownames(syn0), rownames(result$indexes))
+  expect_equal(rownames(syn0), rownames(result$distances))
+})
+
+
+test_that("knn.from.data should preserve rownmaes", {
+  syn0dist = as.matrix(syn0.dist)
+  result = knn.from.dist(syn0dist, 3)
+  expect_equal(rownames(syn0), rownames(result$indexes))
+  expect_equal(rownames(syn0), rownames(result$distances))  
+})
+
+
+
+
+## ############################################################################
 ## Tests for approximate nearest neighbors extraction
 
 
@@ -80,7 +101,7 @@ test_that("knn from data complains about k (large dataset)", {
 
 test_that("knn from data complains about subsampling (large dataset)", {
   ## da is a dummy, but large, matrix 
-  da = matrix(0, ncol=5, nrow=5000)
+  da = matrix(0, ncol=3, nrow=3000)
   expect_error(knn.from.data(da, 5, dEuclidean, subsample.k=NA))
   expect_error(knn.from.data(da, 5, dEuclidean, subsample.k=-0.2))
   expect_error(knn.from.data(da, 5, dEuclidean, subsample.k=6000))
@@ -112,18 +133,21 @@ test_that("knn returns a reasonable set of data", {
 
 
 test_that("knn for large dataset queries a small number of distances", {
-  dlarge = matrix(0, ncol=2, nrow=400)
+  dlarge = matrix(0, ncol=2, nrow=300)
   dlarge[,1] = runif(nrow(dlarge), -2, 2)
   dlarge[,2] = runif(nrow(dlarge), -2, 2)
-  result = knn.from.data(dlarge, 4, dEuclidean, subsample=4)
   result.dist = knn.from.dist(dist(dlarge), 4)
-  #c(mean(result.dist$distances[,2]), mean(result$distances[,2]))
-  #c(mean(result.dist$distances[,3]), mean(result$distances[,3]))
+  result = knn.from.data.reps(dlarge, 4, dEuclidean, subsample=4, reps=1)
+  result.reps = knn.from.data.reps(dlarge, 4, dEuclidean, subsample=4, reps=2)
   
   ## all self distances are zero
   expect_equal(sum(result$distances[,1]), 0)
   ## distance to nearest neighbor should be small
   expect_lt(mean(result$distances[,2]), 0.4)
+  ## distances in two-reps are smaller
+  totdist1 = sum(apply(result$distances, 1, sum))
+  totdist2 = sum(apply(result.reps$distances, 2, sum))
+  expect_lt(totdist2, totdist1)
 })
 
 
@@ -132,11 +156,10 @@ test_that("knn for large dataset queries a small number of distances", {
 ## Tests with degenerate neighbors
 
 
-#test_that("knn works with degenerate neighbors", {
+test_that("knn works with degenerate neighbors", {
   ## syn1 has so many same-location points, that first nearest neighbor
   ## should always be at distance 0
-  ## NOTE: because of the size of syn1, this test takes around 1s to run
-#  result = knn.from.data(syn1[, 1:2], 4, dEuclidean)
-#  expect_lt(mean(result$distances[,2]), 0.01)
-#})
+  result = knn.from.data(syn1[, 1:2], 4, dEuclidean)
+  expect_lt(mean(result$distances[,2]), 0.01)
+})
 

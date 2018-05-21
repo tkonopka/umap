@@ -7,9 +7,9 @@
 \method{subset}{coo}(x, items)
 }
 \arguments{
-\item{items}{items (indexes) to keep}
+\item{x}{coo object}
 
-\item{coo}{object}
+\item{items}{items (indexes) to keep}
 }
 \value{
 new smaller coo object

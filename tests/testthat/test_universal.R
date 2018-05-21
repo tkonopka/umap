@@ -127,3 +127,19 @@ test_that("number clipping with custom xmax", {
   expect_equal(clip(-12, 3), -3)
 })
 
+
+
+
+## ############################################################################
+## Tests for matrix centering
+
+
+test_that("number clipping with default xmax", {
+  mat = matrix(1:8, ncol=2, nrow=4)
+  rownames(mat) = letters[1:4]
+  result = center.embedding(mat)
+  expected = mat
+  expected[,1] = mat[,1] - mean(mat[,1])
+  expected[,2] = mat[,2] - mean(mat[,2])
+  expect_equal(result, expected)
+})

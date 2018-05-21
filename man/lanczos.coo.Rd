@@ -4,13 +4,23 @@
 \alias{lanczos.coo}
 \title{Construct matrix with k Lanczos vectors from a real Hermitian matrix x}
 \usage{
-lanczos.coo(x, k)
+lanczos.coo(x, k, m)
 }
 \arguments{
 \item{x}{coo object}
 
-\item{k}{number of vectors}
+\item{k}{integer, number of vectors to optimize}
+
+\item{m}{integer, number of vectors to use in procedure (set higher than k)}
+}
+\value{
+list with vectors and transfer matrix
 }
 \description{
-Construct matrix with k Lanczos vectors from a real Hermitian matrix x
+Based on description on wikipedia:
+https://en.wikipedia.org/wiki/Lanczos_algorithm
+with restart implemented ad-hoc
+}
+\details{
+This does not work very well (eigenvectors don't match svd()). Help would be appreciated.
 }

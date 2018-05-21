@@ -4,12 +4,16 @@
 \alias{spectral.coo}
 \title{Get a set of k eigenvalues and eigenvectors}
 \usage{
-spectral.coo(x, k)
+spectral.coo(x, k, m = 2 * k + 1)
 }
 \arguments{
 \item{x}{coo object}
 
 \item{k}{integer, number of eigenvalues/eigenvectors}
+
+\item{m}{integer, number of lanczos vectors to use
+(The higher the number the better, 2k+1 should be the minimum, but >20
+is recommended)}
 }
 \value{
 list with two components

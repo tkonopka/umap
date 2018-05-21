@@ -4,12 +4,14 @@
 \alias{vectormultiplication.coo}
 \title{Matrix multiplication of a coo matrix with a vector}
 \usage{
-vectormultiplication.coo(x, v)
+vectormultiplication.coo(x, v, xprep = NULL)
 }
 \arguments{
 \item{x}{coo object}
 
 \item{v}{numeric vector}
+
+\item{xprep}{list with values in x split using multiplicationprep}
 }
 \value{
 new vector x*v

@@ -4,10 +4,10 @@
 \alias{naive.fuzzy.simplicial.set}
 \title{create a simplicial set from a distance object}
 \usage{
-naive.fuzzy.simplicial.set(d, config)
+naive.fuzzy.simplicial.set(knn, config)
 }
 \arguments{
-\item{d}{distance object}
+\item{knn}{list with inform about nearest neighbors (output of knn.info)}
 
 \item{config}{list with settings}
 }

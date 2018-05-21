@@ -77,6 +77,7 @@ knn.from.dist = function(d, k) {
 ##' avg.
 knn.from.data = function(d, k, metric.function, subsample.k=0.5) {
 
+
   ## number of vertices, i.e. items in dataset
   V = nrow(d)
   ## number of neighbors
@@ -94,10 +95,10 @@ knn.from.data = function(d, k, metric.function, subsample.k=0.5) {
   if (subsample.k<1) {
     subsample.k = min(V-1, max(4, ceiling(k*subsample.k)))
   }
-  if (subsample.k<1 | subsample.k>nrow(d)) {
-    stop("subsample.k must be greater than 1 and smaller than the number of items\n")
+  if (subsample.k>nrow(d)) {
+    umap.error("subsample.k is too large")
   }
-
+  
   ## some preset series
   Vseq = 1:V
   kseq = 1:k
@@ -139,7 +140,6 @@ knn.from.data = function(d, k, metric.function, subsample.k=0.5) {
     ## (this ensures that self is always in neighbor even when set is re-ordered)
     result[1,2]=-1
     result[order(result[,2]),]
-    result
   })
   ## create reverse neighborhoods
   make.revB = function() {
@@ -151,13 +151,14 @@ knn.from.data = function(d, k, metric.function, subsample.k=0.5) {
   get.neighbors = function(x) {
     x[,1]
   }
-  get.neighbors.set = function(j) {
-    unique(unlist(lapply(B[j], get.neighbors)))
-  }
+  ##get.neighbors.set = function(j) {
+  ##  unique(unlist(lapply(B[j], get.neighbors)))
+  ##}
   get.Bbar.set = function(j) {
     b.set = unlist(lapply(B[j], get.neighbors))
     rev.set = unlist(revB[j])
-    unique(c(b.set, rev.set))
+    ##unique(c(b.set, rev.set)) ## no need for unique here because this is used in setdiff
+    c(b.set, rev.set)
   }
   
   ## helper; starts with a working matrix and suggests better neighbors
@@ -214,6 +215,46 @@ knn.from.data = function(d, k, metric.function, subsample.k=0.5) {
   distances[,1] = 0
   rownames(indexes) = rownames(distances) = rownames(d)
   
-  list(indexes=indexes, distances=distances, epoch=epoch)
+  list(indexes=indexes, distances=distances)
+}
+
+
+
+##' Repeat knn.from.data multiple times, pick the best neighbors
+##'
+##' @param d matrix with data
+##' @param k integer, number of neighbors
+##' @param metric.function function with signature f(a, b) that returns a metric distance
+##' @param subsample.k numeric, used for internal tuning of implementation
+##' @param reps integer, number of repeats to carry out
+##'
+##' @return list of same format as knn.from.data
+knn.from.data.reps = function(d, k, metric.function, subsample.k=0.5, reps=2) {
+
+  ## generate an initial knn
+  result = knn.from.data(d, k, metric.function, subsample.k)
+
+  reps = ceiling(reps)
+  if (reps<2) {
+    return(result)
+  }
+  
+  ## perform more knn, keep best results
+  V = nrow(d)
+  for (rr in 2:reps) {
+    counter = 0
+    newresult = knn.from.data(d, k, metric.function, subsample.k)
+    for (i in 1:V) {
+      nowdist = sum(result$distances[i,])
+      newdist = sum(newresult$distances[i,])
+      if (newdist<nowdist) {
+        counter = counter+1
+        result$distances[i,] = newresult$distances[i,]
+        result$indexes[i,] = newresult$indexes[i,]
+      }
+    }
+  }
+
+  result
 }
 

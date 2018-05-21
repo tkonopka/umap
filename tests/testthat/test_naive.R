@@ -13,7 +13,8 @@ conf.testing$metric.function = dEuclidean
 test_that("synthetic fuzzy simplicial set (from dist)", {
   conf = conf.testing
   conf$input = "dist"
-  graph = naive.fuzzy.simplicial.set(syn0.dist, conf)
+  knn = knn.info(syn0.dist, conf)
+  graph = naive.fuzzy.simplicial.set(knn, conf)
   ## top-part of expected graph (computed by python implementation)
   expected.graph = matrix(0, ncol=3, nrow=3)
   expected.graph[1,] = c(1,2, 1)
@@ -33,7 +34,8 @@ test_that("synthetic fuzzy simplicial set (from dist)", {
 test_that("synthetic fuzzy simplicial set (from data)", {
   conf = conf.testing
   conf$input = "data"
-  graph = naive.fuzzy.simplicial.set(syn0, conf)
+  knn = knn.info(syn0, conf)
+  graph = naive.fuzzy.simplicial.set(knn, conf)
   ## top-part of expected graph (computed by python implementation)
   expected.graph = matrix(0, ncol=3, nrow=3)
   expected.graph[1,] = c(1,2, 1)
@@ -43,5 +45,4 @@ test_that("synthetic fuzzy simplicial set (from data)", {
   ## compoare top parts of graph
   expect_equal(expected.graph, graph$coo[1:3, ], tolerance=1e-4)
 })
-
 

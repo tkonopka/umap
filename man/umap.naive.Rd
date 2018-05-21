@@ -2,7 +2,7 @@
 % Please edit documentation in R/umap_naive.R
 \name{umap.naive}
 \alias{umap.naive}
-\title{create an embedding}
+\title{Create a umap embedding}
 \usage{
 umap.naive(d, config)
 }
@@ -11,6 +11,10 @@ umap.naive(d, config)
 
 \item{config}{list with settings}
 }
+\value{
+list, one element of which is matrix with embedding coordinates
+}
 \description{
-create an embedding
+This implementation is called naive because it is a rather straightforward
+translation of the original python code.
 }

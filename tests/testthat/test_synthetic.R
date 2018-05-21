@@ -11,7 +11,7 @@ test_that("synthetic knn.info", {
                               6,8,7,2,1,  7,6,8,2,1,  8,6,7,2,1),
                             ncol=5, nrow=9, byrow=T)
   expected.indexes = expected.indexes + 1
-  rownames(expected.indexes) = as.character(1:9)
+  rownames(expected.indexes) = rownames(syn0)
 
   expect_equal(data.knn.info$indexes, expected.indexes)
   ## distances should also match. Avoid explicit test here 
@@ -36,5 +36,4 @@ test_that("synthetic smooth", {
   ## compare nearest distances
   expect_equal(smooth$nearest, expected.nearest, tolerance=1e-4)
 })
-
 

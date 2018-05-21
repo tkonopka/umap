@@ -69,6 +69,8 @@ NULL
 ##'
 ##' seed: integer; seed for random number generation
 ##'
+##' knn.repeat: number of times to restart knn search
+##'
 ##' verbose: logical or integer; determines whether to show progress messages
 ##'
 ##' @export
@@ -90,6 +92,7 @@ umap.defaults = list(
   b=NA,
   spread=1,
   seed=NA,
+  knn.repeats=1,
   verbose=FALSE
 )
 class(umap.defaults) = "umap.config"
@@ -125,6 +128,10 @@ umap = function(d, config=umap.defaults, method=c("naive"), ...) {
   if (method=="naive") {
     result = umap.naive(d, config)
   } 
+
+  ## add a record of configuration into the result
+  result[["config"]] = config
+  class(result) = "umap"
   
   ## restore old seed
   if (length(old.seed)>1) {

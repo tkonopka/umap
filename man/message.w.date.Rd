@@ -2,13 +2,15 @@
 % Please edit documentation in R/utils.R
 \name{message.w.date}
 \alias{message.w.date}
-\title{Send a message with a prefix with a data}
+\title{Send a message() with a prefix with a data}
 \usage{
-message.w.date(x)
+message.w.date(x, verbose = FALSE)
 }
 \arguments{
 \item{x}{character}
+
+\item{verbose}{logical}
 }
 \description{
-Send a message with a prefix with a data
+Send a message() with a prefix with a data
 }

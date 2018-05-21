@@ -7,22 +7,26 @@
 ##'
 ##' @param x coo object
 ##' @param k integer, number of eigenvalues/eigenvectors
+##' @param m integer, number of lanczos vectors to use
+##' (The higher the number the better, 2k+1 should be the minimum, but >20
+##' is recommended)
 ##'
 ##' @return list with two components
-spectral.coo = function(x, k) {
+spectral.coo = function(x, k, m=2*k+1) {
   check.coo(x)
   
   ## get laplacian for the graph object
   x.laplacian = laplacian.coo(x)
   
   ## first get some Lanczos vectors for x
-  lanczos = lanczos.coo(x, 2*k+1)
+  lanczos = lanczos.coo(x, k, m)
   
   ## decompose the transfer matrix
-  T.U = svd(lanczos$T)$u
+  TU = svd(lanczos$T)$u
+  TUsm = TU[, 1:k, drop=FALSE]
   
   ## use SVD decomposition of T to get eigenvectors 
-  result = lanczos$V %*% T.U[,1:k]
+  result = lanczos$V %*% TUsm
   
   rownames(result) = x$names
   result
@@ -59,7 +63,7 @@ identity.coo = function(n.elements, names=NULL) {
 
 ##' Subset a coo
 ##'
-##' @param  coo object
+##' @param x coo object
 ##' @param items items (indexes) to keep
 ##'
 ##' @return new smaller coo object
@@ -131,9 +135,10 @@ laplacian.coo = function(x) {
   nondiag = x$coo
   nondiag = nondiag[nondiag[,1]!=nondiag[,2], ,drop=FALSE]
   ## fill values of nondiagonal parts
+  oldvalues = nondiag[, "value"]
   nondiag[, "value"] = degrees[nondiag[,"from"]] * degrees[nondiag[, "to"]]
-  nondiag[, "value"] = -1/sqrt(nondiag[, "value"])
-
+  nondiag[, "value"] = -oldvalues/sqrt(nondiag[, "value"])
+  
   ## combine diagonal and non-diagonal parts
   result$coo = rbind(result$coo, nondiag)
   result$coo = result$coo[order(result$coo[, "from"], result$coo[, "to"]), ]
@@ -197,54 +202,139 @@ concomp.coo = function(x) {
 
 ##' Construct matrix with k Lanczos vectors from a real Hermitian matrix x
 ##'
+##' Based on description on wikipedia:
+##' https://en.wikipedia.org/wiki/Lanczos_algorithm
+##' with restart implemented ad-hoc
+##'
+##' This does not work very well (eigenvectors don't match svd()). Help would be appreciated.
+##'
 ##' @param x coo object
-##' @param k number of vectors
+##' @param k integer, number of vectors to optimize
+##' @param m integer, number of vectors to use in procedure (set higher than k)
 ##'
-##'
-lanczos.coo = function(x, k) {
+##' @return list with vectors and transfer matrix
+lanczos.coo = function(x, k, m) {
   check.coo(x, "lanczos")
-  
-  if (k<2) {
-    stop.coo("lanczos.coo", "k must be at least 2")
-  }
-  
-  ## prep variables for iterative procedure
-  vs = vector("list", k)
-  ws = vector("list", k)
-  
-  ## create an initial vector of unit norm
-  vector.norm = function(z) {
-    sqrt(sum(z*z))
-  }
-  make.one.vector = function() {
-    vec = rnorm(x$n.elements)
-    vec/vector.norm(vec)
-  }
-  vs[[1]] = make.one.vector()
-  
-  ws[[1]] = vectormultiplication.coo(x, vs[[1]])
-  alpha = sum(ws[[1]] * vs[[1]])
-  ws[[1]] = ws[[1]] - alpha*vs[[1]]
 
-  T = matrix(0, ncol=k, nrow=k)
+  N = x$n.elements
+  
+  m = as.integer(m)
+  k = as.integer(k)
+  if (k<2 | k>=m) {
+    stop.coo("lanczos.coo", "k must be at least 2, smaller than m")
+  }
+  if (k>=N | m >=N) {
+    stop.coo("lanczos.coo", "k and m must be smaller than matrix")
+  }
+
+  xprep = multiplicationprep.coo(x)
+  
+  ## variables for iterative procedure
+  V = matrix(0, ncol=m, nrow=N)
+  W = matrix(0, ncol=m, nrow=N)
+  T = matrix(0, ncol=m, nrow=m)
+  
+  ## create a new vector that is orthogonal to previous ones in V
+  make.orthogonal.vector = function(j, Vj=NULL) {
+    if (is.null(Vj)) {
+      result = stats::rnorm(N)
+      result = result/vector.norm(result)
+    } else {
+      result = as.numeric(Vj)
+    }
+    ## make orthogonal to previous 1:(j-1)
+    for (n in seq_len(j-1)) {
+      coeff = sum(V[,n]*result)
+      result = result - coeff*V[,n]
+    }
+    result
+  }
+  
+  ## helper to compute one lanczos iteration
+  lanczos.iteration = function(j, Vj=NULL) {
+    beta = vector.norm(W[,j-1])
+    if (beta<1e-4 & !is.null(Vj)) {
+      Vj = make.orthogonal.vector(j, Vj)
+    } else {
+      Vj = W[,j-1]/beta
+    }
+    Wj = vectormultiplication.coo(x, Vj, xprep)
+    alpha = sum(Wj*Vj)
+    ##Wj = Wj - alpha*Vj - beta*V[,j-1]
+    Wj = make.orthogonal.vector(j, Wj-alpha*Vj)
+    list(alpha=alpha, beta=beta, Vj=Vj, Wj=Wj)
+  }
+
+  ## initial round of lanczos algorithm
+  V[,1] = make.orthogonal.vector(1)  
+  W[,1] = vectormultiplication.coo(x, V[,1], xprep)
+  alpha = sum(W[,1] * V[,1])
+  W[,1] = W[,1] - alpha*V[,1]
   T[1,1] = alpha
-
-  ## iterate to compute next vectors from previous ones
-  for (j in 2:k) {
-    beta = vector.norm(ws[[j-1]])
-
-    vs[[j]] = ws[[j-1]]/beta
-    
-    ws[[j]] = vectormultiplication.coo(x, vs[[j]])
-    alpha = sum(ws[[j]]*vs[[j]])
-    ws[[j]] = ws[[j]] - alpha*vs[[j]] - beta*vs[[j-1]]
-
-    T[j,j] = alpha
-    T[j-1, j] = T[j, j-1] = beta
+  for (j in 2:m) {
+    j.result = lanczos.iteration(j)
+    T[j,j] = j.result$alpha
+    T[j-1,j] = T[j,j-1] = j.result$beta
+    W[,j] = j.result$Wj
+    V[,j] = j.result$Vj
   }
 
+  ## helper to compute relative error within tolerance
+  within.tol = function(z1, z2, tolerance=1e-6) {
+    rel.err = abs(z1-z2)/abs(z1)
+    max(rel.err)<tolerance
+  }
+  
+  Teigen.previous = rep(0, nrow(T))
+  Tsvd = svd(T)
+  Teigen.current = Tsvd$d
+  count = 0
+  jstart = 1
+  while (!within.tol(Teigen.current[1:k], Teigen.previous[1:k]) & count<m) {
+    count = count + 1
+    ##cat("\niteration ", count, "\n")
+    #prev = signif(Teigen.previous, 4)
+    #curr = signif(Teigen.current, 4)
+    #cat("previous T eigenvalues: ", paste(prev, collapse=", "), "\n")
+    #cat("current T eigenvalues: ", paste(curr, collapse=", "), "\n")
+    #cat("difference: ", sum(abs((prev-curr))[1:k]), "\n")
+        
+    for (j in jstart:m) {
+      if (j==1) {
+        V[,1] = V %*% Tsvd$u[,1,drop=FALSE]
+        W[,1] = vectormultiplication.coo(x, V[,1], xprep)
+        alpha = sum(W[,1] * V[,1])
+        W[,1] = W[,1] - alpha*V[,1]
+        T[1,1] = alpha
+      } else {
+        if (j==jstart) {
+          j.result = lanczos.iteration(j, Vj=V %*% Tsvd$u[,j,drop=FALSE])
+        } else {
+          j.result = lanczos.iteration(j)
+        }
+        T[j,j] = j.result$alpha
+        T[j-1,j] = T[j,j-1] = j.result$beta
+        W[,j] = j.result$Wj
+        V[,j] = j.result$Vj
+      }
+    }
+    
+    ## identify how many components are consistent with Tsvd
+    ## this allows restarting at higher j values in a future iteration
+    jstart = 1
+    while (jstart<m & within.tol(T[jstart, jstart], Tsvd$d[jstart])) {
+      jstart = jstart +1
+    }
+
+    ## prep object for while() condition
+    Tsvd = svd(T)
+    Teigen.previous = Teigen.current
+    Teigen.current = Tsvd$d
+  }
+  cat("iterations: ", count, "\n")
+  
   ## return a matrix with all the Lanczos vectors and the transfer matrix
-  list(V=do.call(cbind, vs), T=T)
+  list(V=V, T=T)
 }
 
 

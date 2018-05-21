@@ -35,10 +35,13 @@ knn.info = function(d, config) {
     }
     d.dist = d.dist + t(d.dist)
     rownames(d.dist) = colnames(d.dist) = rownames(d)
-    return(knn.from.dist(d.dist, config$n.neighbors))
+    result = knn.from.dist(d.dist, config$n.neighbors)
+  } else {
+    result = knn.from.data.reps(d, config$n.neighbors, distfun, reps=config$knn.repeats)
   }
-  
-  knn.from.data(d, config$n.neighbors, distfun)
+
+  class(result) = "umap.knn"
+  result
 }
 
 
@@ -69,22 +72,35 @@ make.spectral.embedding = function(V, d, g) {
 
   ## identify connected components in graph coo
   gcomp = concomp.coo(g)
-
+  
+  ##cat("number of components: ", gcomp$n.components, "\n")
   if (gcomp$n.components==1) {
-    result = spectral.coo(g, d+1)
+    lanczos.m = min(V-1, max(20, 2*d+1))
+    result = spectral.coo(g, d, m=lanczos.m)
   } else {
     compsizes = sort(table(gcomp$components), decreasing=T)
     largestcomp = names(compsizes)[1]
     glarge = subset.coo(g, (1:V)[gcomp$components==largestcomp])
-    gspectral = spectral.coo(glarge, d+1)
-    gextent = range(gspectral)
+    ## choose a large number of lanczos vectors
+    lanczos.m = min(V-1, max(20, 2*d+1))
+    gspectral = spectral.coo(glarge, d, m=lanczos.m)
     ## make a random embedding, then fill in
     result = make.random.embedding(V, d, range(gspectral))
-    result[gcomp$components==largestcomp,] = gspectral[, 1:d, drop=FALSE]
+    result[gcomp$components==largestcomp,] = gspectral
   }
-
-  result[, 1:d, drop=FALSE]
+  
+  result = result[, 1:d, drop=FALSE]
+  result = center.embedding(result)
+  ## rescale result so that most points are in range [-10, 10]
+  range1 = stats::quantile(result[,1], p=c(0.01, 0.99))
+  expansion = 10/(range1[2]-range1[1])
+  result = expansion*result + matrix(stats::rnorm(V*d, 0, 0.001), nrow=V, ncol=d)
+  result = center.embedding(result)
+  
+  result
 }
+
+
 
 
 ##' Create an initial embedding for a graph
@@ -104,8 +120,14 @@ make.initial.embedding = function(V, config, g=NULL) {
   if (class(config$init) == "matrix") {
     result = config$init
   } else {
-    if (config$init=="spectral" & V > (2*(numcomp+1)+1)) {
-      result = make.spectral.embedding(V, numcomp, g)
+    if (config$init=="spectral") {
+      if (V > (2*(numcomp+1)+1)) {
+        result = make.spectral.embedding(V, numcomp, g)
+      } else {
+        warning("spectral embedding requires n.components << (V-1)/2; using init='random'",
+                call.=FALSE)
+        result = make.random.embedding(V, numcomp)
+      }
     } else {
       result = make.random.embedding(V, numcomp)
     }
@@ -222,6 +244,31 @@ clip = function(x, xmax=4) {
   x[x>xmax] = xmax
   x[x<(-xmax)] = -xmax
   x
+}
+
+
+
+##' Adjust a matrix so that each column is centered around zero
+##'
+##' @param x matrix
+##'
+##' @return matrix of same shape as x
+center.embedding = function(x) {
+  colcenters = apply(x, 2, mean)
+  V = nrow(x)
+  x - matrix(rep(colcenters, each=V), ncol=ncol(x), nrow=V)
+}
+
+
+
+
+##' Compute vector norm
+##'
+##' @param z numeric vector
+##'
+##' @return numeric, vector norm
+vector.norm = function(z) {
+  sqrt(sum(z*z))
 }
 
 
