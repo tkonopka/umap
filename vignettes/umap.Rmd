@@ -29,6 +29,7 @@ pre {
 
 ```{r, echo=FALSE}
 ## block with some startup/background objects functions
+library(umap)
 
 iris.colors = c("#1f77b4", "#d62728", "#7f7f7f")
 iris.colors = c("#ff7f00", "#e377c2", "#17becf")
@@ -87,25 +88,25 @@ library(umap)
 iris.umap = umap(iris.data)
 ```
 
-The output is here an object; printing it gives a minimal summary of its contents.
+The output is here an object `iris.umap`. We can get a minimal summary of its contents by just printing it.
 
 ```{r umap.print}
 iris.umap
 ```
 
-The main compoent of the object is `layout`, which holds a matrix with coordinates.
+The main component of the object is `layout`, which holds a matrix with coordinates.
 
 ```{r umap.layout}
 head(iris.umap$layout, 3)
 ```
 
-We can now use these coordinates to visualize the dataset on a 2D plane. 
+We can now use these coordinates to visualize the dataset on a 2D plane. (The custom plot function, `plot.iris`, is available at the end of this vignette.)
 
 ```{r, fig.width=3.6, fig.height=3.6, dpi=150}
 plot.iris(iris.umap, iris.labels)
 ```
 
-(The custom plot function, `plot.iris`, is available at the end of this vignette.)
+The layout conveys separation between the groups and dispersion within the group. While this vignette example is simple by construction, the `umap` package can provide similar visualizations for larger datasets with many thousands of data points. 
 
 
 

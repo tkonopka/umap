@@ -4,10 +4,12 @@
 \alias{naive.simplicial.set.embedding}
 \title{create an embedding of graph into a low-dimensional space}
 \usage{
-naive.simplicial.set.embedding(g, config)
+naive.simplicial.set.embedding(g, embedding, config)
 }
 \arguments{
 \item{g}{matrix, graph connectivity as coo}
+
+\item{embedding}{matrix, coordinates for an initial graph embedding}
 
 \item{config}{list with settings}
 }

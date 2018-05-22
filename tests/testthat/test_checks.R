@@ -8,8 +8,6 @@ test_that("checking config detects errors with nearest neighbors", {
   conf = umap.defaults
   conf$n.neighbors = 0.5
   expect_error(umap.check.config(conf))
-
-  ## detect errors from command line
   expect_error(umap.check.config(umap.defaults, n.neighbors=0))
 })
 
@@ -39,5 +37,14 @@ test_that("config complains about local connectivity", {
   conf$local.connectivity = 0
   expect_error(umap.check.config(conf))
   conf$local.connectivity = -0.2
+  expect_error(umap.check.config(conf))
+})
+
+
+test_that("config complains about epochs", {
+  conf = umap.defaults
+  conf$n.epochs = NA
+  expect_error(umap.check.config(conf))
+  conf$n.epochs = -2
   expect_error(umap.check.config(conf))
 })

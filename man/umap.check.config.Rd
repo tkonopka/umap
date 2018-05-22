@@ -11,6 +11,9 @@ umap.check.config(config = umap.defaults, ...)
 
 \item{...}{other arguments}
 }
+\value{
+config object, may contain some different components from config in input
+}
 \description{
 Validator functions for umap settings
 }

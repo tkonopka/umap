@@ -38,8 +38,10 @@ umap.naive = function(d, config) {
   message.w.date("creating graph of nearest neighbors", verbose)
   knn =  knn.info(d, config)
   graph = naive.fuzzy.simplicial.set(knn, config)
-  message.w.date("creating embedding", verbose)
-  embedding = naive.simplicial.set.embedding(graph, config)
+  message.w.date("creating initial embedding", verbose)
+  embedding = make.initial.embedding(graph$n.elements, config, graph)
+  message.w.date("optimizing embedding", verbose)
+  embedding = naive.simplicial.set.embedding(graph, embedding, config)
   embedding = center.embedding(embedding)
   message.w.date("done", verbose)
   
@@ -56,14 +58,15 @@ umap.naive = function(d, config) {
 ##' create an embedding of graph into a low-dimensional space
 ##'
 ##' @param g matrix, graph connectivity as coo
+##' @param embedding matrix, coordinates for an initial graph embedding
 ##' @param config list with settings
 ##'
 ##' @return matrix with embedding,
 ##' nrows is from g, ncols determined from config
-naive.simplicial.set.embedding = function(g, config) {
+naive.simplicial.set.embedding = function(g, embedding, config) {
 
   ## create an initial embedding
-  result = make.initial.embedding(g$n.elements, config, g)
+  result = embedding
   rownames(result) = g$names
 
   if (config$n.epochs==0) {
@@ -75,7 +78,6 @@ naive.simplicial.set.embedding = function(g, config) {
   ## simplify graph a little bit
   gmax = max(g$coo[, "value"])
   g$coo[g$coo[, "value"] < gmax/config$n.epochs, "value"] = 0
-  ## convert to a graph coo
   g = reduce.coo(g)
   
   ## create an epochs-per-sample. Keep track of it together with the graph coo
@@ -134,14 +136,15 @@ naive.optimize.embedding = function(embedding, config, eps) {
   eons = eps.val
   
   for (n in seq_len(config$n.epochs)) {
-    if (!is.null(config$save)) {
-      save(embedding, file=paste0(config$save, ".", n, ".Rda"))
-    }
-    
     ## set the learning rate for this epoch
     alpha = config$alpha * (1 - ((n-1)/config$n.epochs))
+
+    ## occasional message or output
     if (config$verbose) {
       message.w.date(paste0("epoch: ", n), (n %% config$verbose) == 0)
+      if (!is.null(config$save)) {
+        save(embedding, file=paste0(config$save, ".", n, ".Rda"))
+      }
     }
     
     ## identify links in graph that require attention, then process those in loop

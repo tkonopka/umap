@@ -73,16 +73,15 @@ make.spectral.embedding = function(V, d, g) {
   ## identify connected components in graph coo
   gcomp = concomp.coo(g)
   
-  ##cat("number of components: ", gcomp$n.components, "\n")
   if (gcomp$n.components==1) {
-    lanczos.m = min(V-1, max(20, 2*d+1))
+    lanczos.m = min(V-1, max(11, 2*d+1))
     result = spectral.coo(g, d, m=lanczos.m)
   } else {
     compsizes = sort(table(gcomp$components), decreasing=T)
     largestcomp = names(compsizes)[1]
     glarge = subset.coo(g, (1:V)[gcomp$components==largestcomp])
     ## choose a large number of lanczos vectors
-    lanczos.m = min(V-1, max(20, 2*d+1))
+    lanczos.m = min(V-1, max(11, 2*d+1))
     gspectral = spectral.coo(glarge, d, m=lanczos.m)
     ## make a random embedding, then fill in
     result = make.random.embedding(V, d, range(gspectral))

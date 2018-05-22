@@ -292,12 +292,6 @@ lanczos.coo = function(x, k, m) {
   jstart = 1
   while (!within.tol(Teigen.current[1:k], Teigen.previous[1:k]) & count<m) {
     count = count + 1
-    ##cat("\niteration ", count, "\n")
-    #prev = signif(Teigen.previous, 4)
-    #curr = signif(Teigen.current, 4)
-    #cat("previous T eigenvalues: ", paste(prev, collapse=", "), "\n")
-    #cat("current T eigenvalues: ", paste(curr, collapse=", "), "\n")
-    #cat("difference: ", sum(abs((prev-curr))[1:k]), "\n")
         
     for (j in jstart:m) {
       if (j==1) {
@@ -331,11 +325,8 @@ lanczos.coo = function(x, k, m) {
     Teigen.previous = Teigen.current
     Teigen.current = Tsvd$d
   }
-  cat("iterations: ", count, "\n")
   
   ## return a matrix with all the Lanczos vectors and the transfer matrix
   list(V=V, T=T)
 }
-
-
 

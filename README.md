@@ -13,9 +13,9 @@ implemented in a python package [umap](https://github.com/lmcinnes/umap). This p
 
 ## Examples
 
-The figure below shows dimensional reduction on the [MNIST digits](https://en.wikipedia.org/wiki/MNIST_database) dataset. This dataset comprises of 70,000 observations in a 784-dimensional space and labeled by ten distinct classes. The output of this package's `umap' function provides the plot layout, i.e. the arrangement of dots on the plane. The coloring, added to visualize how the known labels are positioned within the layout, demonstrates that layout separates the underlying data groups.
+The figure below shows dimensional reduction on the [MNIST digits](https://en.wikipedia.org/wiki/MNIST_database) dataset. This dataset comprises of 70,000 observations in a 784-dimensional space and labeled by ten distinct classes. The output of this package's `umap' function provides the plot layout, i.e. the arrangement of dots on the plane. The coloring, added to visualize how the known labels are positioned within the layout, demonstrates separation of the underlying data groups.
 
-<img src="https://github.com/tkonopka/umap/blob/master/images/readme_mnist.png?raw=true" alt="Visualization of MNIST data by cmdscale and UMAP" width="600px">
+<img src="https://github.com/tkonopka/umap/blob/master/images/readme_mnist.png?raw=true" alt="A UMAP visualization of the MNIST digits dataset" width="600px">
 </img>
 
 More information on usage can be found in the package [vignettes]().
@@ -37,7 +37,9 @@ The original python implementation is available in github [umap](https://github.
 
 ## Implementation notes
 
-The implementation in this package follows closely the original python code, but any bugs or errors should be regarded as arising solely from this implementation, not from the original.
+The implementation of the UMAP algorithm in this package follows closely the original python code. Any bugs or errors should be regarded as arising solely from this implementation, not from the original.
+
+This package includes implementations for auxiliary algorithms, including approximate searches for nearest neighbors and manipulation of sparse matrices. Any bugs in those components may impact on the outcome of embedding. Such bugs should be regarded as 
 
 
 ## Performance
