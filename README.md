@@ -18,19 +18,7 @@ The figure below shows dimensional reduction on the [MNIST digits](https://en.wi
 <img src="https://github.com/tkonopka/umap/blob/master/images/readme_mnist.png?raw=true" alt="A UMAP visualization of the MNIST digits dataset" width="600px">
 </img>
 
-More information on usage can be found in the package [vignettes]().
-
-
-
-
-## References
-
-The original UMAP algorithm is described in the following article
-
-McInnes, Leland, and John Healy. "UMAP: Uniform Manifold Approximation and Projection for Dimension Reduction." arXiv preprint arXiv:1802.03426 (2018).
-
-The original python implementation is available in github [umap](https://github.com/lmcinnes/umap)
-
+More information on usage can be found in the package [vignettes](https://github.com/tkonopka/umap/tree/master/vignettes).
 
 
 
@@ -39,12 +27,24 @@ The original python implementation is available in github [umap](https://github.
 
 The implementation of the UMAP algorithm in this package follows closely the original python code. Any bugs or errors should be regarded as arising solely from this implementation, not from the original.
 
-This package includes implementations for auxiliary algorithms, including approximate searches for nearest neighbors and manipulation of sparse matrices. Any bugs in those components may impact on the outcome of embedding. Such bugs should be regarded as 
+This package includes implementations for auxiliary algorithms, including approximate searches for nearest neighbors and manipulation of sparse matrices. 
+
 
 
 ## Performance
 
 The focus of the implementation is to provide running time that are sub-quadratic in the number of data points in a dataset. In this regard, the package provides attractive running times for large datasets in comparison with quadratic algorithms. However, this package does not attempt to provide maximal performance. For applications that require maximal performance, see the original implementation. 
+
+
+
+## References
+
+The original UMAP algorithm is described in the following article
+
+McInnes, Leland, and John Healy. "UMAP: Uniform Manifold Approximation and Projection for Dimension Reduction." [arXiv:1802.03426](https://github.com/tkonopka/umap/tree/master/vignettes).
+
+The original python implementation is available in github [umap](https://github.com/lmcinnes/umap)
+
 
 
 ### License
