@@ -41,7 +41,7 @@ The focus of the implementation is to provide running time that are sub-quadrati
 
 The original UMAP algorithm is described in the following article
 
-McInnes, Leland, and John Healy. "UMAP: Uniform Manifold Approximation and Projection for Dimension Reduction." [arXiv:1802.03426](https://github.com/tkonopka/umap/tree/master/vignettes).
+McInnes, Leland, and John Healy. "UMAP: Uniform Manifold Approximation and Projection for Dimension Reduction." [arXiv:1802.03426](https://arxiv.org/abs/1802.03426).
 
 The original python implementation is available in github [umap](https://github.com/lmcinnes/umap)
 
