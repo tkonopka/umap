@@ -7,7 +7,7 @@
 umap.naive(d, config)
 }
 \arguments{
-\item{d}{distance object}
+\item{d}{data object}
 
 \item{config}{list with settings}
 }

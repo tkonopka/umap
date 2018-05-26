@@ -13,7 +13,7 @@ implemented in a python package [umap](https://github.com/lmcinnes/umap). This p
 
 ## Examples
 
-The figure below shows dimensional reduction on the [MNIST digits](https://en.wikipedia.org/wiki/MNIST_database) dataset. This dataset comprises of 70,000 observations in a 784-dimensional space and labeled by ten distinct classes. The output of this package's `umap' function provides the plot layout, i.e. the arrangement of dots on the plane. The coloring, added to visualize how the known labels are positioned within the layout, demonstrates separation of the underlying data groups.
+The figure below shows dimensional reduction on the [MNIST digits](https://en.wikipedia.org/wiki/MNIST_database) dataset. This dataset consists of 70,000 observations in a 784-dimensional space and labeled by ten distinct classes. The output of this package's `umap' function provides the plot layout, i.e. the arrangement of dots on the plane. The coloring, added to visualize how the known labels are positioned within the layout, demonstrates separation of the underlying data groups.
 
 <img src="https://github.com/tkonopka/umap/blob/master/images/readme_mnist.png?raw=true" alt="A UMAP visualization of the MNIST digits dataset" width="600px">
 </img>
@@ -25,7 +25,7 @@ More information on usage can be found in the package [vignettes](https://github
 
 ## Implementation notes
 
-The implementation of the UMAP algorithm in this package follows closely the original python code. Any bugs or errors should be regarded as arising solely from this implementation, not from the original.
+The implementation of the UMAP algorithm in this package follows closely the original python code. However, any bugs or errors should be regarded as arising solely from this implementation, not from the original.
 
 This package includes implementations for auxiliary algorithms, including approximate searches for nearest neighbors and manipulation of sparse matrices. 
 
@@ -33,7 +33,7 @@ This package includes implementations for auxiliary algorithms, including approx
 
 ## Performance
 
-The focus of the implementation is to provide running time that are sub-quadratic in the number of data points in a dataset. In this regard, the package provides attractive running times for large datasets in comparison with quadratic algorithms. However, this package does not attempt to provide maximal performance. For applications that require maximal performance, see the original implementation. 
+The focus of the implementation is to provide running time that are sub-quadratic in the number of data points in a dataset. In this regard, the package can be attractive for very large datasets in comparison with quadratic algorithms. However, this package does not attempt to provide maximal performance. For applications that require maximal performance, see the original implementation. 
 
 
 

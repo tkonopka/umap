@@ -4,12 +4,12 @@
 \alias{make.random.embedding}
 \title{Make an initial embedding with random coordinates}
 \usage{
-make.random.embedding(V, d, lims = c(-10, 10))
+make.random.embedding(d, V, lims = c(-10, 10))
 }
 \arguments{
-\item{V}{integer, number of vertices (rows)}
-
 \item{d}{integer, number of diemsions (columns)}
+
+\item{V}{integer, number of vertices (rows)}
 
 \item{lims}{numeric vector with lower and upper bounds}
 }

@@ -52,6 +52,24 @@ umap.check.config = function(config=umap.defaults, ...) {
 
 
 
+##' Validator for umap primary input
+##'
+##' @param d matrix or compatible
+##'
+##' @return d as matrix
+umap.check.input = function(d) {
+  if (class(d)=="matrix") {
+    return(d)
+  }
+  if (sum(class(d) %in% c("data.frame", "data.table"))) {
+    return(as.matrix(d))
+  }
+  umap.error("input must be a matrix or matrix-compatible\n")
+}
+
+
+
+
 ##' stop execution with a custom error message
 ##'
 ##' @param x string for error message

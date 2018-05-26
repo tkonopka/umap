@@ -143,3 +143,36 @@ test_that("number clipping with default xmax", {
   expected[,2] = mat[,2] - mean(mat[,2])
   expect_equal(result, expected)
 })
+
+
+
+## ############################################################################
+## Tests for spectral embedding
+
+
+test_that("spectral embedding picks appropriate k m", {
+  ## small dataset with two disjoint components
+  ## spectral embedding should focus on one connected components
+  ## each componet is 3 elements, so should complain about size
+  mm = matrix(0, ncol=2, nrow=6)
+  mm[1, ] = c(0,0)
+  mm[2,] = c(1,0)
+  mm[3,] = c(0,1)
+  mm[4,] = c(100, 100)
+  mm[5,] = c(100, 101)
+  mm[6,] = c(101, 100)
+  mmdist = as.matrix(dist(mm))
+  
+  ## prepare a graph 
+  config = umap.defaults
+  config$init = "spectral"
+  config$input="dist"
+  config$n.neighbors = 2
+  config[c("a", "b")] = find.ab.params(config$spread, config$min.dist)
+  knn =  knn.info(mmdist, config)
+  graph = naive.fuzzy.simplicial.set(knn, config)
+  
+  ## should get warning that spectral embedding is abandoned
+  expect_warning(make.initial.embedding(graph$n.elements, config, graph),"random")
+})
+

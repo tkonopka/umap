@@ -10,16 +10,20 @@ icolors = as.integer(as.factor(iris[i.select, "Species"]))
 
 
 
-test_that("umap gives error with inappropriate method argument", {
+## ############################################################################
+## General expected behavior
+
+
+test_that("error with inappropriate method argument", {
   expect_error(umap(i4, method="non_existent_method"))
 })
 
 
-test_that("umap gives reproducible output when seed is set", {
+test_that("reproducible output when seed is set", {
   conf = umap.defaults
   conf$seed = 102030405
   conf$init = "random"
-  conf$n.epochs = 5
+  conf$n.epochs = 2
   ## start rng in this environment
   set.seed(9001)
   r1 = runif(1)
@@ -37,27 +41,7 @@ test_that("umap gives reproducible output when seed is set", {
 })
 
 
-test_that("umap gives log messages in verbose mode", {
-  conf = umap.defaults
-  conf$verbose = TRUE
-  conf$init = "random"
-  conf$n.epochs = 0
-  expect_message(umap(i4, conf), "starting")
-  expect_message(umap(i4, conf), "creating")
-})
-
-
-test_that("umap gives progress messages in verbose mode", {
-  conf = umap.defaults
-  conf$verbose = TRUE
-  conf$init = "random"
-  conf$n.epochs = 13
-  conf$verbose = 4
-  expect_message(umap(i4, conf), "12")
-})
-
-
-test_that("umap gives output with rownames", {
+test_that("output with rownames", {
   conf = umap.defaults
   conf$n.epochs = 2
   conf$init = "random"
@@ -68,7 +52,36 @@ test_that("umap gives output with rownames", {
 })
 
 
-test_that("umap spectral layout on two component data", {
+
+## ############################################################################
+## Logging 
+
+
+test_that("log messages in verbose mode", {
+  conf = umap.defaults
+  conf$verbose = TRUE
+  conf$init = "random"
+  conf$n.epochs = 0
+  expect_message(umap(i4, conf), "starting")
+  expect_message(umap(i4, conf), "creating")
+})
+
+
+test_that("progress messages in verbose mode", {
+  conf = umap.defaults
+  conf$verbose = TRUE
+  conf$init = "random"
+  conf$n.epochs = 13
+  conf$verbose = 4
+  expect_message(umap(i4, conf), "12")
+})
+
+
+## ############################################################################
+## Unusual datasets
+
+
+test_that("spectral layout on two component data", {
   ## create dataset with 
   ilarge = rbind(i4, i4+100)  
   conf = umap.defaults
@@ -79,13 +92,10 @@ test_that("umap spectral layout on two component data", {
 
 
 test_that("spectral layout aborts and uses random init with small datasets", {
-  ismall = i4[1:5,]
+  ismall = i4[1:3,]
   conf = umap.defaults
   conf$n.epochs = 2
   conf$n.neighbors = 3
-  expect_warning(umap(ismall, conf))
+  expect_warning(umap(ismall, conf), "init")
 })
-
-
-
 

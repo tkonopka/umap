@@ -17,7 +17,7 @@
 ##'
 ##' @return list with at least two components, indexes and distances
 knn.info = function(d, config) {
-
+  
   if (config$input=="dist") {
     return(knn.from.dist(d, config$n.neighbors))
   } 
@@ -49,12 +49,12 @@ knn.info = function(d, config) {
 
 ##' Make an initial embedding with random coordinates
 ##'
-##' @param V integer, number of vertices (rows)
 ##' @param d integer, number of diemsions (columns)
+##' @param V integer, number of vertices (rows)
 ##' @param lims numeric vector with lower and upper bounds
 ##'
 ##' @return matrix (V,d) with random numbers
-make.random.embedding = function(V, d, lims=c(-10, 10)) {
+make.random.embedding = function(d, V, lims=c(-10, 10)) {
   matrix(stats::runif(V*d, lims[1], lims[2]), nrow=V, ncol=d)
 }
 
@@ -63,29 +63,46 @@ make.random.embedding = function(V, d, lims=c(-10, 10)) {
 
 ##' Create a spectral embedding for a connectivity graph
 ##'
-##' @param V integer, number of vertices in embedding
 ##' @param d integer, number of dimensions
 ##' @param g coo object
 ##'
-##' @return embedding matrix
-make.spectral.embedding = function(V, d, g) {
+##' @return embedding matrix. Might return NULL if spectral embedding fails
+make.spectral.embedding = function(d, g) {
 
   ## identify connected components in graph coo
   gcomp = concomp.coo(g)
+
+  ## helper to decide if combinations of parameters are legal for spectral.coo
+  execute.spectral = function(g2) {
+    result = NULL
+    V = g2$n.elements
+    lanczos.m = min(V-1, max(11, 2*d+1))
+    ## try to create spectral eigenvectors, abort quietly if not possible
+    tryCatch({
+      result = spectral.coo(g2, d, m=lanczos.m)
+    }, error=function(e) {}, warning=function(e) {} )
+    result
+  }
+  
+  result = NULL
+  V = g$n.elements
   
   if (gcomp$n.components==1) {
-    lanczos.m = min(V-1, max(11, 2*d+1))
-    result = spectral.coo(g, d, m=lanczos.m)
+    result = execute.spectral(g)
   } else {
     compsizes = sort(table(gcomp$components), decreasing=T)
     largestcomp = names(compsizes)[1]
     glarge = subset.coo(g, (1:V)[gcomp$components==largestcomp])
-    ## choose a large number of lanczos vectors
-    lanczos.m = min(V-1, max(11, 2*d+1))
-    gspectral = spectral.coo(glarge, d, m=lanczos.m)
-    ## make a random embedding, then fill in
-    result = make.random.embedding(V, d, range(gspectral))
-    result[gcomp$components==largestcomp,] = gspectral
+    gspectral = execute.spectral(glarge)
+    if (!is.null(gspectral)) {
+      ## make a random embedding, then fill in
+      result = make.random.embedding(d, V, range(gspectral))
+      result[gcomp$components==largestcomp,] = gspectral
+    }
+  }
+
+  if (is.null(result)) {
+    return (result)
   }
   
   result = result[, 1:d, drop=FALSE]
@@ -119,16 +136,16 @@ make.initial.embedding = function(V, config, g=NULL) {
   if (class(config$init) == "matrix") {
     result = config$init
   } else {
+    result = NULL
     if (config$init=="spectral") {
-      if (V > (2*(numcomp+1)+1)) {
-        result = make.spectral.embedding(V, numcomp, g)
-      } else {
-        warning("spectral embedding requires n.components << (V-1)/2; using init='random'",
-                call.=FALSE)
-        result = make.random.embedding(V, numcomp)
-      }
-    } else {
-      result = make.random.embedding(V, numcomp)
+      result = make.spectral.embedding(numcomp, g)
+    } else if (config$init=="random") {
+      result = make.random.embedding(numcomp, V)
+    }
+    if (is.null(result)) {    
+      warning("failed creating requested initial embedding type; using init='random'",
+              call.=FALSE)
+      result = make.random.embedding(numcomp, V)
     }
   }
   

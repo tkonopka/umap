@@ -112,6 +112,7 @@ umap = function(d, config=umap.defaults, method=c("naive"), ...) {
   
   ## prep - check inputs, configuration settings
   method = match.arg(method)
+  d = umap.check.input(d)
   config = umap.check.config(config, ...)  
   
   ## save existing RNG seed, set "internal" seed
@@ -125,10 +126,14 @@ umap = function(d, config=umap.defaults, method=c("naive"), ...) {
   }
   
   ## perform the actual work with a specific umap implementation
-  if (method=="naive") {
-    result = umap.naive(d, config)
-  } 
-
+  if (nrow(d)<=2) {
+    result = umap.small(d, config)
+  } else {
+    if (method=="naive") {
+      result = umap.naive(d, config)
+    }
+  }
+  
   ## add a record of configuration into the result
   result[["config"]] = config
   class(result) = "umap"

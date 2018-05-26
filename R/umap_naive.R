@@ -15,11 +15,10 @@
 ##' This implementation is called naive because it is a rather straightforward
 ##' translation of the original python code.
 ##'
-##' @param d distance object
+##' @param d data object
 ##' @param config list with settings
 ##'
 ##' @return list, one element of which is matrix with embedding coordinates
-##' @export
 umap.naive = function(d, config) {
   
   verbose = config$verbose
@@ -30,10 +29,6 @@ umap.naive = function(d, config) {
     config[c("a", "b")] = find.ab.params(config$spread, config$min.dist)
   }
   
-  if (class(d)!="matrix") {
-    d = as.matrix(d)
-  }
-    
   ## create a graph representation
   message.w.date("creating graph of nearest neighbors", verbose)
   knn =  knn.info(d, config)
