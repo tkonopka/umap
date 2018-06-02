@@ -227,7 +227,7 @@ find.ab.params = function(spread, min.dist,
 
 
 
-##' Compute something
+##' Compute a value to capture how often each item contributes to layout optimization
 ##'
 ##' @param w numeric vector or matrix
 ##' @param epochs integer
@@ -249,8 +249,8 @@ make.epochs.per.sample = function(w, epochs) {
 ##'
 ##' This R implementation can be made slightly faster by hard-coding
 ##' the xmax value inside the function. However, performance is
-##' even better with Rcpp. Hence, this implementation exists mainly
-##' for reference and to facilitate testing the Rcpp version.
+##' even better with Rcpp. This implementation exists mainly to
+##' facilitate testing the Rcpp version.
 ##'
 ##' @param x numeric; single value or a vector
 ##' @param xmax maximum value for x

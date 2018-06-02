@@ -30,10 +30,49 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// dManhattan
+double dManhattan(NumericVector x, NumericVector y);
+RcppExport SEXP _umap_dManhattan(SEXP xSEXP, SEXP ySEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type x(xSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    rcpp_result_gen = Rcpp::wrap(dManhattan(x, y));
+    return rcpp_result_gen;
+END_RCPP
+}
+// dCenteredPearson
+double dCenteredPearson(NumericVector x, NumericVector y);
+RcppExport SEXP _umap_dCenteredPearson(SEXP xSEXP, SEXP ySEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type x(xSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    rcpp_result_gen = Rcpp::wrap(dCenteredPearson(x, y));
+    return rcpp_result_gen;
+END_RCPP
+}
+// dCosine
+double dCosine(NumericVector x, NumericVector y);
+RcppExport SEXP _umap_dCosine(SEXP xSEXP, SEXP ySEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type x(xSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    rcpp_result_gen = Rcpp::wrap(dCosine(x, y));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_umap_clip4", (DL_FUNC) &_umap_clip4, 3},
     {"_umap_dEuclidean", (DL_FUNC) &_umap_dEuclidean, 2},
+    {"_umap_dManhattan", (DL_FUNC) &_umap_dManhattan, 2},
+    {"_umap_dCenteredPearson", (DL_FUNC) &_umap_dCenteredPearson, 2},
+    {"_umap_dCosine", (DL_FUNC) &_umap_dCosine, 2},
     {NULL, NULL, 0}
 };
 

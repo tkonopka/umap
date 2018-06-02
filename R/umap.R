@@ -28,8 +28,11 @@ NULL
 ##'
 ##' n.components: integer; dimension of target (output) space
 ##'
-##' metric.function: character or functions; determines how distances between
-##' data points are computed.
+##' metric.function: character or function; determines how distances between
+##' data points are computed. Available metrics are: euclidean, manhattan.
+##' Availble generalized metrics are: cosine, pearson, pearson2. Note the triangle
+##' inequality may not be satisfied by some generalized metrics, hence knn
+##' search may not be optimal.
 ##'
 ##' n.epochs: integer; number of iterations performed during
 ##' layout optimization
@@ -112,8 +115,8 @@ umap = function(d, config=umap.defaults, method=c("naive"), ...) {
   
   ## prep - check inputs, configuration settings
   method = match.arg(method)
-  d = umap.check.input(d)
   config = umap.check.config(config, ...)  
+  d = umap.prep.input(d, config)
   
   ## save existing RNG seed, set "internal" seed
   if (exists(".Random.seed", envir=.GlobalEnv)) {

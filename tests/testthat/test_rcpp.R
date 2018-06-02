@@ -4,7 +4,7 @@ cat("\ntest_rcpp\n")
 
 
 ## ############################################################################
-## Tests for smoothing of knns
+## Tests for clipping
 
 
 test_that("number clipping", {
@@ -17,6 +17,12 @@ test_that("number clipping", {
 })
 
 
+
+
+## ############################################################################
+## Tests for distance functions
+
+
 test_that("euclidean distance", {
   a1 = c(1, 2, 3, 4)
   a2 = 1+a1
@@ -27,61 +33,34 @@ test_that("euclidean distance", {
 })
 
 
+test_that("manhattan distance", {
+  a1 = c(1, 2, 3, 4)
+  a2 = 1+a1
+  expect_equal(dManhattan(a1, a2), 4)
+  b1 = c(1.3, 2.11, 9.101, 2.45)
+  b2 = c(0.2, -0.2, 0.7, 12.2)
+  expect_equal(dManhattan(b1, b2), sum(abs(b1-b2)))
+})
 
 
+test_that("pearson distance", {
+  a1 = rnorm(10)
+  a2 = a1+rnorm(10)
+  expected = 1-cor.test(a1, a2)$estimate^2
+  names(expected) = NULL
+  result = dCenteredPearson(a1-mean(a1), a2-mean(a2))
+  expect_equal(expected, result, tolerance=1e-2)
+})
 
-if (FALSE) {
-  
-  
-  
-  f1 = function(V) {
-    aa = matrix(0, ncol=V, nrow=V)
-    for (i in 1:(V-1)) {
-      for (j in (i+1):V) {
-        aa[i,j] = aa[j,i] = i+j
-      }
-    }
-    aa
+
+test_that("cosine distance", {
+  a1 = rnorm(10)
+  a2 = a1+rnorm(10)
+  l2norm = function(x) {
+    sqrt(sum(x*x))
   }
-  f2 = function(V) {
-    aa = matrix(0, ncol=V, nrow=V)
-    for (i in 1:(V-1)) {
-      for (j in (i+1):V) {
-        aa[i,j] = i+j
-      }
-    }
-    aa + t(aa)
-  }
-  
-  
-  eps = cbind(A=1:3000, B=1:3000, C=1:3000)
-  g1 = function(eps) {
-    result = 0
-    for (i in 1:nrow(eps)) {
-      a1 = eps[i,1]
-      a2 = eps[i,2]
-      a3 = eps[i,3]
-      result = result+a1+a2+a3
-    }
-    result
-  }
-  g2 = function(eps) {
-    e1 = eps[,1]
-    e2 = eps[,2]
-    e3 = eps[,3]
-    result = 0
-    for (i in 1:nrow(eps)) {
-      a1 = e1[i]
-      a2 = e2[i]
-      a3 = e3[i]
-      result = result+a1+a2+a3
-    }
-    result
-  }
-
-  
-
-
-  
-
-}
+  expected = 1-sum(a1*a2)/(l2norm(a1)*l2norm(a2))
+  names(expected) = NULL
+  result = dCosine(a1, a2)
+  expect_equal(expected, result, tolerance=1e-2)
+})

@@ -29,9 +29,20 @@ umap.naive = function(d, config) {
     config[c("a", "b")] = find.ab.params(config$spread, config$min.dist)
   }
   
+  ## perhaps extract knn from input
+  knn = NULL
+  if ("knn" %in% names(config)) {
+    if (class(config$knn) == "umap.knn") {
+      message.w.date("using supplied nearest neighbors", verbose)
+      knn = config$knn
+    }
+  }
+  if (is.null(knn)) {
+    message.w.date("creating graph of nearest neighbors", verbose)
+    knn =  knn.info(d, config)
+  }
+  
   ## create a graph representation
-  message.w.date("creating graph of nearest neighbors", verbose)
-  knn =  knn.info(d, config)
   graph = naive.fuzzy.simplicial.set(knn, config)
   message.w.date("creating initial embedding", verbose)
   embedding = make.initial.embedding(graph$n.elements, config, graph)

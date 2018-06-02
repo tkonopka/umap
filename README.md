@@ -33,7 +33,7 @@ This package includes implementations for auxiliary algorithms, including approx
 
 ## Performance
 
-The focus of the implementation is to provide running time that are sub-quadratic in the number of data points in a dataset. In this regard, the package can be attractive for very large datasets in comparison with quadratic algorithms. However, this package does not attempt to provide maximal performance. For applications that require maximal performance, see the original implementation. 
+The focus of the implementation is to provide running time that are sub-quadratic in the number of data points in a dataset. In comparison with quadratic algorithms, the package can thus be attractive in terms of time and memory for very large datasets. However, this package does not attempt to provide maximal performance. For applications that require maximal performance, see the original implementation. 
 
 
 

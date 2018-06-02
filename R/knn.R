@@ -26,10 +26,10 @@ knn.from.dist = function(d, k) {
   
   k = floor(k)
   if (k > nrow(d)) {
-    stop("number of neighbors must be smaller than number of items\n")
+    umap.error("number of neighbors must be smaller than number of items")
   }
   if (k<=1) {
-    stop("number of neighbors must be greater than 1\n")
+    umap.error("number of neighbors must be greater than 1")
   }
   
   ## ensure that only self-distances have zero values
@@ -84,10 +84,10 @@ knn.from.data = function(d, k, metric.function, subsample.k=0.5) {
   k = floor(k)
 
   if (!is.finite(k) | k>V | k<=1) {
-    stop("k must be greater than 1 and smaller than the number of items\n")
+    umap.error("k must be greater than 1 and smaller than the number of items")
   }
   if (!is.finite(subsample.k) | subsample.k<0) {
-    stop("subsample.k must be finite and greater than zero")
+    umap.error("subsample.k must be finite and greater than zero")
   }
   if (k<5) {
     subsample.k = k

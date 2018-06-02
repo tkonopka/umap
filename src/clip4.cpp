@@ -10,7 +10,6 @@ using namespace Rcpp;
 //' @param outer numeric constan
 //'
 //' @return numeric vector of same length as x, containing outer*clip4(inner*x)
-//' 
 // [[Rcpp::export]]
 NumericVector clip4(NumericVector x, double inner, double outer) {
   int xlen = x.size();

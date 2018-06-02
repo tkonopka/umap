@@ -2,7 +2,7 @@
 % Please edit documentation in R/umap_universal.R
 \name{make.epochs.per.sample}
 \alias{make.epochs.per.sample}
-\title{Compute something}
+\title{Compute a value to capture how often each item contributes to layout optimization}
 \usage{
 make.epochs.per.sample(w, epochs)
 }
@@ -15,5 +15,5 @@ make.epochs.per.sample(w, epochs)
 numeric vector of same length as w
 }
 \description{
-Compute something
+Compute a value to capture how often each item contributes to layout optimization
 }

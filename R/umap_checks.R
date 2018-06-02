@@ -35,16 +35,24 @@ umap.check.config = function(config=umap.defaults, ...) {
   if (!is.finite(config$local.connectivity) | config$local.connectivity <= 0) {
     umap.error("setting 'local.connectivity' must be >= 0")
   }
-  
+
+  ## always give a metric name
+  config$metric.name = "custom"
   ## replace a distance description by a function
   if (class(config$metric.function)!="function") {
-    if (config$metric.function=="euclidean") {
-      config$metric.function = dEuclidean
+    config$metric.name = config$metric.function
+    available.metrics = c(manhattan=dManhattan,
+                          pearson2=dCenteredPearson, ## relies on centering during data prep
+                          pearson=dCosine, ## relies on centering during data prep
+                          cosine=dCosine,
+                          euclidean=dEuclidean)
+    if (config$metric.function %in% names(available.metrics)) {
+      config$metric.function = available.metrics[[config$metric.function]]
     } else {
       stop("unrecognized distance description: ", config$metric.function, "\n", .call=FALSE)
     }
   }
-
+  
   ## return prepared configuration
   config
 }
@@ -52,19 +60,31 @@ umap.check.config = function(config=umap.defaults, ...) {
 
 
 
-##' Validator for umap primary input
+##' Prep primary input as a data matrix
 ##'
 ##' @param d matrix or compatible
+##' @param config list with settings
 ##'
 ##' @return d as matrix
-umap.check.input = function(d) {
+umap.prep.input = function(d, config) {
+  ## for d into a matrix
   if (class(d)=="matrix") {
-    return(d)
+    d = d
+  } else if (sum(class(d) %in% c("data.frame", "data.table"))) {
+    d = as.matrix(d)
+  } else {
+    umap.error("input must be a matrix or matrix-compatible\n")
   }
-  if (sum(class(d) %in% c("data.frame", "data.table"))) {
-    return(as.matrix(d))
+  
+  ## perhaps adjust the data matrix
+  if (config$metric.name %in% c("pearson", "pearson2")) {
+    ## for pearson correlation distance, center by-sample
+    ## (this avoids computing means during correlations)
+    d = t(d)
+    d = t(d) - apply(d, 2, mean)
   }
-  umap.error("input must be a matrix or matrix-compatible\n")
+  
+  d
 }
 
 
@@ -74,6 +94,6 @@ umap.check.input = function(d) {
 ##'
 ##' @param x string for error message
 umap.error = function(x) {
-  stop(paste0("umap: ", x, "\n"), .call=FALSE)
+  stop(paste0("umap: ", x, "\n"), call.=FALSE)
 }
 

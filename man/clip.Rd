@@ -17,6 +17,6 @@ numeric values in range [-xmax, xmax]
 \description{
 This R implementation can be made slightly faster by hard-coding
 the xmax value inside the function. However, performance is
-even better with Rcpp. Hence, this implementation exists mainly
-for reference and to facilitate testing the Rcpp version.
+even better with Rcpp. This implementation exists mainly to
+facilitate testing the Rcpp version.
 }

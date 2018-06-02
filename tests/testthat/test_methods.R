@@ -53,6 +53,39 @@ test_that("output with rownames", {
 
 
 
+
+## ############################################################################
+## Settings parameters without configuration object
+
+
+test_that("accept parameters in main function", {
+  conf = umap.defaults
+  conf$n.neighbors = 5
+  conf$n.epochs = 2
+  conf$init = "random"
+  data = i4
+  ## override n.neighbors explicitly 
+  result = umap(data, conf, n.neighbors=3)
+  expect_equal(result$config$n.neighbors, 3)
+  expect_equal(ncol(result$knn$indexes), 3)
+})
+
+
+test_that("supply knn in main", {
+  conf = umap.defaults
+  conf$n.neighbors = 5
+  conf$n.epochs = 2
+  conf$init = "random"
+  data = i4
+  result1 = umap(data, conf)
+  ## supply knn, result2 should not recompute knn
+  result2 = umap(data, conf, knn=result1$knn)
+  expect_equal(result1$knn, result2$knn)
+})
+
+
+
+
 ## ############################################################################
 ## Logging 
 
@@ -75,6 +108,21 @@ test_that("progress messages in verbose mode", {
   conf$verbose = 4
   expect_message(umap(i4, conf), "12")
 })
+
+
+test_that("use of supplied knn", {
+  conf = umap.defaults
+  conf$n.neighbors = 3
+  conf$n.epochs = 2
+  conf$init = "random"
+  data = i4
+  ## override n.neighbors explicitly 
+  result1 = umap(data, conf)
+  ## expect log message
+  expect_message(umap(data, conf, verbose=TRUE, knn=result1$knn), "supplied")
+})
+
+
 
 
 ## ############################################################################

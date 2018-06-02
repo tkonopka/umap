@@ -8,7 +8,6 @@
 #' @param outer numeric constan
 #'
 #' @return numeric vector of same length as x, containing outer*clip4(inner*x)
-#' 
 clip4 <- function(x, inner, outer) {
     .Call('_umap_clip4', PACKAGE = 'umap', x, inner, outer)
 }
@@ -19,8 +18,44 @@ clip4 <- function(x, inner, outer) {
 #' @param y numeric vector
 #'
 #' @return euclidean norm of x-y
-#'
 dEuclidean <- function(x, y) {
     .Call('_umap_dEuclidean', PACKAGE = 'umap', x, y)
+}
+
+#' compute Manhattan distance between two vectors
+#'
+#' @param x numeric vector
+#' @param y numeric vector
+#'
+#' @return manhattan norm of x-y
+dManhattan <- function(x, y) {
+    .Call('_umap_dManhattan', PACKAGE = 'umap', x, y)
+}
+
+#' compute pearson correlation distance between two vectors
+#'
+#' Pearson distance is (1-r^2)
+#'
+#' Important: this function assumes that data has been centered
+#' i.e. that mean(x) = mean(y) = 0
+#'
+#' @param x numeric vector
+#' @param y numeric vector
+#'
+#' @return pearson distance between x and y
+dCenteredPearson <- function(x, y) {
+    .Call('_umap_dCenteredPearson', PACKAGE = 'umap', x, y)
+}
+
+#' compute cosine dissimilarity between two vectors
+#'
+#' Note: values output from this function do not satisfy the triangle inequality
+#'
+#' @param x numeric vector
+#' @param y numeric vector
+#'
+#' @return cosine dissimilarity between x and y
+dCosine <- function(x, y) {
+    .Call('_umap_dCosine', PACKAGE = 'umap', x, y)
 }
 
