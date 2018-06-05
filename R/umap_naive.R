@@ -1,8 +1,9 @@
 ## package umap
-## a from-scratch implementation of UMAP algorithm
+## a from-scratch implementation of the UMAP algorithm
 ##
-## This implementation is based on, but modifies slightly, an original implementation
-## by Leland McInnes.
+## This implementation is called naive because it is a rather direct translation
+## of the original implementation by Leland McInnes. This implementation does,
+## however, have some slight modifications.
 ##
 ## The original implementation is available at https://github.com/lmcinnes/umap.
 ##

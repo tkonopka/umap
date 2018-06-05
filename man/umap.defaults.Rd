@@ -17,7 +17,7 @@ n.neighbors: integer; number of nearest neighbors
 
 n.components: integer; dimension of target (output) space
 
-metric.function: character or functions; determines how distances between
+metric.function: character or function; determines how distances between
 data points are computed. Available metrics are: euclidean, manhattan.
 Availble generalized metrics are: cosine, pearson, pearson2. Note the triangle
 inequality may not be satisfied by some generalized metrics, hence knn

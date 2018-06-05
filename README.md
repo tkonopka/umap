@@ -23,17 +23,14 @@ More information on usage can be found in the package [vignettes](https://github
 
 
 
-## Implementation notes
+## Implementations
 
-The implementation of the UMAP algorithm in this package follows closely the original python code. However, any bugs or errors should be regarded as arising solely from this implementation, not from the original.
+The package provides two implementations of the UMAP algorithm.
 
-This package includes implementations for auxiliary algorithms, including approximate searches for nearest neighbors and manipulation of sparse matrices. 
+The default implementation is one written mostly in R with some Rcpp. This implementation follows closely the original python code. However, any bugs or errors should be regarded as arising solely from this implementation, not from the original. The implementation has minimal dependencies and should work on most platforms, but is not optimized for speed. (The MNIST graphic is generated based on this default implementation).
 
+A second implementation is a wrapper for the python package which offers similar functionality to an existing package [umapr](https://github.com/ropenscilabs/umapr). This functionality requires additional installation steps, but provides access to performant code by the original authors.
 
-
-## Performance
-
-The focus of the implementation is to provide running time that are sub-quadratic in the number of data points in a dataset. In comparison with quadratic algorithms, the package can thus be attractive in terms of time and memory for very large datasets. However, this package does not attempt to provide maximal performance. For applications that require maximal performance, see the original implementation. 
 
 
 

@@ -36,6 +36,12 @@ umap.check.config = function(config=umap.defaults, ...) {
     umap.error("setting 'local.connectivity' must be >= 0")
   }
 
+  ## force some data types
+  for (x in c("n.epochs", "n.neighbors", "n.components",
+              "seed", "negative.sample.rate")) {
+    config[[x]] = as.integer(config[[x]])
+  }
+  
   ## always give a metric name
   config$metric.name = "custom"
   ## replace a distance description by a function
@@ -49,7 +55,9 @@ umap.check.config = function(config=umap.defaults, ...) {
     if (config$metric.function %in% names(available.metrics)) {
       config$metric.function = available.metrics[[config$metric.function]]
     } else {
-      stop("unrecognized distance description: ", config$metric.function, "\n", .call=FALSE)
+      if (config$method != "python") {
+        stop("unrecognized distance description: ", config$metric.function, "\n", .call=FALSE)
+      }
     }
   }
   

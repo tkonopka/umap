@@ -19,6 +19,26 @@ NULL
 
 
 
+## These lines are required to control access to the umap python module
+##
+## This implements a "soft" requirement for python and the umap module
+## i.e. the package should work when those components are absent
+## but gain additional functionality when those components are present
+python.umap = NULL
+.onLoad <- function(libname, pkgname) {
+  has.reticulate = suppressWarnings(suppressMessages(requireNamespace("reticulate")))
+  if (has.reticulate) {
+    has.pkg.umap = reticulate::py_module_available("umap")
+    if (has.pkg.umap) {
+      ## assignment in parent environment!
+      python.umap <<- reticulate::import("umap", delay_load=TRUE)
+    }
+  }
+}
+
+
+
+
 ##' Default configuration for umap 
 ##'
 ##' A list with parameters customizing a UMAP projection. Each component of the
@@ -107,14 +127,15 @@ class(umap.defaults) = "umap.config"
 ##'
 ##' @param d matrix, input data
 ##' @param config object of class umap.config
-##' @param method character, implementation
+##' @param method character, implementation. Available methods are 'naive'
+##' (an implementation written in pure R) and 'python' (requires python package 'umap')
 ##' @param ... list of settings; overwrite settings in config
 ##'
 ##' @export
-umap = function(d, config=umap.defaults, method=c("naive"), ...) {
+umap = function(d, config=umap.defaults, method=c("naive", "python"), ...) {
   
   ## prep - check inputs, configuration settings
-  method = match.arg(method)
+  method = config$method = match.arg(method)
   config = umap.check.config(config, ...)  
   d = umap.prep.input(d, config)
   
@@ -132,9 +153,10 @@ umap = function(d, config=umap.defaults, method=c("naive"), ...) {
   if (nrow(d)<=2) {
     result = umap.small(d, config)
   } else {
-    if (method=="naive") {
-      result = umap.naive(d, config)
-    }
+    implementations = c(naive=umap.naive, python=umap.python)
+    if (method %in% names(implementations)) {
+      result = implementations[[method]](d, config)
+    } 
   }
   
   ## add a record of configuration into the result

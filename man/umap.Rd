@@ -4,14 +4,15 @@
 \alias{umap}
 \title{Computes a manifold approximation and projection}
 \usage{
-umap(d, config = umap.defaults, method = c("naive"), ...)
+umap(d, config = umap.defaults, method = c("naive", "python"), ...)
 }
 \arguments{
 \item{d}{matrix, input data}
 
 \item{config}{object of class umap.config}
 
-\item{method}{character, implementation}
+\item{method}{character, implementation. Available methods are 'naive'
+(an implementation written in pure R) and 'python' (requires python package 'umap')}
 
 \item{...}{list of settings; overwrite settings in config}
 }

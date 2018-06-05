@@ -15,5 +15,8 @@ r_check_args: --no-vignettes --no-build-vignettes
 r_github_packages:
   - r-lib/covr
 
+before_install:
+  - pip install numpy scipy scikit-learn numba umap-learn
+
 after_success:
   - Rscript -e 'covr::codecov()'
