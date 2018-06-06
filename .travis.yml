@@ -2,10 +2,7 @@
 
 language: r
 
-python:
-  - "3.6"
-
-sudo: required
+sudo: false
 
 warnings_are_errors: true
 
@@ -20,8 +17,8 @@ r_github_packages:
   - r-lib/covr
 
 before_install:
-  - sudo apt-get -y install python3-pip python-dev
-  - sudo pip3 install --user numpy umap-learn
+  - pip install --user --upgrade pip
+  - pip install --user umap-learn
 
 after_success:
   - Rscript -e 'covr::codecov()'
