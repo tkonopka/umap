@@ -15,7 +15,6 @@ License: MIT + file LICENSE
 LinkingTo: Rcpp
 LazyData: true
 Suggests:
-    Cairo,
     knitr,
     testthat
 VignetteBuilder: knitr
