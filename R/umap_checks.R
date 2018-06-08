@@ -47,16 +47,16 @@ umap.check.config = function(config=umap.defaults, ...) {
   ## replace a distance description by a function
   if (class(config$metric.function)!="function") {
     config$metric.name = config$metric.function
-    available.metrics = c(manhattan=dManhattan,
-                          pearson2=dCenteredPearson, ## relies on centering during data prep
-                          pearson=dCosine, ## relies on centering during data prep
-                          cosine=dCosine,
-                          euclidean=dEuclidean)
+    available.metrics = c(manhattan=mdManhattan,
+                          pearson2=mdCenteredPearson, ## relies on centering during prep
+                          pearson=mdCosine, ## relies on centering during prep
+                          cosine=mdCosine,
+                          euclidean=mdEuclidean)
     if (config$metric.function %in% names(available.metrics)) {
       config$metric.function = available.metrics[[config$metric.function]]
     } else {
       if (config$method != "python") {
-        stop("unrecognized distance description: ", config$metric.function, "\n", .call=FALSE)
+        umap.error("unrecognized distance description: ", config$metric.function)
       }
     }
   }
@@ -100,8 +100,9 @@ umap.prep.input = function(d, config) {
 
 ##' stop execution with a custom error message
 ##'
-##' @param x string for error message
-umap.error = function(x) {
+##' @param ... strings for error message
+umap.error = function(...) {
+  x = paste(..., collapse=" ")
   stop(paste0("umap: ", x, "\n"), call.=FALSE)
 }
 

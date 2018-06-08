@@ -1,7 +1,12 @@
+// package umap
+// functions to compute distances
+// it would be great to simplify the "matrix" distance functions into a single function 
 
 #include <Rcpp.h>
 #include <math.h>
 using namespace Rcpp;
+
+
 
 
 //' compute Euclidean distance between two vectors
@@ -18,6 +23,27 @@ double dEuclidean(NumericVector x, NumericVector y) {
     sumsquares += pow(x[i]-y[i], 2);
   }
   return sqrt(sumsquares);
+}
+
+
+
+
+//' compute Euclidean distances between one origin and several targets
+//'
+//' @param m matrix with raw data
+//' @param origin integer index of origin (1-based)
+//' @param targets array of indexes to targets (1-based)
+//'
+//' @return dEuclidean norms between origin and targets
+// [[Rcpp::export]]
+NumericVector mdEuclidean(NumericMatrix m, int origin, IntegerVector targets) {
+  int num = targets.size();
+  NumericVector result(num);
+  NumericVector odata = m(origin-1, _);
+  for (int i=0; i<num; i++) {
+    result[i] = dEuclidean(odata, m(targets[i]-1, _));
+  }
+  return result;
 }
 
 
@@ -42,6 +68,27 @@ double dManhattan(NumericVector x, NumericVector y) {
     sumabs += diff;
   }
   return sumabs;
+}
+
+
+
+
+//' compute Manhattan distances between one origin and several targets
+//'
+//' @param m matrix with raw data
+//' @param origin integer index of origin (1-based)
+//' @param targets array of indexes to targets (1-based)
+//'
+//' @return dManhattan norms between origin and targets
+// [[Rcpp::export]]
+NumericVector mdManhattan(NumericMatrix m, int origin, IntegerVector targets) {
+  int num = targets.size();
+  NumericVector result(num);
+  NumericVector odata = m(origin-1, _);
+  for (int i=0; i<num; i++) {
+    result[i] = dManhattan(odata, m(targets[i]-1, _));
+  }
+  return result;
 }
 
 
@@ -75,6 +122,27 @@ double dCenteredPearson(NumericVector x, NumericVector y) {
 
 
 
+//' compute pearson correlation distances between one origin and several targets
+//'
+//' @param m matrix with raw data
+//' @param origin integer index of origin (1-based)
+//' @param targets array of indexes to targets (1-based)
+//'
+//' @return dCenteredPearson norms between origin and targets
+// [[Rcpp::export]]
+NumericVector mdCenteredPearson(NumericMatrix m, int origin, IntegerVector targets) {
+  int num = targets.size();
+  NumericVector result(num);
+  NumericVector odata = m(origin-1, _);
+  for (int i=0; i<num; i++) {
+    result[i] = dCenteredPearson(odata, m(targets[i]-1, _));
+  }
+  return result;
+}
+
+
+
+
 //' compute cosine dissimilarity between two vectors
 //'
 //' Note: values output from this function do not satisfy the triangle inequality
@@ -95,5 +163,26 @@ double dCosine(NumericVector x, NumericVector y) {
     yy += y[i]*y[i];
   }
   return 1-(xy/sqrt(xx*yy));
+}
+
+
+
+
+//' compute cosine distances between one origin and several targets
+//'
+//' @param m matrix with raw data
+//' @param origin integer index of origin (1-based)
+//' @param targets array of indexes to targets (1-based)
+//'
+//' @return dCosine norms between origin and targets
+// [[Rcpp::export]]
+NumericVector mdCosine(NumericMatrix m, int origin, IntegerVector targets) {
+  int num = targets.size();
+  NumericVector result(num);
+  NumericVector odata = m(origin-1, _);
+  for (int i=0; i<num; i++) {
+    result[i] = dCosine(odata, m(targets[i]-1, _));
+  }
+  return result;
 }
 

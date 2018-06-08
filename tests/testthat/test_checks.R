@@ -78,53 +78,66 @@ test_that("config replaced metric.function by a function", {
 })
 
 
+
+
+## ############################################################################
+## Tests for specific distance functions out of check
+
+
+testdata = matrix(0, ncol=5, nrow=2)
+testdata[1,] = c(-2,-1,0,1,2)
+testdata[2,] = c(-4,2,-2,0,4)
+
+
 test_that("config sets euclidean distance function", {
-  d1 = 1:4
-  d2 = c(3,5,2,1)
-  ## euclidean
   conf = umap.defaults
   conf$metric.function = "euclidean"
   result = umap.check.config(conf)
-  expect_equal(dEuclidean(d1, d2), result$metric.function(d1, d2))
+  expect_equal(mdEuclidean(testdata, 1, 2),
+               result$metric.function(testdata, 1, 2))
   expect_equal(result$metric.name, "euclidean")
 })
 
 
 test_that("config sets pearson distance function", {
-  d1 = c(-2,-1,0,1,2)
-  d2 = c(-4,2,-2,0,4)
-  ## pearson
   conf = umap.defaults
   conf$metric.function = "pearson2"
   result = umap.check.config(conf)
-  expect_equal(dCenteredPearson(d1, d2), result$metric.function(d1, d2))
+  expect_equal(mdCenteredPearson(testdata, 1, 2),
+               result$metric.function(testdata, 1, 2))
   expect_equal(result$metric.name, "pearson2")
 })
 
 
 test_that("config sets manhattan distance function", {
-  d1 = c(-2,-1,0,1,2)
-  d2 = c(-4.2,2,-2,0,4.2)
-  ## pearson
   conf = umap.defaults
   conf$metric.function = "manhattan"
   result = umap.check.config(conf)
-  expect_equal(dManhattan(d1, d2), result$metric.function(d1, d2))
+  expect_equal(mdManhattan(testdata, 1, 2),
+               result$metric.function(testdata, 1, 2))
   expect_equal(result$metric.name, "manhattan")
 })
 
 
+test_that("config sets cosine distance function", {
+  conf = umap.defaults
+  conf$metric.function = "cosine"
+  result = umap.check.config(conf)
+  expect_equal(mdCosine(testdata, 1, 2),
+               result$metric.function(testdata, 1, 2))
+  expect_equal(result$metric.name, "cosine")
+})
+
+
 test_that("config sets custom metric function", {
-  myfun = function(x, y) {
-    -1.0
+  myfun = function(m, x, y) {
+    rep(-1.0, length(y))
   }
-  d1 = c(-2,-1,0,1,2)
-  d2 = c(-4.2,2,-2,0,4.2)
-  ## pearson
   conf = umap.defaults
   conf$metric.function = myfun
   result = umap.check.config(conf)
-  expect_equal(myfun(d1, d2), result$metric.function(d1, d2))
+  expect_equal(myfun(testdata, 1, 2),
+               result$metric.function(testdata, 1, 2))
   expect_equal(result$metric.name, "custom")
 })
 

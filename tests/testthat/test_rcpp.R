@@ -64,3 +64,26 @@ test_that("cosine distance", {
   result = dCosine(a1, a2)
   expect_equal(expected, result, tolerance=1e-2)
 })
+
+
+
+## ############################################################################
+## Tests for matrix distance functions
+
+
+test_that("euclidean distances from matrix", {
+  v1 = (1:30) %% 7
+  v2 = (1:30) %% 3
+  mat = matrix(v1+(v2/10), ncol=3)
+  m1 = mat[1,]
+
+  ## compute several distances (loop in c)
+  targets = c(6,7,2,3,4)
+  output = mdEuclidean(mat, 1, targets)
+  ## compute several distance (loop in apply)
+  expected = apply(mat[targets,], 1, dEuclidean, m1)
+  expect_equal(output, expected)
+  
+  #t0 = system.time(replicate(5e4, apply(mat[targets,,drop=FALSE], 1, dEuclidean, m1)))
+  #t1 = system.time(replicate(5e4, mdEuclidean(mat, 1, targets)))
+})

@@ -18,10 +18,12 @@ n.neighbors: integer; number of nearest neighbors
 n.components: integer; dimension of target (output) space
 
 metric.function: character or function; determines how distances between
-data points are computed. Available metrics are: euclidean, manhattan.
-Availble generalized metrics are: cosine, pearson, pearson2. Note the triangle
-inequality may not be satisfied by some generalized metrics, hence knn
-search may not be optimal.
+data points are computed. When using a string, available metrics are:
+euclidean, manhattan. Other availble generalized metrics are: cosine,
+pearson, pearson2. Note the triangle inequality may not be satisfied by
+some generalized metrics, hence knn search may not be optimal.
+When using metric.function as a function, the signature must be
+function(matrix, index.origin, indexes.targets)
 
 n.epochs: integer; number of iterations performed during
 layout optimization

@@ -17,10 +17,10 @@ spectral.coo = function(x, k, m=2*k+1) {
   
   ## get laplacian for the graph object
   x.laplacian = laplacian.coo(x)
-  
-  ## first get some Lanczos vectors for x
-  lanczos = lanczos.coo(x, k, m)
-  
+
+  ## first get some Lanczos vectors for laplacian
+  lanczos = lanczos.coo(x.laplacian, k, m)
+
   ## decompose the transfer matrix
   TU = svd(lanczos$T)$u
   TUsm = TU[, 1:k, drop=FALSE]
@@ -266,7 +266,7 @@ lanczos.coo = function(x, k, m) {
   }
 
   ## initial round of lanczos algorithm
-  V[,1] = make.orthogonal.vector(1)  
+  V[,1] = make.orthogonal.vector(1)
   W[,1] = vectormultiplication.coo(x, V[,1], xprep)
   alpha = sum(W[,1] * V[,1])
   W[,1] = W[,1] - alpha*V[,1]
@@ -278,7 +278,7 @@ lanczos.coo = function(x, k, m) {
     W[,j] = j.result$Wj
     V[,j] = j.result$Vj
   }
-
+  
   ## helper to compute relative error within tolerance
   within.tol = function(z1, z2, tolerance=1e-6) {
     rel.err = abs(z1-z2)/abs(z1)
@@ -292,7 +292,7 @@ lanczos.coo = function(x, k, m) {
   jstart = 1
   while (!within.tol(Teigen.current[1:k], Teigen.previous[1:k]) & count<m) {
     count = count + 1
-        
+    
     for (j in jstart:m) {
       if (j==1) {
         V[,1] = V %*% Tsvd$u[,1,drop=FALSE]

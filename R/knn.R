@@ -110,19 +110,6 @@ knn.from.data = function(d, k, metric.function, subsample.k=0.5) {
     result[result!=x][1:(k-1)]
   }
 
-  ## compute distances between vertex i and a set of vertices j
-  get.distances = function(i,j) {
-    current = d[i,]
-    apply(d[j, ,drop=FALSE], 1, metric.function, current)
-  }
-  
-  ## helper; create a matrix with col 1 -> indexes to neighbors, col 2 -> distances
-  ## param i - index of source vertex
-  ## neighbors - indeces of other vertices
-  make.working.rep = function(i, neighbors) {
-    matrix(c(neighbors, get.distances(i, neighbors)), ncol=2)
-  }
-  
   ## trim matrices to k rows
   trim.to.k = function(x) {
     if (nrow(x)>k) {
@@ -135,7 +122,8 @@ knn.from.data = function(d, k, metric.function, subsample.k=0.5) {
   ## each element will be a matrix. Col 1 -> indexes to neighbors, Col2 -> distances 
   B = lapply(as.list(1:V), function(i) {
     neighbors = c(i, pick.random.k(i))
-    result = make.working.rep(i, neighbors)
+    ##result = make.working.rep(i, neighbors)
+    result = matrix(c(neighbors, metric.function(d, i, neighbors)), ncol=2)
     ## set distance to self as negative
     ## (this ensures that self is always in neighbor even when set is re-ordered)
     result[1,2]=-1
@@ -151,13 +139,9 @@ knn.from.data = function(d, k, metric.function, subsample.k=0.5) {
   get.neighbors = function(x) {
     x[,1]
   }
-  ##get.neighbors.set = function(j) {
-  ##  unique(unlist(lapply(B[j], get.neighbors)))
-  ##}
   get.Bbar.set = function(j) {
     b.set = unlist(lapply(B[j], get.neighbors))
     rev.set = unlist(revB[j])
-    ##unique(c(b.set, rev.set)) ## no need for unique here because this is used in setdiff
     c(b.set, rev.set)
   }
   
@@ -174,7 +158,7 @@ knn.from.data = function(d, k, metric.function, subsample.k=0.5) {
       return (NULL)
     }
     ## compute distances to the candidates, but return only the good ones
-    result = make.working.rep(i, selection)    
+    result = matrix(c(selection, metric.function(d, i, selection)), ncol=2)
     result = result[result[,2] < mat[k,2], ,drop=FALSE]
     if (nrow(result)==0) {
       return (NULL)

@@ -23,15 +23,18 @@ knn.info = function(d, config) {
   } 
   
   distfun = config$metric.function
-  
+
   if (nrow(d)*config$n.neighbors<4096) {
     ## compute a distance matrix
     V = nrow(d)
     d.dist = matrix(0, ncol=V, nrow=V)
     for (i in 1:(V-1)) {
-      for (j in (i+1):V) {
-        d.dist[i,j] = distfun(d[i,], d[j,])
-      }
+      j = (i+1):V
+      d.dist[i,j] = distfun(d, i, j)
+      ## old code from when distfun took 2 arguments
+      #for (j in (i+1):V) {
+      #  d.dist[i,j] = distfun(d[i,], d[j,])
+      #}
     }
     d.dist = d.dist + t(d.dist)
     rownames(d.dist) = colnames(d.dist) = rownames(d)
@@ -76,7 +79,7 @@ make.spectral.embedding = function(d, g) {
   execute.spectral = function(g2) {
     result = NULL
     V = g2$n.elements
-    lanczos.m = min(V-1, max(11, 2*d+1))
+    lanczos.m = min(V-1, max(7, 2*d+1))
     ## try to create spectral eigenvectors, abort quietly if not possible
     tryCatch({
       result = spectral.coo(g2, d, m=lanczos.m)

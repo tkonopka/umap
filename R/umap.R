@@ -6,8 +6,9 @@
 ## The original implementation was written in python by Leland McInnes.
 ## The original implementation is available at https://github.com/lmcinnes/umap
 ##
-## This package contains a "translation" of the original code into R, with some
-## modifications.
+## This package is an interface to using the UMAP algorithm in R. This file
+## is the entrypoint to the package. It defines a configuration object
+## and a umap() function. 
 ##
 
 
@@ -25,7 +26,7 @@ NULL
 ## i.e. the package should work when those components are absent
 ## but gain additional functionality when those components are present
 python.umap = NULL
-.onLoad <- function(libname, pkgname) {
+.onLoad = function(libname, pkgname) {
   has.reticulate = suppressWarnings(suppressMessages(requireNamespace("reticulate")))
   if (has.reticulate) {
     has.pkg.umap = reticulate::py_module_available("umap")
@@ -49,10 +50,12 @@ python.umap = NULL
 ##' n.components: integer; dimension of target (output) space
 ##'
 ##' metric.function: character or function; determines how distances between
-##' data points are computed. Available metrics are: euclidean, manhattan.
-##' Availble generalized metrics are: cosine, pearson, pearson2. Note the triangle
-##' inequality may not be satisfied by some generalized metrics, hence knn
-##' search may not be optimal.
+##' data points are computed. When using a string, available metrics are:
+##' euclidean, manhattan. Other availble generalized metrics are: cosine,
+##' pearson, pearson2. Note the triangle inequality may not be satisfied by
+##' some generalized metrics, hence knn search may not be optimal.
+##' When using metric.function as a function, the signature must be
+##' function(matrix, index.origin, indexes.targets)
 ##'
 ##' n.epochs: integer; number of iterations performed during
 ##' layout optimization
@@ -131,6 +134,9 @@ class(umap.defaults) = "umap.config"
 ##' (an implementation written in pure R) and 'python' (requires python package 'umap')
 ##' @param ... list of settings; overwrite settings in config
 ##'
+##' @return object of class umap, containing at least a component
+##' with an embedding and a component with configuration settings
+##'
 ##' @export
 umap = function(d, config=umap.defaults, method=c("naive", "python"), ...) {
   
@@ -138,7 +144,7 @@ umap = function(d, config=umap.defaults, method=c("naive", "python"), ...) {
   method = config$method = match.arg(method)
   config = umap.check.config(config, ...)  
   d = umap.prep.input(d, config)
-  
+
   ## save existing RNG seed, set "internal" seed
   if (exists(".Random.seed", envir=.GlobalEnv)) {
     old.seed = .Random.seed

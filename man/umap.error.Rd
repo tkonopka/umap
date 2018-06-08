@@ -4,10 +4,10 @@
 \alias{umap.error}
 \title{stop execution with a custom error message}
 \usage{
-umap.error(x)
+umap.error(...)
 }
 \arguments{
-\item{x}{string for error message}
+\item{...}{strings for error message}
 }
 \description{
 stop execution with a custom error message

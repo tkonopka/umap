@@ -16,6 +16,10 @@ umap(d, config = umap.defaults, method = c("naive", "python"), ...)
 
 \item{...}{list of settings; overwrite settings in config}
 }
+\value{
+object of class umap, containing at least a component
+with an embedding and a component with configuration settings
+}
 \description{
 Computes a manifold approximation and projection
 }
