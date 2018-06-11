@@ -22,15 +22,13 @@ dEuclidean <- function(x, y) {
     .Call('_umap_dEuclidean', PACKAGE = 'umap', x, y)
 }
 
-#' compute Euclidean distances between one origin and several targets
+#' compute Euclidean distances
 #'
 #' @param m matrix with raw data
-#' @param origin integer index of origin (1-based)
-#' @param targets array of indexes to targets (1-based)
 #'
-#' @return dEuclidean norms between origin and targets
-mdEuclidean <- function(m, origin, targets) {
-    .Call('_umap_mdEuclidean', PACKAGE = 'umap', m, origin, targets)
+#' @return dEuclidean norms between first row and all other rows
+mdEuclidean <- function(m) {
+    .Call('_umap_mdEuclidean', PACKAGE = 'umap', m)
 }
 
 #' compute Manhattan distance between two vectors
@@ -43,15 +41,13 @@ dManhattan <- function(x, y) {
     .Call('_umap_dManhattan', PACKAGE = 'umap', x, y)
 }
 
-#' compute Manhattan distances between one origin and several targets
+#' compute Manhattan distances
 #'
 #' @param m matrix with raw data
-#' @param origin integer index of origin (1-based)
-#' @param targets array of indexes to targets (1-based)
 #'
 #' @return dManhattan norms between origin and targets
-mdManhattan <- function(m, origin, targets) {
-    .Call('_umap_mdManhattan', PACKAGE = 'umap', m, origin, targets)
+mdManhattan <- function(m) {
+    .Call('_umap_mdManhattan', PACKAGE = 'umap', m)
 }
 
 #' compute pearson correlation distance between two vectors
@@ -69,15 +65,13 @@ dCenteredPearson <- function(x, y) {
     .Call('_umap_dCenteredPearson', PACKAGE = 'umap', x, y)
 }
 
-#' compute pearson correlation distances between one origin and several targets
+#' compute pearson correlation distances 
 #'
 #' @param m matrix with raw data
-#' @param origin integer index of origin (1-based)
-#' @param targets array of indexes to targets (1-based)
 #'
-#' @return dCenteredPearson norms between origin and targets
-mdCenteredPearson <- function(m, origin, targets) {
-    .Call('_umap_mdCenteredPearson', PACKAGE = 'umap', m, origin, targets)
+#' @return dCenteredPearson norms between first row and all other rows
+mdCenteredPearson <- function(m) {
+    .Call('_umap_mdCenteredPearson', PACKAGE = 'umap', m)
 }
 
 #' compute cosine dissimilarity between two vectors
@@ -92,14 +86,12 @@ dCosine <- function(x, y) {
     .Call('_umap_dCosine', PACKAGE = 'umap', x, y)
 }
 
-#' compute cosine distances between one origin and several targets
+#' compute cosine distances
 #'
 #' @param m matrix with raw data
-#' @param origin integer index of origin (1-based)
-#' @param targets array of indexes to targets (1-based)
 #'
-#' @return dCosine norms between origin and targets
-mdCosine <- function(m, origin, targets) {
-    .Call('_umap_mdCosine', PACKAGE = 'umap', m, origin, targets)
+#' @return dCosine norms between first row and all other rows
+mdCosine <- function(m) {
+    .Call('_umap_mdCosine', PACKAGE = 'umap', m)
 }
 

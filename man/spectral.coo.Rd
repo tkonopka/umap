@@ -12,8 +12,7 @@ spectral.coo(x, k, m = 2 * k + 1)
 \item{k}{integer, number of eigenvalues/eigenvectors}
 
 \item{m}{integer, number of lanczos vectors to use
-(The higher the number the better, 2k+1 should be the minimum, but >20
-is recommended)}
+(The higher the number the better, 2k+1 should be the minimum)}
 }
 \value{
 list with two components

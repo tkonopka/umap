@@ -152,6 +152,7 @@ test_that("knn for large dataset queries a small number of distances", {
 
 
 
+
 ## ############################################################################
 ## Tests with degenerate neighbors
 

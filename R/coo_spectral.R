@@ -8,8 +8,7 @@
 ##' @param x coo object
 ##' @param k integer, number of eigenvalues/eigenvectors
 ##' @param m integer, number of lanczos vectors to use
-##' (The higher the number the better, 2k+1 should be the minimum, but >20
-##' is recommended)
+##' (The higher the number the better, 2k+1 should be the minimum)
 ##'
 ##' @return list with two components
 spectral.coo = function(x, k, m=2*k+1) {
@@ -279,14 +278,23 @@ lanczos.coo = function(x, k, m) {
     V[,j] = j.result$Vj
   }
   
-  ## helper to compute relative error within tolerance
+  ## helper: compute relative error within tolerance
   within.tol = function(z1, z2, tolerance=1e-6) {
     rel.err = abs(z1-z2)/abs(z1)
     max(rel.err)<tolerance
   }
+
+  ## helper: compute svd decomposition of a matrix
+  make.svd = function(mat) {
+    result = svd(mat)
+    result$d = rev(result$d)
+    result$u = result$u[, ncol(result$u):1]
+    result$v = NULL
+    result
+  }
   
   Teigen.previous = rep(0, nrow(T))
-  Tsvd = svd(T)
+  Tsvd = make.svd(T)
   Teigen.current = Tsvd$d
   count = 0
   jstart = 1
@@ -321,7 +329,7 @@ lanczos.coo = function(x, k, m) {
     }
 
     ## prep object for while() condition
-    Tsvd = svd(T)
+    Tsvd = make.svd(T)
     Teigen.previous = Teigen.current
     Teigen.current = Tsvd$d
   }

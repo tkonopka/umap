@@ -2,20 +2,16 @@
 % Please edit documentation in R/RcppExports.R
 \name{mdCosine}
 \alias{mdCosine}
-\title{compute cosine distances between one origin and several targets}
+\title{compute cosine distances}
 \usage{
-mdCosine(m, origin, targets)
+mdCosine(m)
 }
 \arguments{
 \item{m}{matrix with raw data}
-
-\item{origin}{integer index of origin (1-based)}
-
-\item{targets}{array of indexes to targets (1-based)}
 }
 \value{
-dCosine norms between origin and targets
+dCosine norms between first row and all other rows
 }
 \description{
-compute cosine distances between one origin and several targets
+compute cosine distances
 }

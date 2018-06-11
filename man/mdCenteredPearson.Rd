@@ -2,20 +2,16 @@
 % Please edit documentation in R/RcppExports.R
 \name{mdCenteredPearson}
 \alias{mdCenteredPearson}
-\title{compute pearson correlation distances between one origin and several targets}
+\title{compute pearson correlation distances}
 \usage{
-mdCenteredPearson(m, origin, targets)
+mdCenteredPearson(m)
 }
 \arguments{
 \item{m}{matrix with raw data}
-
-\item{origin}{integer index of origin (1-based)}
-
-\item{targets}{array of indexes to targets (1-based)}
 }
 \value{
-dCenteredPearson norms between origin and targets
+dCenteredPearson norms between first row and all other rows
 }
 \description{
-compute pearson correlation distances between one origin and several targets
+compute pearson correlation distances
 }

@@ -121,15 +121,6 @@ naive.optimize.embedding = function(embedding, config, eps) {
   m2ab = -2*a*b
   p2gb = 2*(config$gamma)*b
   
-  ## two helpers for gradients
-  ## these helpers are elegant, but speed is better without extra function call
-  #gradcoeff1 = function(d2) {
-  #  (m2ab*(d2^bm1)) / (a*(d2^b)+1)
-  #}
-  #gradcoeff2 = function(d2) {
-  #  (p2gb) / ((0.001+d2)*(a*(d2^b)+1))
-  #}
-
   ## copies of eps data into vectors (for lookup performance)
   eps.from = eps[, "from"]
   eps.to = eps[, "to"]
@@ -141,11 +132,11 @@ naive.optimize.embedding = function(embedding, config, eps) {
   eon2s = epns
   ## eons is short for "epochs of next sample"
   eons = eps.val
-  
+
   for (n in seq_len(config$n.epochs)) {
     ## set the learning rate for this epoch
     alpha = config$alpha * (1 - ((n-1)/config$n.epochs))
-
+    
     ## occasional message or output
     if (config$verbose) {
       message.w.date(paste0("epoch: ", n), (n %% config$verbose) == 0)
@@ -156,6 +147,7 @@ naive.optimize.embedding = function(embedding, config, eps) {
     
     ## identify links in graph that require attention, then process those in loop
     ihits = which(eons<=n)
+    #for (i in sample(ihits, length(ihits), replace=FALSE)) {
     for (i in ihits) {
       ## extract details of graph link
       j = eps.from[i]

@@ -44,7 +44,8 @@ if (reticulate::py_module_available("umap")) {
     result4 = umap(i4, uconf, method="python", spread=2)
     expect_false(identical(result3, result4))
   })
-  
+
+
 }
 
 

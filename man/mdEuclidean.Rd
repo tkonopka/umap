@@ -2,20 +2,16 @@
 % Please edit documentation in R/RcppExports.R
 \name{mdEuclidean}
 \alias{mdEuclidean}
-\title{compute Euclidean distances between one origin and several targets}
+\title{compute Euclidean distances}
 \usage{
-mdEuclidean(m, origin, targets)
+mdEuclidean(m)
 }
 \arguments{
 \item{m}{matrix with raw data}
-
-\item{origin}{integer index of origin (1-based)}
-
-\item{targets}{array of indexes to targets (1-based)}
 }
 \value{
-dEuclidean norms between origin and targets
+dEuclidean norms between first row and all other rows
 }
 \description{
-compute Euclidean distances between one origin and several targets
+compute Euclidean distances
 }

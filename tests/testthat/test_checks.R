@@ -84,17 +84,16 @@ test_that("config replaced metric.function by a function", {
 ## Tests for specific distance functions out of check
 
 
-testdata = matrix(0, ncol=5, nrow=2)
-testdata[1,] = c(-2,-1,0,1,2)
-testdata[2,] = c(-4,2,-2,0,4)
+d2 = matrix(0, ncol=5, nrow=2)
+d2[1,] = c(-2,-1,0,1,2)
+d2[2,] = c(-4,2,-2,0,4)
 
 
 test_that("config sets euclidean distance function", {
   conf = umap.defaults
   conf$metric.function = "euclidean"
   result = umap.check.config(conf)
-  expect_equal(mdEuclidean(testdata, 1, 2),
-               result$metric.function(testdata, 1, 2))
+  expect_equal(mdEuclidean(d2), result$metric.function(d2))
   expect_equal(result$metric.name, "euclidean")
 })
 
@@ -103,8 +102,7 @@ test_that("config sets pearson distance function", {
   conf = umap.defaults
   conf$metric.function = "pearson2"
   result = umap.check.config(conf)
-  expect_equal(mdCenteredPearson(testdata, 1, 2),
-               result$metric.function(testdata, 1, 2))
+  expect_equal(mdCenteredPearson(d2), result$metric.function(d2))
   expect_equal(result$metric.name, "pearson2")
 })
 
@@ -113,8 +111,7 @@ test_that("config sets manhattan distance function", {
   conf = umap.defaults
   conf$metric.function = "manhattan"
   result = umap.check.config(conf)
-  expect_equal(mdManhattan(testdata, 1, 2),
-               result$metric.function(testdata, 1, 2))
+  expect_equal(mdManhattan(d2), result$metric.function(d2))
   expect_equal(result$metric.name, "manhattan")
 })
 
@@ -123,21 +120,19 @@ test_that("config sets cosine distance function", {
   conf = umap.defaults
   conf$metric.function = "cosine"
   result = umap.check.config(conf)
-  expect_equal(mdCosine(testdata, 1, 2),
-               result$metric.function(testdata, 1, 2))
+  expect_equal(mdCosine(d2), result$metric.function(d2))
   expect_equal(result$metric.name, "cosine")
 })
 
 
 test_that("config sets custom metric function", {
-  myfun = function(m, x, y) {
-    rep(-1.0, length(y))
+  myfun = function(m) {
+    rep(-1.0, nrow(m)-1)
   }
   conf = umap.defaults
   conf$metric.function = myfun
   result = umap.check.config(conf)
-  expect_equal(myfun(testdata, 1, 2),
-               result$metric.function(testdata, 1, 2))
+  expect_equal(myfun(d2), result$metric.function(d2))
   expect_equal(result$metric.name, "custom")
 })
 

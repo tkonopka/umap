@@ -2,20 +2,16 @@
 % Please edit documentation in R/RcppExports.R
 \name{mdManhattan}
 \alias{mdManhattan}
-\title{compute Manhattan distances between one origin and several targets}
+\title{compute Manhattan distances}
 \usage{
-mdManhattan(m, origin, targets)
+mdManhattan(m)
 }
 \arguments{
 \item{m}{matrix with raw data}
-
-\item{origin}{integer index of origin (1-based)}
-
-\item{targets}{array of indexes to targets (1-based)}
 }
 \value{
 dManhattan norms between origin and targets
 }
 \description{
-compute Manhattan distances between one origin and several targets
+compute Manhattan distances
 }

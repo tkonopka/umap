@@ -77,7 +77,6 @@ knn.from.dist = function(d, k) {
 ##' avg.
 knn.from.data = function(d, k, metric.function, subsample.k=0.5) {
 
-
   ## number of vertices, i.e. items in dataset
   V = nrow(d)
   ## number of neighbors
@@ -86,8 +85,8 @@ knn.from.data = function(d, k, metric.function, subsample.k=0.5) {
   if (!is.finite(k) | k>V | k<=1) {
     umap.error("k must be greater than 1 and smaller than the number of items")
   }
-  if (!is.finite(subsample.k) | subsample.k<0) {
-    umap.error("subsample.k must be finite and greater than zero")
+  if (!is.finite(subsample.k) | subsample.k<0 | subsample.k>k) {
+    umap.error("subsample.k must be finite, >0, <k")
   }
   if (k<5) {
     subsample.k = k
@@ -103,6 +102,7 @@ knn.from.data = function(d, k, metric.function, subsample.k=0.5) {
   Vseq = 1:V
   kseq = 1:k
   Vkseq = rep(Vseq, each=k)
+  subsample.ratio = subsample.k/k
   
   ## internal helper; creates a set of (neighbor-1) indexes that does not include x
   pick.random.k = function(x) {
@@ -122,11 +122,9 @@ knn.from.data = function(d, k, metric.function, subsample.k=0.5) {
   ## each element will be a matrix. Col 1 -> indexes to neighbors, Col2 -> distances 
   B = lapply(as.list(1:V), function(i) {
     neighbors = c(i, pick.random.k(i))
-    ##result = make.working.rep(i, neighbors)
-    result = matrix(c(neighbors, metric.function(d, i, neighbors)), ncol=2)
-    ## set distance to self as negative
-    ## (this ensures that self is always in neighbor even when set is re-ordered)
-    result[1,2]=-1
+    ## create matrix with indexes to neighbors and distances
+    ## set distance to self as -1; this ensures that self is always rank 1 
+    result = matrix(c(neighbors, -1, metric.function(d[neighbors,])), ncol=2)
     result[order(result[,2]),]
   })
   ## create reverse neighborhoods
@@ -144,26 +142,28 @@ knn.from.data = function(d, k, metric.function, subsample.k=0.5) {
     rev.set = unlist(revB[j])
     c(b.set, rev.set)
   }
+
+  ## keep track of 
+  checked = lapply(B, function(x) {x[,1]} )
   
   ## helper; starts with a working matrix and suggests better neighbors
   get.better.neighbors = function(i) {
     mat = B[[i]]
     ## identify neighbors from this matrix, pick a few
     i.neighbors = unique(c(mat[,1], revB[[i]]))
-    selection = sample(i.neighbors, subsample.k, replace=F)
+    i.pick = ceiling(length(i.neighbors)*subsample.ratio)
+    selection = sample(i.neighbors, i.pick, replace=F)
     ## identify neighbors not already in i.neighbors
     selection.neighbors = get.Bbar.set(selection)
-    selection = setdiff(selection.neighbors, i.neighbors)
+    already.checked = checked[[i]]
+    selection = setdiff(selection.neighbors, already.checked)
     if (length(selection)==0) {
-      return (NULL)
+      return (matrix(0, ncol=2, nrow=0))
     }
     ## compute distances to the candidates, but return only the good ones
-    result = matrix(c(selection, metric.function(d, i, selection)), ncol=2)
-    result = result[result[,2] < mat[k,2], ,drop=FALSE]
-    if (nrow(result)==0) {
-      return (NULL)
-    }
-    result
+    checked[[i]] <<- c(already.checked, selection)
+    result = matrix(c(selection, metric.function(d[c(i, selection),])), ncol=2)
+    result[result[,2] < mat[k,2], , drop=FALSE]
   }
 
   ## main iteration loop over dataset
@@ -173,18 +173,19 @@ knn.from.data = function(d, k, metric.function, subsample.k=0.5) {
   while (sum(process)>0) {
     continue = 0
     epoch = epoch + 1
+    newB = B
     revB = make.revB()
     for (i in which(process)) {
       better = get.better.neighbors(i)
-      if (!is.null(better)) {
+      if (nrow(better)>0) {
         ## update the representation of the i'th neighborhood
-        B[[i]] = rbind(B[[i]], better)
+        newB[[i]] = rbind(B[[i]], better)
         process[B[[i]][,1]] = TRUE
       } else {
         process[i] = FALSE
       }
     }
-    B = lapply(B, trim.to.k)
+    B = lapply(newB, trim.to.k)
   }
 
   ## make sure neighbors are sorted (trim.to.k does not guarantee that)
