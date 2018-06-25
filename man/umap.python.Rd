@@ -17,3 +17,4 @@ list, one element of which is matrix with embedding coordinates
 \description{
 Create a umap embedding using a python package
 }
+\keyword{internal}

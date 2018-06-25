@@ -20,3 +20,4 @@ matrix of same dimension as initial embedding
 \description{
 modify an existing embedding
 }
+\keyword{internal}

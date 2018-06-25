@@ -8,6 +8,7 @@
 
 ##' Create a umap embedding using a python package
 ##'
+##' @keywords internal
 ##' @param d data object
 ##' @param config list with settings
 ##'

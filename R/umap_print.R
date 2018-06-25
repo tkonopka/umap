@@ -4,6 +4,7 @@
 
 ##' Display a summary of a umap object
 ##'
+##' @keywords internal
 ##' @param x umap object
 ##' @param ... other parameters (not used)
 ##'
@@ -30,6 +31,7 @@ print.umap = function(x, ...) {
 
 ##' Display contents of a umap configuration
 ##'
+##' @keywords internal
 ##' @param x object of class umap.config
 ##' @param ... ignored
 ##'
@@ -63,6 +65,7 @@ print.umap.config = function(x, ...) {
 
 ##' Display summary of knn.info
 ##'
+##' @keywords internal
 ##' @param x object of class umap.knn
 ##' @param ... ignored
 ##'

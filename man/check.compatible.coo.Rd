@@ -16,3 +16,4 @@ check.compatible.coo(x, y, msg = "")
 \description{
 Check that two coo objects are compatible for addition, multiplication
 }
+\keyword{internal}

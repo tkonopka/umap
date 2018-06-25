@@ -19,3 +19,4 @@ new vector x*v
 \description{
 Matrix multiplication of a coo matrix with a vector
 }
+\keyword{internal}

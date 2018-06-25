@@ -17,3 +17,4 @@ euclidean norm of x-y
 \description{
 compute Euclidean distance between two vectors
 }
+\keyword{internal}

@@ -21,3 +21,4 @@ list with at least two components, indexes and distances
 This function determines whether to obtain knn information using an exact
 brute force approach or using an approximate algorithm
 }
+\keyword{internal}

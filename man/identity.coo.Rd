@@ -17,3 +17,4 @@ new coo object
 \description{
 Construct an identity matrix
 }
+\keyword{internal}

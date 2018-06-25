@@ -14,3 +14,4 @@ check.coo(x, msg = "")
 \description{
 Check class for coo
 }
+\keyword{internal}

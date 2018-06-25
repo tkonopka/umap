@@ -9,6 +9,7 @@
 ##' This function determines whether to obtain knn information using an exact
 ##' brute force approach or using an approximate algorithm
 ##'
+##' @keywords internal
 ##' @param d data matrix
 ##' @param config list with settings; relevant settings are as follows:
 ##' input - "data" or "dist"
@@ -47,6 +48,7 @@ knn.info = function(d, config) {
 
 ##' Make an initial embedding with random coordinates
 ##'
+##' @keywords internal
 ##' @param d integer, number of diemsions (columns)
 ##' @param V integer, number of vertices (rows)
 ##' @param lims numeric vector with lower and upper bounds
@@ -61,6 +63,7 @@ make.random.embedding = function(d, V, lims=c(-10, 10)) {
 
 ##' Create a spectral embedding for a connectivity graph
 ##'
+##' @keywords internal
 ##' @param d integer, number of dimensions
 ##' @param g coo object
 ##'
@@ -121,6 +124,7 @@ make.spectral.embedding = function(d, g) {
 ##'
 ##' This either takes a set embedding from config, or sets a random state
 ##'
+##' @keywords internal
 ##' @param V integer, number of vertices
 ##' @param config list with settings
 ##' @param g coo object with graph connectivity
@@ -165,6 +169,7 @@ make.initial.embedding = function(V, config, g=NULL) {
 ##' This performs a brute-force search in parameter space.
 ##' The algorithm assumes a narrowing-down search will produce a decent fit.
 ##'
+##' @keywords internal
 ##' @param spread numeric
 ##' @param min.dist numeric
 ##' @param alim numeric vector of length 2, initial search range for parameter a
@@ -227,6 +232,7 @@ find.ab.params = function(spread, min.dist,
 
 ##' Compute a value to capture how often each item contributes to layout optimization
 ##'
+##' @keywords internal
 ##' @param w numeric vector or matrix
 ##' @param epochs integer
 ##'
@@ -250,6 +256,7 @@ make.epochs.per.sample = function(w, epochs) {
 ##' even better with Rcpp. This implementation exists mainly to
 ##' facilitate testing the Rcpp version.
 ##'
+##' @keywords internal
 ##' @param x numeric; single value or a vector
 ##' @param xmax maximum value for x
 ##'
@@ -264,6 +271,7 @@ clip = function(x, xmax=4) {
 
 ##' Adjust a matrix so that each column is centered around zero
 ##'
+##' @keywords internal
 ##' @param x matrix
 ##'
 ##' @return matrix of same shape as x
@@ -278,6 +286,7 @@ center.embedding = function(x) {
 
 ##' Compute vector norm
 ##'
+##' @keywords internal
 ##' @param z numeric vector
 ##'
 ##' @return numeric, vector norm

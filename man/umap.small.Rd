@@ -17,3 +17,4 @@ list, one element of which is matrix with embedding coordinates
 \description{
 Create an embedding object compatible with package umap for very small inputs
 }
+\keyword{internal}

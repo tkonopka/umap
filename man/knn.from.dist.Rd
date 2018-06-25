@@ -25,3 +25,4 @@ that are nearest to each data point. The result is deterministic and exact.
 By definition, the first nearest neighbor to each point is the point itself.
 Subsequent neighbors are "true" neighbors.
 }
+\keyword{internal}

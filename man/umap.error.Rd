@@ -12,3 +12,4 @@ umap.error(...)
 \description{
 stop execution with a custom error message
 }
+\keyword{internal}

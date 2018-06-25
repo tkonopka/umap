@@ -12,9 +12,10 @@ umap(d, config = umap.defaults, method = c("naive", "python"), ...)
 \item{config}{object of class umap.config}
 
 \item{method}{character, implementation. Available methods are 'naive'
-(an implementation written in pure R) and 'python' (requires python package 'umap')}
+(an implementation written in pure R) and 'python' (requires python package
+'umap-learn')}
 
-\item{...}{list of settings; overwrite settings in config}
+\item{...}{list of settings; overwrite default values from config}
 }
 \value{
 object of class umap, containing at least a component
@@ -22,4 +23,16 @@ with an embedding and a component with configuration settings
 }
 \description{
 Computes a manifold approximation and projection
+}
+\examples{
+# embedd iris dataset
+# (using default settings, but with reduced number of epochs)
+iris.umap = umap(iris[,1:4], n.epochs=20)
+
+# display object summary
+iris.umap
+
+# display embedding coordinates
+head(iris.umap$layout)
+
 }

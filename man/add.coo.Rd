@@ -21,3 +21,4 @@ new coo object with (a*x) + (b*y)
 \description{
 Add two coo objects element-wise
 }
+\keyword{internal}

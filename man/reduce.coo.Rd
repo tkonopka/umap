@@ -15,3 +15,4 @@ matrix based on x, perhaps with some lines in original removed
 \description{
 Remove some entires in a coo matrix where values are zero
 }
+\keyword{internal}

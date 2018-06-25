@@ -20,3 +20,4 @@ list with two components
 \description{
 Get a set of k eigenvalues and eigenvectors
 }
+\keyword{internal}

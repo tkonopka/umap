@@ -5,7 +5,7 @@ R implementation of Uniform Manifold Approximation and Projection
 [![codecov](https://codecov.io/gh/tkonopka/umap/branch/master/graph/badge.svg)](https://codecov.io/gh/tkonopka/umap)
 
 
-Uniform manifold appximation and projection (UMAP) is a technique for dimensional reduction. The original algorithm was proposed by [McLelland and Heyes](https://arxiv.org/abs/1802.03426) and
+Uniform manifold appximation and projection (UMAP) is a technique for dimensional reduction. The original algorithm was proposed by [McInnes and Heyes](https://arxiv.org/abs/1802.03426) and
 implemented in a python package [umap](https://github.com/lmcinnes/umap). This package provides an interface to the UMAP algorithm in R, including a translation of the original algorithm into R with minimal dependencies. 
 
 

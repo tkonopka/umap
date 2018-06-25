@@ -29,3 +29,4 @@ and distance to the first nearest neighbor
 \description{
 compute a "smooth" distance to the kth neighbor and approximate first neighbor
 }
+\keyword{internal}

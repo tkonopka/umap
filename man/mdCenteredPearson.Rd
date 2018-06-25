@@ -15,3 +15,4 @@ dCenteredPearson norms between first row and all other rows
 \description{
 compute pearson correlation distances
 }
+\keyword{internal}

@@ -23,3 +23,4 @@ list of same format as knn.from.data
 \description{
 Repeat knn.from.data multiple times, pick the best neighbors
 }
+\keyword{internal}

@@ -21,3 +21,4 @@ Pearson distance is (1-r^2)
 Important: this function assumes that data has been centered
 i.e. that mean(x) = mean(y) = 0
 }
+\keyword{internal}

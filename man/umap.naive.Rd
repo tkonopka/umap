@@ -18,3 +18,4 @@ list, one element of which is matrix with embedding coordinates
 This implementation is called naive because it is a rather straightforward
 translation of the original python code.
 }
+\keyword{internal}

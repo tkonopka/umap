@@ -5,6 +5,7 @@ using namespace Rcpp;
 
 //' perform a compound transformation on a vector, including clipping
 //'
+//' @keywords internal
 //' @param x numeric vector
 //' @param inner numeric constant
 //' @param outer numeric constan

@@ -26,3 +26,4 @@ for the given spread and min.dist.
 This performs a brute-force search in parameter space.
 The algorithm assumes a narrowing-down search will produce a decent fit.
 }
+\keyword{internal}

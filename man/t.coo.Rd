@@ -15,3 +15,4 @@ another coo object describing a transposed matrix
 \description{
 Transpose a coo matrix
 }
+\keyword{internal}

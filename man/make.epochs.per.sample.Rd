@@ -17,3 +17,4 @@ numeric vector of same length as w
 \description{
 Compute a value to capture how often each item contributes to layout optimization
 }
+\keyword{internal}

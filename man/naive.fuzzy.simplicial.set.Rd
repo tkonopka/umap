@@ -17,3 +17,4 @@ matrix
 \description{
 create a simplicial set from a distance object
 }
+\keyword{internal}

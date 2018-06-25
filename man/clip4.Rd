@@ -19,3 +19,4 @@ numeric vector of same length as x, containing outer*clip4(inner*x)
 \description{
 perform a compound transformation on a vector, including clipping
 }
+\keyword{internal}

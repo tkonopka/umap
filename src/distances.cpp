@@ -11,6 +11,7 @@ using namespace Rcpp;
 
 //' compute Euclidean distance between two vectors
 //'
+//' @keywords internal
 //' @param x numeric vector
 //' @param y numeric vector
 //'
@@ -30,6 +31,7 @@ double dEuclidean(NumericVector &x, NumericVector y) {
 
 //' compute Euclidean distances
 //'
+//' @keywords internal
 //' @param m matrix with raw data
 //'
 //' @return dEuclidean norms between first row and all other rows
@@ -49,6 +51,7 @@ NumericVector mdEuclidean(NumericMatrix &m) {
 
 //' compute Manhattan distance between two vectors
 //'
+//' @keywords internal
 //' @param x numeric vector
 //' @param y numeric vector
 //'
@@ -73,6 +76,7 @@ double dManhattan(NumericVector &x, NumericVector y) {
 
 //' compute Manhattan distances
 //'
+//' @keywords internal
 //' @param m matrix with raw data
 //'
 //' @return dManhattan norms between origin and targets
@@ -97,6 +101,7 @@ NumericVector mdManhattan(NumericMatrix &m) {
 //' Important: this function assumes that data has been centered
 //' i.e. that mean(x) = mean(y) = 0
 //'
+//' @keywords internal
 //' @param x numeric vector
 //' @param y numeric vector
 //'
@@ -120,6 +125,7 @@ double dCenteredPearson(NumericVector &x, NumericVector y) {
 
 //' compute pearson correlation distances 
 //'
+//' @keywords internal
 //' @param m matrix with raw data
 //'
 //' @return dCenteredPearson norms between first row and all other rows
@@ -141,6 +147,7 @@ NumericVector mdCenteredPearson(NumericMatrix &m) {
 //'
 //' Note: values output from this function do not satisfy the triangle inequality
 //'
+//' @keywords internal
 //' @param x numeric vector
 //' @param y numeric vector
 //'
@@ -164,6 +171,7 @@ double dCosine(NumericVector &x, NumericVector y) {
 
 //' compute cosine distances
 //'
+//' @keywords internal
 //' @param m matrix with raw data
 //'
 //' @return dCosine norms between first row and all other rows

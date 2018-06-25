@@ -14,3 +14,4 @@ stop.coo(msg1, msg2 = "")
 \description{
 Stop execution with a custom message
 }
+\keyword{internal}

@@ -14,3 +14,4 @@
 \description{
 Display a summary of a umap object
 }
+\keyword{internal}

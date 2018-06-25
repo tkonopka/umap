@@ -16,3 +16,4 @@ assigning rows in object to components
 \description{
 Count the number of connected components in a coo graph
 }
+\keyword{internal}

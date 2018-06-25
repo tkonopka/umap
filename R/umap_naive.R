@@ -16,6 +16,7 @@
 ##' This implementation is called naive because it is a rather straightforward
 ##' translation of the original python code.
 ##'
+##' @keywords internal
 ##' @param d data object
 ##' @param config list with settings
 ##'
@@ -64,6 +65,7 @@ umap.naive = function(d, config) {
 
 ##' create an embedding of graph into a low-dimensional space
 ##'
+##' @keywords internal
 ##' @param g matrix, graph connectivity as coo
 ##' @param embedding matrix, coordinates for an initial graph embedding
 ##' @param config list with settings
@@ -102,6 +104,7 @@ naive.simplicial.set.embedding = function(g, embedding, config) {
 
 ##' modify an existing embedding 
 ##' 
+##' @keywords internal
 ##' @param embedding matrix holding an initial embedding
 ##' @param config list with settings
 ##' @param eps matrix with connectivity coo graph and epochs per sample;
@@ -202,6 +205,7 @@ naive.optimize.embedding = function(embedding, config, eps) {
 
 ##' create a simplicial set from a distance object
 ##'
+##' @keywords internal
 ##' @param knn list with inform about nearest neighbors (output of knn.info)
 ##' @param config list with settings
 ##'
@@ -263,6 +267,7 @@ naive.fuzzy.simplicial.set = function(knn, config) {
 
 ##' compute a "smooth" distance to the kth neighbor and approximate first neighbor
 ##'
+##' @keywords internal
 ##' @param k.dist matrix with distances to k neighbors
 ##' @param neighbors numeric, number of neighbors to approximate for
 ##' @param iterations integers, number of iterations

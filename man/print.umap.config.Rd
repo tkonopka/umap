@@ -14,3 +14,4 @@
 \description{
 Display contents of a umap configuration
 }
+\keyword{internal}

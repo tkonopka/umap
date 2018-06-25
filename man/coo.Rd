@@ -15,3 +15,4 @@ matrix with three columns (from index, to index, value)
 \description{
 Create a coo representation of a square matrix
 }
+\keyword{internal}

@@ -17,3 +17,4 @@ embedding matrix. Might return NULL if spectral embedding fails
 \description{
 Create a spectral embedding for a connectivity graph
 }
+\keyword{internal}

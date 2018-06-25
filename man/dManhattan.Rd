@@ -17,3 +17,4 @@ manhattan norm of x-y
 \description{
 compute Manhattan distance between two vectors
 }
+\keyword{internal}

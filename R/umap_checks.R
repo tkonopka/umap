@@ -4,6 +4,7 @@
 
 ##' Validator functions for umap settings
 ##'
+##' @keywords internal
 ##' @param config list with umap arguments
 ##' @param ... other arguments
 ##'
@@ -70,6 +71,7 @@ umap.check.config = function(config=umap.defaults, ...) {
 
 ##' Prep primary input as a data matrix
 ##'
+##' @keywords internal
 ##' @param d matrix or compatible
 ##' @param config list with settings
 ##'
@@ -100,6 +102,7 @@ umap.prep.input = function(d, config) {
 
 ##' stop execution with a custom error message
 ##'
+##' @keywords internal
 ##' @param ... strings for error message
 umap.error = function(...) {
   x = paste(..., collapse=" ")

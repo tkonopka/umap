@@ -15,3 +15,4 @@ matrix of same shape as x
 \description{
 Adjust a matrix so that each column is centered around zero
 }
+\keyword{internal}

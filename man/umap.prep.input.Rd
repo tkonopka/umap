@@ -17,3 +17,4 @@ d as matrix
 \description{
 Prep primary input as a data matrix
 }
+\keyword{internal}

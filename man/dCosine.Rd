@@ -17,3 +17,4 @@ cosine dissimilarity between x and y
 \description{
 Note: values output from this function do not satisfy the triangle inequality
 }
+\keyword{internal}

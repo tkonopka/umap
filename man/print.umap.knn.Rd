@@ -14,3 +14,4 @@
 \description{
 Display summary of knn.info
 }
+\keyword{internal}

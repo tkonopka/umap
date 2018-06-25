@@ -19,3 +19,4 @@ coo object
 \description{
 Helper to construct coo objects
 }
+\keyword{internal}

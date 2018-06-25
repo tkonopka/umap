@@ -19,3 +19,4 @@ matrix (V,d) with random numbers
 \description{
 Make an initial embedding with random coordinates
 }
+\keyword{internal}

@@ -15,3 +15,4 @@ dManhattan norms between origin and targets
 \description{
 compute Manhattan distances
 }
+\keyword{internal}

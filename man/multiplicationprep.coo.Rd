@@ -15,3 +15,4 @@ list with two components $to and $from
 \description{
 Prepare a coo object by splitting a coo
 }
+\keyword{internal}

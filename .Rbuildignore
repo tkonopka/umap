@@ -6,6 +6,7 @@
 .git
 
 ^README
+^LICENSE.md
 
 ^images$
 
@@ -20,5 +21,4 @@
 ^vignettes/.*rprof$
 ^vignettes/.*html$
 ^vignettes/.*png$
-
 

@@ -24,3 +24,4 @@ with restart implemented ad-hoc
 \details{
 This does not work very well (eigenvectors don't match svd()). Help would be appreciated.
 }
+\keyword{internal}

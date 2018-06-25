@@ -11,6 +11,7 @@
 ##' By definition, the first nearest neighbor to each point is the point itself.
 ##' Subsequent neighbors are "true" neighbors.
 ##'
+##' @keywords internal
 ##' @param d dist object or matrix with distances
 ##' @param k integer, number of neighbors
 ##'
@@ -65,6 +66,7 @@ knn.from.dist = function(d, k) {
 ##' algorithm is roughly inspired by Dong et al, but there are differences.
 ##' This is a rough implementation and improvements are possible.
 ##'
+##' @keywords internal
 ##' @param d matrix with data
 ##' @param k integer, number of neighbors
 ##' @param metric.function function with signature f(a, b) that returns a metric distance
@@ -207,6 +209,7 @@ knn.from.data = function(d, k, metric.function, subsample.k=0.5) {
 
 ##' Repeat knn.from.data multiple times, pick the best neighbors
 ##'
+##' @keywords internal
 ##' @param d matrix with data
 ##' @param k integer, number of neighbors
 ##' @param metric.function function with signature f(a, b) that returns a metric distance

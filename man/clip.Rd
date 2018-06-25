@@ -20,3 +20,4 @@ the xmax value inside the function. However, performance is
 even better with Rcpp. This implementation exists mainly to
 facilitate testing the Rcpp version.
 }
+\keyword{internal}

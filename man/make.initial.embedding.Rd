@@ -19,3 +19,4 @@ matrix with an embedding
 \description{
 This either takes a set embedding from config, or sets a random state
 }
+\keyword{internal}

@@ -15,3 +15,4 @@ dEuclidean norms between first row and all other rows
 \description{
 compute Euclidean distances
 }
+\keyword{internal}

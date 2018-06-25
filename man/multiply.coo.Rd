@@ -19,3 +19,4 @@ new coo object with produce a*x*y
 \description{
 The two input objects must be compatible (have equivalent names)
 }
+\keyword{internal}

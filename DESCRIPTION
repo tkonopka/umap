@@ -1,10 +1,10 @@
 Package: umap
-Title: Implementation of Uniform Manifold Approximation and Projection in R
-Version: 0.1.0.0
+Title: Uniform Manifold Approximation and Projection
+Version: 0.1.0.3
 Authors@R: person("Tomasz", "Konopka", , "tokonopka@gmail.com", role = c("aut", "cre"))
 Author: Tomasz Konopka [aut, cre]
 Maintainer: Tomasz Konopka <tokonopka@gmail.com>
-Description: Uniform Manifold Approximation and Projection is a technique for dimension reduction.
+Description: Uniform manifold approximation and projection is a technique for dimension reduction. The algorithm was described by McInnes and Healy (2018) in <arXiv:1802.03426>. This package provides an interface for two implementations. One is written from scratch, including components for nearest-neighbor search and for embedding. The second implementation is a wrapper for 'python' package 'umap-learn' (requires separate installation, see vignette for more details).
 Depends:
     R (>= 3.1.2)
 Imports:

@@ -146,7 +146,7 @@ plot.iris(iris.umap.2, iris.labels,
           main="Another UMAP visualization of the Iris dataset (different seed)")
 ```
 
-The result is slightly different due to a new instanciation of the random number generator.
+The result is slightly different due to a new instantiation of the random number generator.
 
 
 
@@ -175,7 +175,7 @@ The second available implementation is a wrapper for a python module with the sa
 iris.umap.4 = umap(iris.data, method="python")
 ```
 
-This command has several dependencies. To make it work, you must have the `reticulate` package installed and loaded (use `install.packages("reticulate")` and `library(reticulate)`). Furthermore, you must have the `umap` python package installed (see the [package repo](https://github.com/lmcinnes/umap) for instructions). If either of these components is not available, the above command will display an error message.
+This command has several dependencies. To make it work, you must have the `reticulate` package installed and loaded (use `install.packages("reticulate")` and `library(reticulate)`). Furthermore, you must have the `umap-learn` python package installed (see the [package repo](https://github.com/lmcinnes/umap) for instructions). If either of these components is not available, the above command will display an error message.
 
 Note that it will not be possible to produce exactly the same output from the two implementations due to inequivalent random number generators in R and python.
 

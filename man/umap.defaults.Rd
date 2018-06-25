@@ -9,7 +9,7 @@
 umap.defaults
 }
 \description{
-A list with parameters customizing a UMAP projection. Each component of the
+A list with parameters customizing a UMAP embedding. Each component of the
 list is an effective argument for umap().
 }
 \details{
@@ -43,7 +43,7 @@ min.dist: numeric; determines how close points appear in the final layout
 set.op.mix.ratio: numeric in range [0,1]; determines who the knn-graph
 is used to create a fuzzy simplicial graph
 
-local.connectivity: numeric; used during construction of fuzzy simplicail set
+local.connectivity: numeric; used during construction of fuzzy simplicial set
 
 bandwidth: numeric; used during construction of fuzzy simplicial set
 
@@ -66,5 +66,15 @@ seed: integer; seed for random number generation
 knn.repeat: number of times to restart knn search
 
 verbose: logical or integer; determines whether to show progress messages
+}
+\examples{
+# display all default settings
+umap.defaults
+
+# create a new settings object with n.neighbors set to 5
+custom.settings = umap.defaults
+custom.settings$n.neighbors = 5
+custom.settings
+
 }
 \keyword{datasets}

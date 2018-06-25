@@ -15,3 +15,4 @@ dCosine norms between first row and all other rows
 \description{
 compute cosine distances
 }
+\keyword{internal}

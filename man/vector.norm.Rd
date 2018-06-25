@@ -15,3 +15,4 @@ numeric, vector norm
 \description{
 Compute vector norm
 }
+\keyword{internal}

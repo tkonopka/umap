@@ -3,6 +3,7 @@
 
 #' perform a compound transformation on a vector, including clipping
 #'
+#' @keywords internal
 #' @param x numeric vector
 #' @param inner numeric constant
 #' @param outer numeric constan
@@ -14,6 +15,7 @@ clip4 <- function(x, inner, outer) {
 
 #' compute Euclidean distance between two vectors
 #'
+#' @keywords internal
 #' @param x numeric vector
 #' @param y numeric vector
 #'
@@ -24,6 +26,7 @@ dEuclidean <- function(x, y) {
 
 #' compute Euclidean distances
 #'
+#' @keywords internal
 #' @param m matrix with raw data
 #'
 #' @return dEuclidean norms between first row and all other rows
@@ -33,6 +36,7 @@ mdEuclidean <- function(m) {
 
 #' compute Manhattan distance between two vectors
 #'
+#' @keywords internal
 #' @param x numeric vector
 #' @param y numeric vector
 #'
@@ -43,6 +47,7 @@ dManhattan <- function(x, y) {
 
 #' compute Manhattan distances
 #'
+#' @keywords internal
 #' @param m matrix with raw data
 #'
 #' @return dManhattan norms between origin and targets
@@ -57,6 +62,7 @@ mdManhattan <- function(m) {
 #' Important: this function assumes that data has been centered
 #' i.e. that mean(x) = mean(y) = 0
 #'
+#' @keywords internal
 #' @param x numeric vector
 #' @param y numeric vector
 #'
@@ -67,6 +73,7 @@ dCenteredPearson <- function(x, y) {
 
 #' compute pearson correlation distances 
 #'
+#' @keywords internal
 #' @param m matrix with raw data
 #'
 #' @return dCenteredPearson norms between first row and all other rows
@@ -78,6 +85,7 @@ mdCenteredPearson <- function(m) {
 #'
 #' Note: values output from this function do not satisfy the triangle inequality
 #'
+#' @keywords internal
 #' @param x numeric vector
 #' @param y numeric vector
 #'
@@ -88,6 +96,7 @@ dCosine <- function(x, y) {
 
 #' compute cosine distances
 #'
+#' @keywords internal
 #' @param m matrix with raw data
 #'
 #' @return dCosine norms between first row and all other rows

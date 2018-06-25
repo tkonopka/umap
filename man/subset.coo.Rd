@@ -17,3 +17,4 @@ new smaller coo object
 \description{
 Subset a coo
 }
+\keyword{internal}

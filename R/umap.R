@@ -42,7 +42,7 @@ python.umap = NULL
 
 ##' Default configuration for umap 
 ##'
-##' A list with parameters customizing a UMAP projection. Each component of the
+##' A list with parameters customizing a UMAP embedding. Each component of the
 ##' list is an effective argument for umap().
 ##'
 ##' n.neighbors: integer; number of nearest neighbors
@@ -75,7 +75,7 @@ python.umap = NULL
 ##' set.op.mix.ratio: numeric in range [0,1]; determines who the knn-graph
 ##' is used to create a fuzzy simplicial graph
 ##'
-##' local.connectivity: numeric; used during construction of fuzzy simplicail set
+##' local.connectivity: numeric; used during construction of fuzzy simplicial set
 ##'
 ##' bandwidth: numeric; used during construction of fuzzy simplicial set
 ##'
@@ -100,6 +100,15 @@ python.umap = NULL
 ##'
 ##' verbose: logical or integer; determines whether to show progress messages
 ##'
+##' @examples
+##' # display all default settings
+##' umap.defaults
+##'
+##' # create a new settings object with n.neighbors set to 5
+##' custom.settings = umap.defaults
+##' custom.settings$n.neighbors = 5
+##' custom.settings
+##' 
 ##' @export
 umap.defaults = list(
   n.neighbors=15,
@@ -132,11 +141,23 @@ class(umap.defaults) = "umap.config"
 ##' @param d matrix, input data
 ##' @param config object of class umap.config
 ##' @param method character, implementation. Available methods are 'naive'
-##' (an implementation written in pure R) and 'python' (requires python package 'umap')
-##' @param ... list of settings; overwrite settings in config
+##' (an implementation written in pure R) and 'python' (requires python package
+##' 'umap-learn')
+##' @param ... list of settings; overwrite default values from config
 ##'
 ##' @return object of class umap, containing at least a component
 ##' with an embedding and a component with configuration settings
+##'
+##' @examples
+##' # embedd iris dataset
+##' # (using default settings, but with reduced number of epochs)
+##' iris.umap = umap(iris[,1:4], n.epochs=20)
+##'
+##' # display object summary
+##' iris.umap
+##'
+##' # display embedding coordinates
+##' head(iris.umap$layout)
 ##'
 ##' @export
 umap = function(d, config=umap.defaults, method=c("naive", "python"), ...) {

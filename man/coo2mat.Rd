@@ -15,3 +15,4 @@ matrix
 \description{
 Convert from coo object into conventional matrix
 }
+\keyword{internal}

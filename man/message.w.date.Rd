@@ -14,3 +14,4 @@ message.w.date(x, verbose = FALSE)
 \description{
 Send a message() with a prefix with a data
 }
+\keyword{internal}

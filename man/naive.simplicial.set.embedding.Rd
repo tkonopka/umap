@@ -20,3 +20,4 @@ nrows is from g, ncols determined from config
 \description{
 create an embedding of graph into a low-dimensional space
 }
+\keyword{internal}

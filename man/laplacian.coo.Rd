@@ -16,3 +16,4 @@ new coo object
 This implementation constructs the laplacian  element-by-element.
 Diagonals: 1, Element_ij = -1/sqrt(deg_i deg_j)
 }
+\keyword{internal}

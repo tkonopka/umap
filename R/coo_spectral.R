@@ -5,6 +5,7 @@
 
 ##' Get a set of k eigenvalues and eigenvectors
 ##'
+##' @keywords internal
 ##' @param x coo object
 ##' @param k integer, number of eigenvalues/eigenvectors
 ##' @param m integer, number of lanczos vectors to use
@@ -40,6 +41,7 @@ spectral.coo = function(x, k, m=2*k+1) {
 
 ##' Construct an identity matrix
 ##'
+##' @keywords internal
 ##' @param n.elements integer, number of elements
 ##' @param names character vector, names associated with the elements
 ##'
@@ -62,6 +64,7 @@ identity.coo = function(n.elements, names=NULL) {
 
 ##' Subset a coo
 ##'
+##' @keywords internal
 ##' @param x coo object
 ##' @param items items (indexes) to keep
 ##'
@@ -109,6 +112,7 @@ subset.coo = function(x, items) {
 ##' This implementation constructs the laplacian  element-by-element.
 ##' Diagonals: 1, Element_ij = -1/sqrt(deg_i deg_j)
 ##'
+##' @keywords internal
 ##' @param x coo object encoding a graph
 ##'
 ##' @return new coo object 
@@ -150,6 +154,7 @@ laplacian.coo = function(x) {
 
 ##' Count the number of connected components in a coo graph
 ##'
+##' @keywords internal
 ##' @param x coo object
 ##'
 ##' @return list with number of connected components and a vector
@@ -207,6 +212,7 @@ concomp.coo = function(x) {
 ##'
 ##' This does not work very well (eigenvectors don't match svd()). Help would be appreciated.
 ##'
+##' @keywords internal
 ##' @param x coo object
 ##' @param k integer, number of vectors to optimize
 ##' @param m integer, number of vectors to use in procedure (set higher than k)
