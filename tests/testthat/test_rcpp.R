@@ -79,7 +79,7 @@ test_that("euclidean distances from matrix", {
 
   ## compute several distances (loop in c)
   targets = c(6,7,2,3,4)
-  output = mdEuclidean(mat[c(1, targets),])
+  output = mdEuclidean(t(mat), 1, targets)
   ## compute several distance (loop in apply)
   expected = apply(mat[targets,], 1, dEuclidean, m1)
   expect_equal(output, expected)

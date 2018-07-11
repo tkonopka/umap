@@ -28,10 +28,12 @@ dEuclidean <- function(x, y) {
 #'
 #' @keywords internal
 #' @param m matrix with raw data
+#' @param origin index (1-based) of origin element
+#' @param targets indexes (1-based) of target elements
 #'
-#' @return dEuclidean norms between first row and all other rows
-mdEuclidean <- function(m) {
-    .Call('_umap_mdEuclidean', PACKAGE = 'umap', m)
+#' @return dEuclidean norms between origin and target elements
+mdEuclidean <- function(m, origin, targets) {
+    .Call('_umap_mdEuclidean', PACKAGE = 'umap', m, origin, targets)
 }
 
 #' compute Manhattan distance between two vectors
@@ -49,10 +51,12 @@ dManhattan <- function(x, y) {
 #'
 #' @keywords internal
 #' @param m matrix with raw data
+#' @param origin index (1-based) of origin element
+#' @param targets indexes (1-based) of target elements
 #'
 #' @return dManhattan norms between origin and targets
-mdManhattan <- function(m) {
-    .Call('_umap_mdManhattan', PACKAGE = 'umap', m)
+mdManhattan <- function(m, origin, targets) {
+    .Call('_umap_mdManhattan', PACKAGE = 'umap', m, origin, targets)
 }
 
 #' compute pearson correlation distance between two vectors
@@ -75,10 +79,12 @@ dCenteredPearson <- function(x, y) {
 #'
 #' @keywords internal
 #' @param m matrix with raw data
+#' @param origin index (1-based) of origin element
+#' @param targets indexes (1-based) of target elements
 #'
-#' @return dCenteredPearson norms between first row and all other rows
-mdCenteredPearson <- function(m) {
-    .Call('_umap_mdCenteredPearson', PACKAGE = 'umap', m)
+#' @return dCenteredPearson norms between origin and targets
+mdCenteredPearson <- function(m, origin, targets) {
+    .Call('_umap_mdCenteredPearson', PACKAGE = 'umap', m, origin, targets)
 }
 
 #' compute cosine dissimilarity between two vectors
@@ -98,9 +104,11 @@ dCosine <- function(x, y) {
 #'
 #' @keywords internal
 #' @param m matrix with raw data
+#' @param origin index (1-based) of origin element
+#' @param targets indexes (1-based) of target elements
 #'
-#' @return dCosine norms between first row and all other rows
-mdCosine <- function(m) {
-    .Call('_umap_mdCosine', PACKAGE = 'umap', m)
+#' @return dCosine norms between origin and targets
+mdCosine <- function(m, origin, targets) {
+    .Call('_umap_mdCosine', PACKAGE = 'umap', m, origin, targets)
 }
 

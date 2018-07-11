@@ -4,13 +4,17 @@
 \alias{mdCosine}
 \title{compute cosine distances}
 \usage{
-mdCosine(m)
+mdCosine(m, origin, targets)
 }
 \arguments{
 \item{m}{matrix with raw data}
+
+\item{origin}{index (1-based) of origin element}
+
+\item{targets}{indexes (1-based) of target elements}
 }
 \value{
-dCosine norms between first row and all other rows
+dCosine norms between origin and targets
 }
 \description{
 compute cosine distances

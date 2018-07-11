@@ -85,6 +85,8 @@ umap.prep.input = function(d, config) {
   } else {
     umap.error("input must be a matrix or matrix-compatible\n")
   }
+  ## ensure data is numeric (not integer or other data type)
+  d[,1] = as.numeric(d[,1])
   
   ## perhaps adjust the data matrix
   if (config$metric.name %in% c("pearson", "pearson2")) {

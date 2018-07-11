@@ -55,8 +55,8 @@ python.umap = NULL
 ##' pearson, pearson2. Note the triangle inequality may not be satisfied by
 ##' some generalized metrics, hence knn search may not be optimal.
 ##' When using metric.function as a function, the signature must be
-##' function(matrix) and should compute a distance between the first row
-##' and all subsequent rows.
+##' function(matrix, origin, target) and should compute a distance between
+##' the origin column and the target columns.
 ##'
 ##' n.epochs: integer; number of iterations performed during
 ##' layout optimization

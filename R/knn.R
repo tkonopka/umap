@@ -67,9 +67,9 @@ knn.from.dist = function(d, k) {
 ##' This is a rough implementation and improvements are possible.
 ##'
 ##' @keywords internal
-##' @param d matrix with data
+##' @param dT matrix with data (observations in columns, features in rows)
 ##' @param k integer, number of neighbors
-##' @param metric.function function with signature f(a, b) that returns a metric distance
+##' @param metric.function function that returns a metric distance
 ##' @param subsample.k numeric, used for internal tuning of implementation
 ##'
 ##' @return list with two components;
@@ -77,10 +77,10 @@ knn.from.dist = function(d, k) {
 ##' distances - provides distances from each point to those neighbors
 ##' num.computed - for diagnostics only, gives the number of distances computed internally
 ##' avg.
-knn.from.data = function(d, k, metric.function, subsample.k=0.5) {
+knn.from.data = function(dT, k, metric.function, subsample.k=0.5) {
 
   ## number of vertices, i.e. items in dataset
-  V = nrow(d)
+  V = ncol(dT)
   ## number of neighbors
   k = floor(k)
 
@@ -96,7 +96,7 @@ knn.from.data = function(d, k, metric.function, subsample.k=0.5) {
   if (subsample.k<1) {
     subsample.k = min(V-1, max(4, ceiling(k*subsample.k)))
   }
-  if (subsample.k>nrow(d)) {
+  if (subsample.k>V) {
     umap.error("subsample.k is too large")
   }
   
@@ -123,10 +123,11 @@ knn.from.data = function(d, k, metric.function, subsample.k=0.5) {
   ## create a neighborhoods using a list
   ## each element will be a matrix. Col 1 -> indexes to neighbors, Col2 -> distances 
   B = lapply(as.list(1:V), function(i) {
-    neighbors = c(i, pick.random.k(i))
+    neighbors = pick.random.k(i)
+    neighbor.distances = metric.function(dT, i, neighbors)
     ## create matrix with indexes to neighbors and distances
     ## set distance to self as -1; this ensures that self is always rank 1 
-    result = matrix(c(neighbors, -1, metric.function(d[neighbors,])), ncol=2)
+    result = matrix(c(i, neighbors, -1, neighbor.distances), ncol=2)
     result[order(result[,2]),]
   })
   ## create reverse neighborhoods
@@ -164,7 +165,7 @@ knn.from.data = function(d, k, metric.function, subsample.k=0.5) {
     }
     ## compute distances to the candidates, but return only the good ones
     checked[[i]] <<- c(already.checked, selection)
-    result = matrix(c(selection, metric.function(d[c(i, selection),])), ncol=2)
+    result = matrix(c(selection, metric.function(dT, i, selection)), ncol=2)
     result[result[,2] < mat[k,2], , drop=FALSE]
   }
 
@@ -200,10 +201,11 @@ knn.from.data = function(d, k, metric.function, subsample.k=0.5) {
   distances = do.call(rbind, distances)
   ## by definition, distances to self are zero
   distances[,1] = 0
-  rownames(indexes) = rownames(distances) = rownames(d)
+  rownames(indexes) = rownames(distances) = colnames(dT)
   
   list(indexes=indexes, distances=distances)
 }
+
 
 
 
@@ -212,15 +214,18 @@ knn.from.data = function(d, k, metric.function, subsample.k=0.5) {
 ##' @keywords internal
 ##' @param d matrix with data
 ##' @param k integer, number of neighbors
-##' @param metric.function function with signature f(a, b) that returns a metric distance
+##' @param metric.function function that returns a metric distance
 ##' @param subsample.k numeric, used for internal tuning of implementation
 ##' @param reps integer, number of repeats to carry out
 ##'
 ##' @return list of same format as knn.from.data
 knn.from.data.reps = function(d, k, metric.function, subsample.k=0.5, reps=2) {
 
+  V = nrow(d)
+  dT = t(d)
+  
   ## generate an initial knn
-  result = knn.from.data(d, k, metric.function, subsample.k)
+  result = knn.from.data(dT, k, metric.function, subsample.k)
 
   reps = ceiling(reps)
   if (reps<2) {
@@ -228,10 +233,9 @@ knn.from.data.reps = function(d, k, metric.function, subsample.k=0.5, reps=2) {
   }
   
   ## perform more knn, keep best results
-  V = nrow(d)
   for (rr in 2:reps) {
     counter = 0
-    newresult = knn.from.data(d, k, metric.function, subsample.k)
+    newresult = knn.from.data(dT, k, metric.function, subsample.k)
     for (i in 1:V) {
       nowdist = sum(result$distances[i,])
       newdist = sum(newresult$distances[i,])

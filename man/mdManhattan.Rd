@@ -4,10 +4,14 @@
 \alias{mdManhattan}
 \title{compute Manhattan distances}
 \usage{
-mdManhattan(m)
+mdManhattan(m, origin, targets)
 }
 \arguments{
 \item{m}{matrix with raw data}
+
+\item{origin}{index (1-based) of origin element}
+
+\item{targets}{indexes (1-based) of target elements}
 }
 \value{
 dManhattan norms between origin and targets

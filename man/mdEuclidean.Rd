@@ -4,13 +4,17 @@
 \alias{mdEuclidean}
 \title{compute Euclidean distances}
 \usage{
-mdEuclidean(m)
+mdEuclidean(m, origin, targets)
 }
 \arguments{
 \item{m}{matrix with raw data}
+
+\item{origin}{index (1-based) of origin element}
+
+\item{targets}{indexes (1-based) of target elements}
 }
 \value{
-dEuclidean norms between first row and all other rows
+dEuclidean norms between origin and target elements
 }
 \description{
 compute Euclidean distances

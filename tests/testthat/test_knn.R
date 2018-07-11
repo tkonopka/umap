@@ -61,7 +61,7 @@ test_that("k nearest neighbors information", {
 
 
 test_that("knn.info should preserve rownames", {
-  result = knn.from.data(syn0, 3, mdEuclidean)
+  result = knn.from.data(t(syn0), 3, mdEuclidean)
   expect_equal(rownames(syn0), rownames(result$indexes))
   expect_equal(rownames(syn0), rownames(result$distances))
 })
@@ -126,7 +126,7 @@ test_that("knn returns a reasonable set of data", {
   dd[9,] = c(21,20)
   dd[10,] = c(21,21)
   
-  result = knn.from.data(dd, 3, mdEuclidean)
+  result = knn.from.data(t(dd), 3, mdEuclidean)
   expect_equal(dim(result$indexes), c(10, 3))
   expect_equal(dim(result$distances), c(10, 3))
 })
@@ -160,7 +160,7 @@ test_that("knn for large dataset queries a small number of distances", {
 test_that("knn works with degenerate neighbors", {
   ## syn1 has so many same-location points, that first nearest neighbor
   ## should always be at distance 0
-  result = knn.from.data(syn1[, 1:2], 4, mdEuclidean)
+  result = knn.from.data(t(syn1[, 1:2]), 4, mdEuclidean)
   expect_lt(mean(result$distances[,2]), 0.01)
 })
 

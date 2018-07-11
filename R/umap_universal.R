@@ -28,9 +28,10 @@ knn.info = function(d, config) {
   if (nrow(d)*config$n.neighbors<1024) {
     ## compute a distance matrix
     V = nrow(d)
+    dT = t(d)
     d.dist = matrix(0, ncol=V, nrow=V)
     for (i in 1:(V-1)) {
-      d.dist[i,(i+1):V] = distfun(d[i:V,])
+      d.dist[(i+1):V, i] = distfun(dT, i, (i+1):V)
     }
     d.dist = d.dist + t(d.dist)
     rownames(d.dist) = colnames(d.dist) = rownames(d)

@@ -4,13 +4,17 @@
 \alias{mdCenteredPearson}
 \title{compute pearson correlation distances}
 \usage{
-mdCenteredPearson(m)
+mdCenteredPearson(m, origin, targets)
 }
 \arguments{
 \item{m}{matrix with raw data}
+
+\item{origin}{index (1-based) of origin element}
+
+\item{targets}{indexes (1-based) of target elements}
 }
 \value{
-dCenteredPearson norms between first row and all other rows
+dCenteredPearson norms between origin and targets
 }
 \description{
 compute pearson correlation distances

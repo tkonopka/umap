@@ -11,7 +11,7 @@ knn.from.data.reps(d, k, metric.function, subsample.k = 0.5, reps = 2)
 
 \item{k}{integer, number of neighbors}
 
-\item{metric.function}{function with signature f(a, b) that returns a metric distance}
+\item{metric.function}{function that returns a metric distance}
 
 \item{subsample.k}{numeric, used for internal tuning of implementation}
 
