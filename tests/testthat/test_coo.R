@@ -198,26 +198,6 @@ test_that("add to a zero matrix", {
 
 
 
-## ############################################################################
-## Tests for coo multiplication (matrix and a vector)
-
-
-test_that("matrix multiplication performs checks on input", {
-  expect_error(vectormultiplication.coo(1:4, 1:4))
-  c1 = coo(conmat)
-  expect_error(vectormultiplication.coo(c1, 1:2))
-})
-
-
-test_that("matrix multiplication gives correct output", {
-  c1 = reduce.coo(coo(conmat))
-  v = 1:3
-  result = vectormultiplication.coo(c1, v)
-  expected = c(sum(conmat[1,]*v), sum(conmat[2,]*v), sum(conmat[3,]*v)) 
-  expect_equal(result, expected)
-})
-
-
 
 ## ############################################################################
 ## Tests for conversion back to matrix
@@ -228,3 +208,4 @@ test_that("matrix to coo and back", {
   c1mat = coo2mat(c1)
   expect_equal(conmat, c1mat)
 })
+

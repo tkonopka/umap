@@ -25,7 +25,7 @@ knn.info = function(d, config) {
   
   distfun = config$metric.function
 
-  if (nrow(d)*config$n.neighbors<1024) {
+  if (nrow(d)*config$n.neighbors<4096*4) {
     ## compute a distance matrix
     V = nrow(d)
     dT = t(d)
@@ -62,6 +62,29 @@ make.random.embedding = function(d, V, lims=c(-10, 10)) {
 
 
 
+##' get a set of k eigenvectors for the laplacian of x
+##'
+##' @keywords internal
+##' @param x coo object
+##' @param k integer
+##'
+##' @return list with
+spectral.eigenvectors = function(x, k) {
+  x.laplacian = laplacian.coo(x)
+  x.sparse = methods::new("dgTMatrix",
+                          i = as.integer(x.laplacian$coo[,"from"]-1),
+                          j = as.integer(x.laplacian$coo[, "to"]-1),
+                          Dim = as.integer(rep(x.laplacian$n.elements, 2)),
+                          x = as.numeric(x.laplacian$coo[, "value"]))
+  x.sparse = methods::as(x.sparse, "dgCMatrix")
+  result = RSpectra::eigs(x.sparse, k, which="SM")$vectors
+  rownames(result) = x$names
+  result
+}
+
+
+
+
 ##' Create a spectral embedding for a connectivity graph
 ##'
 ##' @keywords internal
@@ -78,10 +101,11 @@ make.spectral.embedding = function(d, g) {
   execute.spectral = function(g2) {
     result = NULL
     V = g2$n.elements
-    lanczos.m = min(V-1, max(9, 2*d+1))
+    lanczos.m = min(V-1, max(floor(sqrt(V)), 2*(d+1)+1))
     ## try to create spectral eigenvectors, abort quietly if not possible
     tryCatch({
-      result = spectral.coo(g2, d, m=lanczos.m)
+      ##result = spectral.coo(g2, d, m=lanczos.m)
+      result = spectral.eigenvectors(g2, d+1)[,1:d]
     }, error=function(e) {}, warning=function(e) {} )
     result
   }
@@ -110,9 +134,11 @@ make.spectral.embedding = function(d, g) {
   result = result[, 1:d, drop=FALSE]
   result = center.embedding(result)
   ## rescale result so that most points are in range [-10, 10]
-  range1 = stats::quantile(result[,1], p=c(0.01, 0.99))
-  expansion = 10/(range1[2]-range1[1])
-  result = expansion*result + matrix(stats::rnorm(V*d, 0, 0.001), nrow=V, ncol=d)
+  for (i in 1:d) {
+    range1 = stats::quantile(result[,i], p=c(0.01, 0.99))
+    result[,i] = result[,i]*10/(range1[2]-range1[1])
+  }
+  result = result + matrix(stats::rnorm(V*d, 0, 0.001), nrow=V, ncol=d)
   result = center.embedding(result)
   
   result
@@ -146,7 +172,7 @@ make.initial.embedding = function(V, config, g=NULL) {
       result = make.random.embedding(numcomp, V)
     }
     if (is.null(result)) {    
-      warning("failed creating requested initial embedding type; using init='random'",
+      warning("failed creating initial embedding; using init='random'",
               call.=FALSE)
       result = make.random.embedding(numcomp, V)
     }

@@ -5,19 +5,6 @@
 
 using namespace Rcpp;
 
-// clip4
-NumericVector clip4(NumericVector x, double inner, double outer);
-RcppExport SEXP _umap_clip4(SEXP xSEXP, SEXP innerSEXP, SEXP outerSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< NumericVector >::type x(xSEXP);
-    Rcpp::traits::input_parameter< double >::type inner(innerSEXP);
-    Rcpp::traits::input_parameter< double >::type outer(outerSEXP);
-    rcpp_result_gen = Rcpp::wrap(clip4(x, inner, outer));
-    return rcpp_result_gen;
-END_RCPP
-}
 // dEuclidean
 double dEuclidean(const NumericVector& x, const NumericVector& y);
 RcppExport SEXP _umap_dEuclidean(SEXP xSEXP, SEXP ySEXP) {
@@ -118,9 +105,37 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// clip4
+NumericVector clip4(NumericVector x, double inner, double outer);
+RcppExport SEXP _umap_clip4(SEXP xSEXP, SEXP innerSEXP, SEXP outerSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type x(xSEXP);
+    Rcpp::traits::input_parameter< double >::type inner(innerSEXP);
+    Rcpp::traits::input_parameter< double >::type outer(outerSEXP);
+    rcpp_result_gen = Rcpp::wrap(clip4(x, inner, outer));
+    return rcpp_result_gen;
+END_RCPP
+}
+// optimize_epoch
+NumericMatrix optimize_epoch(NumericMatrix& embedding, IntegerMatrix& pairs, IntegerVector& adjust, IntegerVector& nns, NumericVector& abg, double alpha);
+RcppExport SEXP _umap_optimize_epoch(SEXP embeddingSEXP, SEXP pairsSEXP, SEXP adjustSEXP, SEXP nnsSEXP, SEXP abgSEXP, SEXP alphaSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericMatrix& >::type embedding(embeddingSEXP);
+    Rcpp::traits::input_parameter< IntegerMatrix& >::type pairs(pairsSEXP);
+    Rcpp::traits::input_parameter< IntegerVector& >::type adjust(adjustSEXP);
+    Rcpp::traits::input_parameter< IntegerVector& >::type nns(nnsSEXP);
+    Rcpp::traits::input_parameter< NumericVector& >::type abg(abgSEXP);
+    Rcpp::traits::input_parameter< double >::type alpha(alphaSEXP);
+    rcpp_result_gen = Rcpp::wrap(optimize_epoch(embedding, pairs, adjust, nns, abg, alpha));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_umap_clip4", (DL_FUNC) &_umap_clip4, 3},
     {"_umap_dEuclidean", (DL_FUNC) &_umap_dEuclidean, 2},
     {"_umap_mdEuclidean", (DL_FUNC) &_umap_mdEuclidean, 3},
     {"_umap_dManhattan", (DL_FUNC) &_umap_dManhattan, 2},
@@ -129,6 +144,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_umap_mdCenteredPearson", (DL_FUNC) &_umap_mdCenteredPearson, 3},
     {"_umap_dCosine", (DL_FUNC) &_umap_dCosine, 2},
     {"_umap_mdCosine", (DL_FUNC) &_umap_mdCosine, 3},
+    {"_umap_clip4", (DL_FUNC) &_umap_clip4, 3},
+    {"_umap_optimize_epoch", (DL_FUNC) &_umap_optimize_epoch, 6},
     {NULL, NULL, 0}
 };
 

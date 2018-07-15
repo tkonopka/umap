@@ -88,3 +88,25 @@ test_that("euclidean distances from matrix", {
   #t1 = system.time(replicate(5e4, mdEuclidean(mat[c(1, targets),])))
 })
 
+
+
+
+## ############################################################################
+## Tests for layout optimization
+
+
+test_that("layout optimization", {
+  conf = umap.defaults
+  conf$n.neighbors = 3
+  conf$n.epochs=2
+  conf = umap.check.config(conf)
+  i4 = iris[c(1:5,61:65, 111:115),1:4]
+  knn = knn.info(i4, conf)
+  graph = naive.fuzzy.simplicial.set(knn, conf)
+  embedding = make.initial.embedding(graph$n.elements, conf, graph)
+  embedding = naive.simplicial.set.embedding(graph, embedding, conf)
+
+  ## just test that output is of correct form
+  expect_equal(dim(embedding), c(nrow(i4), 2))
+})
+

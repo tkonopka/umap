@@ -84,7 +84,6 @@ test_that("supply knn in main", {
 
 
 
-
 ## ############################################################################
 ## Logging 
 
@@ -123,7 +122,6 @@ test_that("use of supplied knn", {
 
 
 
-
 ## ############################################################################
 ## Unusual datasets
 
@@ -132,7 +130,7 @@ test_that("spectral layout on two component data", {
   ## create dataset with 
   ilarge = rbind(i4, i4+100)  
   conf = umap.defaults
-  conf$n.epochs = 2
+  conf$n.epochs = 0
   result = umap(ilarge, conf)$layout
   expect_equal(dim(result), c(nrow(ilarge), 2))
 })

@@ -112,29 +112,26 @@ naive.simplicial.set.embedding = function(g, embedding, config) {
 ##'
 ##' @return matrix of same dimension as initial embedding
 naive.optimize.embedding = function(embedding, config, eps) {
-  
-  ## embedding dimension
+
+  ## number of vertices in embedding
   V = nrow(embedding)
-  
+  ## transpose to get observations in columns
+  embedding = t(embedding)
   ## extract some variables from config
-  a = config$a
-  b = config$b
-  ## precompute some combinations
-  bm1 = b-1
-  m2ab = -2*a*b
-  p2gb = 2*(config$gamma)*b
-  
-  ## copies of eps data into vectors (for lookup performance)
-  eps.from = eps[, "from"]
-  eps.to = eps[, "to"]
+  abg = c(config$a, config$b, config$gamma)
+
+  ## define some vectors for book-keeping
+  ## integer matrix with pairs of data
+  eps.pairs = matrix(as.integer(eps[, c("from", "to")]), ncol=2)-1
   eps.val = eps[, "eps"]
-  
   ## epns is short for "epochs per negative sample"
   epns = eps.val/config$negative.sample.rate
   ## eon2s is short for "epochs of next negative sample"
   eon2s = epns
   ## eons is short for "epochs of next sample"
   eons = eps.val
+  ## nns is next negative sample
+  nns = rep(0, nrow(eps))
 
   for (n in seq_len(config$n.epochs)) {
     ## set the learning rate for this epoch
@@ -144,60 +141,24 @@ naive.optimize.embedding = function(embedding, config, eps) {
     if (config$verbose) {
       message.w.date(paste0("epoch: ", n), (n %% config$verbose) == 0)
       if (!is.null(config$save)) {
-        save(embedding, file=paste0(config$save, ".", n, ".Rda"))
+        embedding.in.progress = t(embedding)
+        save(embedding.in.progress, file=paste0(config$save, ".", n, ".Rda"))
       }
     }
     
     ## identify links in graph that require attention, then process those in loop
-    ihits = which(eons<=n)
-    #for (i in sample(ihits, length(ihits), replace=FALSE)) {
-    for (i in ihits) {
-      ## extract details of graph link
-      j = eps.from[i]
-      k = eps.to[i]
-      ieps = eps.val[i]
-      
-      ## extract two points to work with
-      current = embedding[j,]
-      other = embedding[k,]
-      co.diff = current-other
-      
-      ## adjust those points, based on their distance
-      co.dist2 = sum(co.diff*co.diff)
-      ##gradcoeff = gradcoeff1(co.dist2)
-      gradcoeff = (m2ab*(co.dist2^bm1)) / (a*(co.dist2^b)+1)
-      ##grad.d = alpha*clip(gradcoeff*codiff)
-      grad.d = clip4(co.diff, gradcoeff, alpha)
-      current = current + grad.d
-      embedding[k,] = other - grad.d
-      
-      ## prepare for next epoch
-      eons[i] = eons[i]+ieps
-      
-      ## corrent the current point based on a set of other randomly selected points
-      nns = floor((n-eon2s[i])/epns[i])
-      nns.random = 1+floor(stats::runif(nns, 1, V))
-      for (k in nns.random) {
-        other = embedding[k,]
-        co.diff = current-other
-        co.dist2 = sum(co.diff*co.diff)
-        ##gradcoeff = gradcoeff2(co.dist2)
-        gradcoeff = (p2gb) / ((0.001+co.dist2)*(a*(co.dist2^b)+1))
-        ## original code had this check here, but is this really necessary?
-        ##if (!is.finite(gradcoeff)) { gradcoeff = 4 }
-        ##grad.d = alpha*clip(gradcoeff*co.diff)
-        grad.d = clip4(co.diff, gradcoeff, alpha)
-        current = current + grad.d
-      }
-      embedding[j,] = current
-      
-      ## prepare for next epoch
-      eon2s[i] = eon2s[i] + (nns*epns[i])
-      
-    } ## finished processing j/k connections
-  } ## finished loop over epochs
+    adjust = eons<=n
+    ihits = which(adjust)
+    nns[ihits] = floor((n-eon2s[ihits])/epns[ihits])
+    embedding = optimize_epoch(embedding, eps.pairs,
+                               as.integer(adjust), nns, abg, alpha)
+    
+    ## prepare for next epoch
+    eons[ihits] = eons[ihits] + eps.val[ihits]
+    eon2s[ihits] = eon2s[ihits] + (nns[ihits]*epns[ihits])    
+  } 
   
-  embedding
+  t(embedding)
 }
 
 
@@ -219,8 +180,6 @@ naive.fuzzy.simplicial.set = function(knn, config) {
   nk = config$n.neighbors
   connectivity = config$local.connectivity
 
-  ## extract neighbor information
-  ##n.info = knn.info(d, config)
   ## construct a smooth map to non-integer neighbors
   n.smooth = smooth.knn.dist(knn$distance, nk,
                              local.connectivity=connectivity,
@@ -346,5 +305,4 @@ smooth.knn.dist = function(k.dist, neighbors,
   
   list(distances=result, nearest=rho)
 }
-
 

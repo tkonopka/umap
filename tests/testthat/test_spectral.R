@@ -138,64 +138,6 @@ test_that("laplacian of matrix with zeros", {
 
 
 
-## ############################################################################
-## Tests for constructing Lanczos vectors and eigenvectors
-
-
-test_that("lanczos vectors require appropriate k", {
-  c1 = coo(matrix(1:9, ncol=3))
-  ## too small k
-  expect_error(lanczos.coo(c1, 1, 5))
-  ## k is bigger than m
-  expect_error(lanczos.coo(c1, 5, 3))
-  ## k,m bigger than V
-  expect_error(lanczos.coo(c1, 20, 30))
-})
-
-
-## perform traditional matrix multiplication, show "empirical factors"
-## if all elements in a column are equal, the vector is an eigenvector
-check.eigenvalues = function(A, v, top=NULL) {
-  if (is.null(top)) {
-    top = nrow(A)
-  }
-  ((A %*% v)/v)[1:top,]
-}
-
-
-test_that("lanczos vectors for a connectivity matrix", {
-  ## construct a medium sized graph matrix
-  mat = matrix(0, ncol=30, nrow=30)
-  for (i in 1:ncol(mat)) {
-    ip2 = 1+ (c(i, i+1) %% nrow(mat))
-    mat[i, ip2] = c(0.3, 0.5)
-  }
-  diag(mat) = 0
-  mat = mat + t(mat)
-  matcoo = reduce.coo(coo(mat))
-
-  ## compute eigenvectors with coos and by conventional methods
-  result = spectral.coo(matcoo, 2, 7)
-  expected = svd(mat)$u[,1:2]
-
-  ## results may be off by a sign
-  sign.fudge.factor = function(x, y) {
-    sign(mean(x))*sign(mean(y))
-  }
-  result[,1] = result[,1]*sign.fudge.factor(result[,1], expected[,1])
-  result[,2] = result[,2]*sign.fudge.factor(result[,2], expected[,2])
-  
-  ## can check manually if matrix * vector gives eigenvalue *vector
-  #check.eigenvalues(mat, result)
-  #check.eigenvalues(mat, exected)
-  
-  expect_equal(dim(result), c(nrow(mat), 2))
-  expect_equal(dim(result), c(nrow(mat), 2))
-  ##expect_equal(result, expected, tolerance=1e-2)
-})
-
-
-
 
 ## ############################################################################
 ## Tests for subsetting coo matrices
@@ -219,3 +161,4 @@ test_that("subset operates and produces a new coo", {
   expected = mat[keep, keep]
   expect_equal(result, coo(expected))
 })
+

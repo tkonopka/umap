@@ -8,8 +8,10 @@ Description: Uniform manifold approximation and projection is a technique for di
 Depends:
     R (>= 3.1.2)
 Imports:
+    methods,
     reticulate,
     Rcpp (>= 0.12.6),
+    RSpectra,
     stats
 License: MIT + file LICENSE
 LinkingTo: Rcpp

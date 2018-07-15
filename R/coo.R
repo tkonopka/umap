@@ -196,57 +196,6 @@ add.coo = function(x, y, a=1, b=1) {
 }
 
 
-##' Prepare a coo object by splitting a coo
-##'
-##' @keywords internal
-##' @param x coo object
-##'
-##' @return list with two components $to and $from
-multiplicationprep.coo = function(x) {
-  check.coo(x, "multiplicationprep")
-
-  x.to = split(x$coo[, "to"], x$coo[, "from"])
-  x.value = split(x$coo[, "value"], x$coo[, "from"])
-  
-  list(to=x.to, value=x.value)
-}
-
-
-
-
-##' Matrix multiplication of a coo matrix with a vector
-##'
-##' @keywords internal
-##' @param x coo object
-##' @param v numeric vector
-##' @param xprep list with values in x split using multiplicationprep
-##'
-##' @return new vector x*v
-vectormultiplication.coo = function(x, v, xprep=NULL) {
-  check.coo(x, "matrixveector")
-  if (length(v)!= x$n.elements) {
-    stop.coo("incompatible multiplication")
-  }
-
-  ## split the coo matrix by "from"
-  if (is.null(xprep)) {
-    xprep = multiplicationprep.coo(x)
-  }
-  x.to = xprep$to
-  x.value = xprep$value
-  
-  ## perform the multiplication
-  result = rep(0, length(v))
-  for (i in names(x.to)) {
-    xi = x[[i]]
-    index.from = as.integer(i)
-    result[index.from] = sum(v[x.to[[i]]]*x.value[[i]])
-  }
-  names(result) = names(v)
-  result
-}
-
-
 
 
 ## ############################################################################
@@ -270,3 +219,4 @@ coo2mat = function(x) {
   
   result
 }
+

@@ -83,7 +83,7 @@ iris.labels = iris[, "Species"]
 
 Now, let's load the `umap` package and apply the UMAP transformation.
 
-```{r iris.umap, cache=TRUE}
+```{r iris.umap}
 library(umap)
 iris.umap = umap(iris.data)
 ```
@@ -140,7 +140,7 @@ custom.config$seed = 123
 
 We can observe the changed settings by inspecting the object again (try it). To perform the UMAP projection with these settings, we can run the projection again and pass the configuration object as a second argument.
 
-```{r custom2, cache=TRUE, fig.width=3.6, fig.height=3.6, dpi=150}
+```{r custom2, fig.width=3.6, fig.height=3.6, dpi=150}
 iris.umap.2 = umap(iris.data, custom.config)
 plot.iris(iris.umap.2, iris.labels,
           main="Another UMAP visualization of the Iris dataset (different seed)")
