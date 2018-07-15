@@ -4,7 +4,7 @@
 \alias{umap}
 \title{Computes a manifold approximation and projection}
 \usage{
-umap(d, config = umap.defaults, method = c("naive", "python"), ...)
+umap(d, config = umap.defaults, method = c("naive", "umap-learn"), ...)
 }
 \arguments{
 \item{d}{matrix, input data}
@@ -12,8 +12,8 @@ umap(d, config = umap.defaults, method = c("naive", "python"), ...)
 \item{config}{object of class umap.config}
 
 \item{method}{character, implementation. Available methods are 'naive'
-(an implementation written in pure R) and 'python' (requires python package
-'umap-learn')}
+(an implementation written in pure R) and 'umap-learn' (requires python
+package 'umap-learn')}
 
 \item{...}{list of settings; overwrite default values from config}
 }
@@ -27,7 +27,7 @@ Computes a manifold approximation and projection
 \examples{
 # embedd iris dataset
 # (using default settings, but with reduced number of epochs)
-iris.umap = umap(iris[,1:4], n.epochs=20)
+iris.umap = umap(iris[,1:4])
 
 # display object summary
 iris.umap

@@ -18,7 +18,7 @@ test_that("random initial embedding", {
   conf$init = "random"
   VV = 20
   result = make.initial.embedding(VV, conf)
-  expect_equal(dim(result), c(VV, umap.defaults$n.components))
+  expect_equal(dim(result), c(VV, umap.defaults$n_components))
 })
 
 
@@ -26,7 +26,7 @@ test_that("force initial embedding", {
   conf = umap.defaults
   VV = 20
   conf$init = matrix(1:4, ncol=4, nrow=VV)
-  conf$n.components = 4  
+  conf$n_components = 4  
   result = make.initial.embedding(VV, conf)
   expect_equal(result, conf$init)
 })
@@ -34,7 +34,7 @@ test_that("force initial embedding", {
 
 test_that("report bad manual initial embeddings", {  
   conf = umap.defaults
-  conf$n.components = 2
+  conf$n_components = 2
   VV = nrow(i4m)
   ## report if columns don't match
   conf$init = matrix(0, ncol=3, nrow=nrow(i4m))

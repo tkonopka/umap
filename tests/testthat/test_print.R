@@ -52,7 +52,7 @@ test_that("print complains with wrong input", {
 test_that("print displays summary of umap result", {
   mat = matrix(1:36, ncol=2)
   ## create a fast umap result
-  result = umap(mat, n.epochs=2, n.neighbors=3)
+  result = umap(mat, n_epochs=2, n_neighbors=3)
   ## check output for overall object
   expect_message(print(result), "umap")
   ## check display of knn information

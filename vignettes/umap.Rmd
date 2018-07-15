@@ -135,7 +135,7 @@ To create a custom configuration, create a copy of the defaults and then update 
 
 ```{r custom.config, eval=TRUE}
 custom.config = umap.defaults
-custom.config$seed = 123
+custom.config$random_state = 123
 ```
 
 We can observe the changed settings by inspecting the object again (try it). To perform the UMAP projection with these settings, we can run the projection again and pass the configuration object as a second argument.
@@ -155,7 +155,7 @@ The result is slightly different due to a new instantiation of the random number
 Another way to customize the algorithm is to specify the non-default parameters explicitly. To achieve equivalent results to the above, we can thus use
 
 ```{r custom3, eval=FALSE}
-iris.umap.3 = umap(iris.data, seed=123)
+iris.umap.3 = umap(iris.data, random_state=123)
 ```
 
 The coordinates in this new output object should match the ones from `iris.umap.2` (check it!)

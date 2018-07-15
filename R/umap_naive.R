@@ -28,7 +28,7 @@ umap.naive = function(d, config) {
   ## prep parameters
   message.w.date("starting umap", verbose)
   if (is.na(config$a) | is.na(config$b)) {
-    config[c("a", "b")] = find.ab.params(config$spread, config$min.dist)
+    config[c("a", "b")] = find.ab.params(config$spread, config$min_dist)
   }
   
   ## perhaps extract knn from input
@@ -78,7 +78,7 @@ naive.simplicial.set.embedding = function(g, embedding, config) {
   result = embedding
   rownames(result) = g$names
 
-  if (config$n.epochs==0) {
+  if (config$n_epochs==0) {
     return(result)
   }
   
@@ -86,12 +86,12 @@ naive.simplicial.set.embedding = function(g, embedding, config) {
   
   ## simplify graph a little bit
   gmax = max(g$coo[, "value"])
-  g$coo[g$coo[, "value"] < gmax/config$n.epochs, "value"] = 0
+  g$coo[g$coo[, "value"] < gmax/config$n_epochs, "value"] = 0
   g = reduce.coo(g)
   
   ## create an epochs-per-sample. Keep track of it together with the graph coo
   eps = cbind(g$coo,
-              eps=make.epochs.per.sample(g$coo[, "value"], config$n.epochs))
+              eps=make.epochs.per.sample(g$coo[, "value"], config$n_epochs))
   
   result = naive.optimize.embedding(result, config, eps)
   rownames(result) = g$names
@@ -125,7 +125,7 @@ naive.optimize.embedding = function(embedding, config, eps) {
   eps.pairs = matrix(as.integer(eps[, c("from", "to")]), ncol=2)-1
   eps.val = eps[, "eps"]
   ## epns is short for "epochs per negative sample"
-  epns = eps.val/config$negative.sample.rate
+  epns = eps.val/config$negative_sample_rate
   ## eon2s is short for "epochs of next negative sample"
   eon2s = epns
   ## eons is short for "epochs of next sample"
@@ -133,9 +133,9 @@ naive.optimize.embedding = function(embedding, config, eps) {
   ## nns is next negative sample
   nns = rep(0, nrow(eps))
 
-  for (n in seq_len(config$n.epochs)) {
+  for (n in seq_len(config$n_epochs)) {
     ## set the learning rate for this epoch
-    alpha = config$alpha * (1 - ((n-1)/config$n.epochs))
+    alpha = config$alpha * (1 - ((n-1)/config$n_epochs))
     
     ## occasional message or output
     if (config$verbose) {
@@ -175,10 +175,10 @@ naive.fuzzy.simplicial.set = function(knn, config) {
   
   ## prepare constants
   V = nrow(knn$indexes)
-  mix.ratio = config$set.op.mix.ratio
+  mix.ratio = config$set_op_mix_ratio
   bandwidth = config$bandwidth
-  nk = config$n.neighbors
-  connectivity = config$local.connectivity
+  nk = config$n_neighbors
+  connectivity = config$local_connectivity
 
   ## construct a smooth map to non-integer neighbors
   n.smooth = smooth.knn.dist(knn$distance, nk,

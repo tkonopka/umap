@@ -6,7 +6,7 @@ source("synthetic.R")
 
 ## create a configuration for testing
 conf.testing = umap.defaults
-conf.testing$n.neighbors = 5
+conf.testing$n_neighbors = 5
 conf.testing = umap.check.config(conf.testing)
 
 

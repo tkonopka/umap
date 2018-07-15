@@ -167,7 +167,7 @@ test_that("spectral embedding picks appropriate k m", {
   config = umap.defaults
   config$init = "spectral"
   config$input="dist"
-  config$n.neighbors = 2
+  config$n_neighbors = 2
   config[c("a", "b")] = find.ab.params(config$spread, config$min.dist)
   knn =  knn.info(mmdist, config)
   graph = naive.fuzzy.simplicial.set(knn, config)

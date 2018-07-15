@@ -20,12 +20,12 @@
 knn.info = function(d, config) {
   
   if (config$input=="dist") {
-    return(knn.from.dist(d, config$n.neighbors))
+    return(knn.from.dist(d, config$n_neighbors))
   } 
   
   distfun = config$metric.function
 
-  if (nrow(d)*config$n.neighbors<4096*4) {
+  if (nrow(d)*config$n_neighbors<4096*4) {
     ## compute a distance matrix
     V = nrow(d)
     dT = t(d)
@@ -35,9 +35,9 @@ knn.info = function(d, config) {
     }
     d.dist = d.dist + t(d.dist)
     rownames(d.dist) = colnames(d.dist) = rownames(d)
-    result = knn.from.dist(d.dist, config$n.neighbors)
+    result = knn.from.dist(d.dist, config$n_neighbors)
   } else {
-    result = knn.from.data.reps(d, config$n.neighbors, distfun, reps=config$knn.repeats)
+    result = knn.from.data.reps(d, config$n_neighbors, distfun, reps=config$knn_repeats)
   }
 
   class(result) = "umap.knn"
@@ -100,11 +100,8 @@ make.spectral.embedding = function(d, g) {
   ## helper to decide if combinations of parameters are legal for spectral.coo
   execute.spectral = function(g2) {
     result = NULL
-    V = g2$n.elements
-    lanczos.m = min(V-1, max(floor(sqrt(V)), 2*(d+1)+1))
     ## try to create spectral eigenvectors, abort quietly if not possible
     tryCatch({
-      ##result = spectral.coo(g2, d, m=lanczos.m)
       result = spectral.eigenvectors(g2, d+1)[,1:d]
     }, error=function(e) {}, warning=function(e) {} )
     result
@@ -159,7 +156,7 @@ make.spectral.embedding = function(d, g) {
 ##' @return matrix with an embedding
 make.initial.embedding = function(V, config, g=NULL) {
 
-  numcomp = config$n.components
+  numcomp = config$n_components
   
   ## make am ebedding, either using a premade matrix, or with random numbers
   if (class(config$init) == "matrix") {

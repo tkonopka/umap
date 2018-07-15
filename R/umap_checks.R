@@ -18,14 +18,14 @@ umap.check.config = function(config=umap.defaults, ...) {
   }
 
   ## manual adjustments on some settings
-  config$n.neighbors = ceiling(config$n.neighbors)
+  config$n_neighbors = ceiling(config$n_neighbors)
 
   ## checks on individual parameters
-  if (config$n.neighbors<2) {
+  if (config$n_neighbors<2) {
     umap.error("number of neighbors must be greater than 1")
   }
 
-  if (!is.finite(config$n.epochs) | config$n.epochs<0) {
+  if (!is.finite(config$n_epochs) | config$n_epochs<0) {
     umap.error("number of epochs must be positive")
   }
 
@@ -33,31 +33,32 @@ umap.check.config = function(config=umap.defaults, ...) {
     umap.error("setting 'data' must be either 'data' or 'dist'")
   }
 
-  if (!is.finite(config$local.connectivity) | config$local.connectivity <= 0) {
-    umap.error("setting 'local.connectivity' must be >= 0")
+  if (!is.finite(config$local_connectivity) | config$local_connectivity <= 0) {
+    umap.error("setting 'local_connectivity' must be >= 0")
   }
 
   ## force some data types
-  for (x in c("n.epochs", "n.neighbors", "n.components",
-              "seed", "negative.sample.rate")) {
+  for (x in c("n_epochs", "n_neighbors", "n_components",
+              "random_state", "negative_sample_rate")) {
     config[[x]] = as.integer(config[[x]])
   }
   
   ## always give a metric name
-  config$metric.name = "custom"
-  ## replace a distance description by a function
-  if (class(config$metric.function)!="function") {
-    config$metric.name = config$metric.function
+  if (class(config$metric)=="function") {
+    config$metric.function = config$metric
+    config$metric = "custom"
+  } else {
+    ## replace a distance description by a function
     available.metrics = c(manhattan=mdManhattan,
                           pearson2=mdCenteredPearson, ## relies on centering during prep
                           pearson=mdCosine, ## relies on centering during prep
                           cosine=mdCosine,
                           euclidean=mdEuclidean)
-    if (config$metric.function %in% names(available.metrics)) {
-      config$metric.function = available.metrics[[config$metric.function]]
+    if (config$metric %in% names(available.metrics)) {
+      config$metric.function = available.metrics[[config$metric]]
     } else {
-      if (config$method != "python") {
-        umap.error("unrecognized distance description: ", config$metric.function)
+      if (config$method != "umap-learn") {
+        umap.error("unrecognized distance description: ", config$metric)
       }
     }
   }
@@ -89,7 +90,7 @@ umap.prep.input = function(d, config) {
   d[,1] = as.numeric(d[,1])
   
   ## perhaps adjust the data matrix
-  if (config$metric.name %in% c("pearson", "pearson2")) {
+  if (config$metric %in% c("pearson", "pearson2")) {
     ## for pearson correlation distance, center by-sample
     ## (this avoids computing means during correlations)
     d = t(d)

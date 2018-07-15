@@ -14,7 +14,7 @@ umap.small = function(d, config) {
   
   warning("constructing layout for a very small input dataset", call.=FALSE)
 
-  embedding = matrix(0, ncol=config$n.components, nrow=nrow(d))
+  embedding = matrix(0, ncol=config$n_components, nrow=nrow(d))
   if (nrow(d)==2) {
     ## create two well-separate points
     embedding[1,] = 5

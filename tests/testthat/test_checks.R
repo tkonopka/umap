@@ -28,7 +28,7 @@ test_that("input can be matrix or data frame", {
 
 test_that("input cannot be non-matrix", {
   conf = umap.defaults
-  conf$metric.name = "euclidean"
+  conf$metric = "euclidean"
   expect_error(umap.prep.input(1:4, conf))
   expect_error(umap.prep.input(letters[1:4], conf))
 })
@@ -36,7 +36,7 @@ test_that("input cannot be non-matrix", {
 
 test_that("input is forced into numeric data type", {
   conf = umap.defaults
-  conf$metric.name = "euclidean"
+  conf$metric = "euclidean"
   mat = matrix(1:4, ncol=2)
   expect_equal(class(mat[,1]), "integer")
   result = umap.prep.input(mat, conf)
@@ -46,7 +46,7 @@ test_that("input is forced into numeric data type", {
 
 test_that("prep centers input for pearson distance", {
   conf = umap.defaults
-  conf$metric.name = "pearson"
+  conf$metric = "pearson"
   mat = matrix(0, ncol=2, nrow=3)
   colnames(mat) = c("A", "B")
   mat[,1] = 1:3
@@ -69,9 +69,9 @@ test_that("prep centers input for pearson distance", {
 test_that("checking config detects errors with nearest neighbors", {
   ## detect errors encoded in config
   conf = umap.defaults
-  conf$n.neighbors = 0.5
+  conf$n_neighbors = 0.5
   expect_error(umap.check.config(conf))
-  expect_error(umap.check.config(umap.defaults, n.neighbors=0))
+  expect_error(umap.check.config(umap.defaults, n_neighbors=0))
 })
 
 
@@ -102,37 +102,37 @@ d2 = t(d2)
 
 test_that("config sets euclidean distance function", {
   conf = umap.defaults
-  conf$metric.function = "euclidean"
+  conf$metric = "euclidean"
   result = umap.check.config(conf)
   expect_equal(mdEuclidean(d2,1,2), result$metric.function(d2,1,2))
-  expect_equal(result$metric.name, "euclidean")
+  expect_equal(result$metric, "euclidean")
 })
 
 
 test_that("config sets pearson distance function", {
   conf = umap.defaults
-  conf$metric.function = "pearson2"
+  conf$metric = "pearson2"
   result = umap.check.config(conf)
   expect_equal(mdCenteredPearson(d2,1,2), result$metric.function(d2,1,2))
-  expect_equal(result$metric.name, "pearson2")
+  expect_equal(result$metric, "pearson2")
 })
 
 
 test_that("config sets manhattan distance function", {
   conf = umap.defaults
-  conf$metric.function = "manhattan"
+  conf$metric = "manhattan"
   result = umap.check.config(conf)
   expect_equal(mdManhattan(d2,1,2), result$metric.function(d2,1,2))
-  expect_equal(result$metric.name, "manhattan")
+  expect_equal(result$metric, "manhattan")
 })
 
 
 test_that("config sets cosine distance function", {
   conf = umap.defaults
-  conf$metric.function = "cosine"
+  conf$metric = "cosine"
   result = umap.check.config(conf)
   expect_equal(mdCosine(d2,1,2), result$metric.function(d2,1,2))
-  expect_equal(result$metric.name, "cosine")
+  expect_equal(result$metric, "cosine")
 })
 
 
@@ -141,34 +141,34 @@ test_that("config sets custom metric function", {
     rep(-1.0, length(j))
   }
   conf = umap.defaults
-  conf$metric.function = myfun
+  conf$metric = myfun
   result = umap.check.config(conf)
   expect_equal(myfun(d2,1,2), result$metric.function(d2,1,2))
-  expect_equal(result$metric.name, "custom")
+  expect_equal(result$metric, "custom")
 })
 
 
 test_that("config reports unknown metric functions", {
   conf = umap.defaults
-  conf$metric.function = "badfunction"
+  conf$metric = "badfunction"
   expect_error(umap.check.config(conf))
 })
 
 
 test_that("config checks local connectivity", {
   conf = umap.defaults
-  conf$local.connectivity = 0
+  conf$local_connectivity = 0
   expect_error(umap.check.config(conf))
-  conf$local.connectivity = -0.2
+  conf$local_connectivity = -0.2
   expect_error(umap.check.config(conf))
 })
 
 
 test_that("config checks epochs", {
   conf = umap.defaults
-  conf$n.epochs = NA
+  conf$n_epochs = NA
   expect_error(umap.check.config(conf))
-  conf$n.epochs = -2
+  conf$n_epochs = -2
   expect_error(umap.check.config(conf))
 })
 
