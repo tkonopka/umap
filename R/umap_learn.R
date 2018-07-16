@@ -1,7 +1,7 @@
 ## package umap
 ## calculations via the umap python package
 ##
-
+## part of this implementation was inspired by https://github.com/ropenscilabs/umapr
 
 
 
@@ -58,23 +58,25 @@ detect.umap.learn = function(config) {
   
   learn.version = as.character(python.umap$"__version__")
   config$umap_learn_version = learn.version
+  ## get a main version number from the detail version
+  main.version = paste(strsplit(learn.version, "\\.")[[1]][1:2], collapse=".")
   
   args.version = list(
-    "0.2.3" = c("n_neighbors", "n_components","metric", "n_epochs", "alpha",
+    "0.2" = c("n_neighbors", "n_components","metric", "n_epochs", "alpha",
                 "init", "spread", "min_dist", "set_op_mix_ratio",
                 "local_connectivity", "bandwidth", "gamma", "negative_sample_rate",
                 "a", "b", "random_state", "verbose"),
-    "0.3.0" = c("n_neighbors", "n_components", "metric", "n_epochs", "learning_rate",
+    "0.3" = c("n_neighbors", "n_components", "metric", "n_epochs", "learning_rate",
                 "init", "min_dist", "spread", "set_op_mix_ratio",
                 "local_connectivity", "repulsion_strength", "negative_sample_rate",
                 "transform_queue_size", "a", "b", "random_state",
                 "angular_rp_forest", "target_n_neighbors", "target_metric",
                 "target_weight", "transform_seed", "verbose")
   )
-  args.version$latest = args.version[["0.3.0"]]
-  
-  if (learn.version %in% names(args.version)) {    
-    config$umap_learn_args = args.version[[learn.version]]
+  args.version$latest = args.version[["0.3"]]
+
+  if (main.version %in% names(args.version)) {    
+    config$umap_learn_args = args.version[[main.version]]
   } else {
     warning(paste0("cannot recognize umap-learn version ", learn.version,
                    "; set umap_learn_args manually"))

@@ -64,6 +64,10 @@ make.random.embedding = function(d, V, lims=c(-10, 10)) {
 
 ##' get a set of k eigenvectors for the laplacian of x
 ##'
+##' This implementation uses package RSpectra to compute eigenvectors.
+##' Use of RSpectra as provider for sparse-matrix eigenvectors
+##' credited to https://github.com/jlmelville/uwot
+##'
 ##' @keywords internal
 ##' @param x coo object
 ##' @param k integer

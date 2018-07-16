@@ -137,7 +137,7 @@ Inspecting the output configuration will reveal that both `foo` and `n_epochs` a
 
 ### Versions
 
-Various version of `umap-learn` take different parameters as input. The R package is coded to work with `umap-learn` versions 0.2.3 and 0.3.0. Note, however, that some arguments that are acceptable in 0.3.0 are not explicitly set in the default configuration object. 
+Various version of `umap-learn` take different parameters as input. The R package is coded to work with `umap-learn` versions 0.2 and 0.3. Note, however, that some arguments that are acceptable in 0.3 are not explicitly set in the default configuration object. 
 
 
 

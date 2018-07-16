@@ -15,6 +15,8 @@ spectral.eigenvectors(x, k)
 list with
 }
 \description{
-get a set of k eigenvectors for the laplacian of x
+This implementation uses package RSpectra to compute eigenvectors.
+Use of RSpectra as provider for sparse-matrix eigenvectors
+credited to https://github.com/jlmelville/uwot
 }
 \keyword{internal}
