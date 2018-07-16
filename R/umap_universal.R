@@ -131,11 +131,9 @@ make.spectral.embedding = function(d, g) {
   result = result[, 1:d, drop=FALSE]
   result = center.embedding(result)
   ## rescale result so that most points are in range [-10, 10]
-  for (i in 1:d) {
-    range1 = stats::quantile(result[,i], p=c(0.01, 0.99))
-    result[,i] = result[,i]*10/(range1[2]-range1[1])
-  }
-  result = result + matrix(stats::rnorm(V*d, 0, 0.001), nrow=V, ncol=d)
+  range1 = stats::quantile(result[,1], p=c(0.01, 0.99))
+  expansion = 10/(range1[2]-range1[1])
+  result = expansion*result + matrix(stats::rnorm(V*d, 0, 0.001), nrow=V, ncol=d)
   result = center.embedding(result)
   
   result

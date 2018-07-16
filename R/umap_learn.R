@@ -22,9 +22,10 @@ umap.learn = function(d, config) {
   ## get an update config object that includes a vector of arguments for umap-learn
   config = detect.umap.learn(config)
 
-  message.w.date("calling python package umap-learn", config$verbose)
-  all.args = paste(config$umap_learn_args, collapse=", ")
-  message.w.date(paste0("using arguments: ", all.args), config$verbose)
+  message.w.date(paste0("calling umap-learn (v", config$umap_learn_version, ")"),
+                 config$verbose)
+  message.w.date(paste0("setting arguments: ", length(config$umap_learn_args)),
+                 config$verbose)
   
   ## adjust values in config to please python type checkers
   if (is.na(config$random_state)) {
@@ -35,7 +36,8 @@ umap.learn = function(d, config) {
   ## construct python object and create embedding
   UMAP = do.call(python.umap$UMAP, config[config$umap_learn_args])
   embedding = UMAP$fit_transform(d)
-  
+  message.w.date("done", config$verbose)
+
   list(layout=embedding, config=config)
 }
 
