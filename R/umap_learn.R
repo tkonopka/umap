@@ -36,6 +36,7 @@ umap.learn = function(d, config) {
   ## construct python object and create embedding
   UMAP = do.call(python.umap$UMAP, config[config$umap_learn_args])
   embedding = UMAP$fit_transform(d)
+  rownames(embedding) = rownames(d)
   message.w.date("done", config$verbose)
 
   list(layout=embedding, UMAP=UMAP, config=config)

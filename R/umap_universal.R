@@ -302,7 +302,7 @@ clip = function(x, xmax=4) {
 ##'
 ##' @return matrix of same shape as x
 center.embedding = function(x) {
-  colcenters = apply(x, 2, mean)
+  colcenters = colMeans(x)
   V = nrow(x)
   x - matrix(rep(colcenters, each=V), ncol=ncol(x), nrow=V)
 }

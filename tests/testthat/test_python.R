@@ -6,7 +6,7 @@ library(reticulate)
 
 i.select = c(1:12, 61:72, 121:132)
 i4 = iris[i.select, c("Sepal.Length", "Sepal.Width", "Petal.Length", "Petal.Width")]
-
+rownames(i4) = paste0("X", 1:nrow(i4))
 
 
 
@@ -27,7 +27,9 @@ if (reticulate::py_module_available("umap")) {
     expect_true("config" %in% names(result))
     ## python implementation sets config, conveys arguments used
     expect_gt(length(result$config$umap_learn_args), 5)
+    ## output layout makes sense, has rownames
     expect_equal(dim(result$layout), c(nrow(i4), 2))
+    expect_equal(rownames(result$layout), rownames(i4))
     ## python implementation returns a UMAP object
     expect_true("UMAP" %in% names(result))
   })
