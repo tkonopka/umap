@@ -38,7 +38,7 @@ umap.learn = function(d, config) {
   embedding = UMAP$fit_transform(d)
   message.w.date("done", config$verbose)
 
-  list(layout=embedding, config=config)
+  list(layout=embedding, UMAP=UMAP, config=config)
 }
 
 

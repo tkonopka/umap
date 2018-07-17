@@ -28,6 +28,8 @@ if (reticulate::py_module_available("umap")) {
     ## python implementation sets config, conveys arguments used
     expect_gt(length(result$config$umap_learn_args), 5)
     expect_equal(dim(result$layout), c(nrow(i4), 2))
+    ## python implementation returns a UMAP object
+    expect_true("UMAP" %in% names(result))
   })
 
   
@@ -49,7 +51,8 @@ if (reticulate::py_module_available("umap")) {
     ## repeat calculations should give same results
     result1 = umap(i4, uconf, method="umap-learn")
     result2 = umap(i4, uconf, method="umap-learn")
-    expect_true(identical(result1, result2))
+    ## check reproducible results in layout
+    expect_true(identical(result1$layout, result2$layout))
     ## calculations with different setting should give different result
     result3 = umap(i4, uconf, method="umap-learn", n_neighbors=6)
     expect_false(identical(result1, result3))
