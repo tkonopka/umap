@@ -22,8 +22,6 @@ umap.small = function(d, config) {
   }
   rownames(embedding) = rownames(d)
 
-  ## in constrast to other umap.X implementations, this does not give knn data
-  
-  list(layout=embedding)
+  list(layout=embedding, config=config)
 }
 

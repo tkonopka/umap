@@ -4,7 +4,7 @@
 \name{umap.defaults}
 \alias{umap.defaults}
 \title{Default configuration for umap}
-\format{An object of class \code{umap.config} of length 20.}
+\format{An object of class \code{umap.config} of length 21.}
 \usage{
 umap.defaults
 }

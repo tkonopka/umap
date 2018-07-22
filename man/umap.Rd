@@ -25,8 +25,7 @@ with an embedding and a component with configuration settings
 Computes a manifold approximation and projection
 }
 \examples{
-# embedd iris dataset
-# (using default settings, but with reduced number of epochs)
+# embedd iris dataset using default settings
 iris.umap = umap(iris[,1:4])
 
 # display object summary

@@ -4,7 +4,8 @@
 \alias{knn.from.data}
 \title{get information about approximate k nearest neighbors from a data matrix}
 \usage{
-knn.from.data(dT, k, metric.function, subsample.k = 0.5)
+knn.from.data(dT, k, metric.function, subsample.k = 0.5,
+  fix.observations = NULL)
 }
 \arguments{
 \item{dT}{matrix with data (observations in columns, features in rows)}
@@ -14,6 +15,8 @@ knn.from.data(dT, k, metric.function, subsample.k = 0.5)
 \item{metric.function}{function that returns a metric distance}
 
 \item{subsample.k}{numeric, used for internal tuning of implementation}
+
+\item{fix.observations}{integer, number of observations in dT that will appear in knn}
 }
 \value{
 list with two components;

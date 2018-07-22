@@ -60,6 +60,7 @@ NumericMatrix optimize_epoch (NumericMatrix &embedding,
   double m2ab = -2*a*b;
   double p2gb = 2*gamma*b;
   int V = embedding.ncol();
+  bool move_other = !(abg[3]>0);
   
   int numpairs = pairs.nrow();
   for (int i=0; i<numpairs; i++) {
@@ -79,7 +80,9 @@ NumericMatrix optimize_epoch (NumericMatrix &embedding,
       double gradcoeff = (m2ab*pow(codist2, bm1)) / (a*pow(codist2, b)+1);
       NumericVector gradd = clip4(codiff, gradcoeff, alpha);
       current = current + gradd;
-      other = other - gradd;
+      if (move_other) {
+	other = other - gradd;
+      }
       
       // adjust a set of other randomly selected links
       int nnsi = nns[i];

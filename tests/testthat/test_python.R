@@ -4,9 +4,16 @@ cat("\ntest_python\n")
 library(reticulate)
 
 
-i.select = c(1:12, 61:72, 121:132)
-i4 = iris[i.select, c("Sepal.Length", "Sepal.Width", "Petal.Length", "Petal.Width")]
+i.train = c(1:12, 61:72, 121:132)
+i.columns = c("Sepal.Length", "Sepal.Width", "Petal.Length", "Petal.Width")
+## one small dataset
+i4 = iris[i.train, i.columns]
 rownames(i4) = paste0("X", 1:nrow(i4))
+## another dataset for testing
+i.test = c(13:16, 73:76, 123:126)
+i4b = iris[i.test, i.columns]
+rownames(i4b) = paste0("Test", 1:nrow(i4b))
+
 
 
 
@@ -17,23 +24,26 @@ rownames(i4) = paste0("X", 1:nrow(i4))
 if (reticulate::py_module_available("umap")) {
   ## Note: a more elegant approach with skip() does not seem to work
   ## devtools::test() stops when skip() is invoked
+
+  ## create embedding of small iris data
+  u1 = umap(i4, method="umap-learn", random_state=111)
+  
   
   test_that("python umap produces output", {
-    result = umap(i4, method="umap-learn")
     ## just check the rough type of expected output
     ## i.e. that some output came out of the python UMAP fit
-    expect_equal(class(result), "umap")
-    expect_true("layout" %in% names(result))
-    expect_true("config" %in% names(result))
+    expect_equal(class(u1), "umap")
+    expect_true("layout" %in% names(u1))
+    expect_true("config" %in% names(u1))
     ## python implementation sets config, conveys arguments used
-    expect_gt(length(result$config$umap_learn_args), 5)
+    expect_gt(length(u1$config$umap_learn_args), 5)
     ## output layout makes sense, has rownames
-    expect_equal(dim(result$layout), c(nrow(i4), 2))
-    expect_equal(rownames(result$layout), rownames(i4))
+    expect_equal(dim(u1$layout), c(nrow(i4), 2))
+    expect_equal(rownames(u1$layout), rownames(i4))
     ## python implementation returns a UMAP object
-    expect_true("UMAP" %in% names(result))
+    expect_true("UMAP" %in% names(u1))
   })
-
+  
   
   test_that("python umap can use specified arguments", {
     conf = umap.defaults
@@ -62,5 +72,22 @@ if (reticulate::py_module_available("umap")) {
     expect_false(identical(result3, result4))
   })
 
+  
+  test_that("transform requires presence of UMAP components", {
+    u1small = u1
+    u1small$UMAP = NULL
+    expect_error(predict(u1small, i4b), "available")
+    u1bad = u1
+    u1bad$UMAP = "some other object"
+    expect_error(predict(u1bad, i4b), "corrupt")
+  })
+
+  
+  test_that("transform proeduces and embedding", {
+    u2 = predict(u1, i4b)
+    expect_equal(dim(u2), c(nrow(i4b), 2))
+    expect_equal(rownames(u2), rownames(i4b))
+  })
+  
 }
 

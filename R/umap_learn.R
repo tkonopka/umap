@@ -13,11 +13,7 @@
 ##'
 ##' @return list, one element of which is matrix with embedding coordinates
 umap.learn = function(d, config) {
-
-  ## abort if python package is not available
-  if (is.null(python.umap)) {
-    umap.error("python package umap is not available")
-  }
+  check.learn.available()
 
   ## get an update config object that includes a vector of arguments for umap-learn
   config = detect.umap.learn(config)
@@ -43,6 +39,40 @@ umap.learn = function(d, config) {
 }
 
 
+
+
+##' predict embedding of new data given an existing umap object
+##'
+##' @param umap object of class umap
+##' @param data matrix with new data
+##'
+##' @return matrix with embedding coordinates
+umap.learn.predict = function(umap, data) {
+  check.learn.available()
+
+  if (!"UMAP" %in% names(umap)) {
+    umap.error("component UMAP is not available")
+  }
+  if (!"umap.umap_.UMAP" %in% class(umap$UMAP)) {
+    umap.error("components UMAP is corrupt")
+  }
+
+  config = detect.umap.learn(umap$config)
+  message.w.date(paste0("calling umap-learn (v", config$umap_learn_version, ")"),
+                 config$verbose)
+  ## perform the fit
+  embedding = umap$UMAP$transform(data)
+  rownames(embedding) = rownames(data)
+  message.w.date("done", config$verbose)
+  
+  embedding  
+}
+
+
+
+
+## ############################################################################
+## Helper functions 
 
 
 ##' adjust config depending on umap-learn version
@@ -88,3 +118,11 @@ detect.umap.learn = function(config) {
   config
 }
 
+
+
+##' check whether python module is available, abort if not
+check.learn.available = function() {
+  if (is.null(python.umap)) {
+    umap.error("python package umap-learn is not available")
+  }
+}

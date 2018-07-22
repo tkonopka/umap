@@ -53,7 +53,52 @@ umap.naive = function(d, config) {
   embedding = center.embedding(embedding)
   message.w.date("done", verbose)
   
-  list(layout=embedding, knn=knn)
+  list(layout=embedding, data=d, knn=knn, config=config)
+}
+
+
+
+
+##' predict embedding of new data given an existing umap object
+##'
+##' @param umap object of class umap
+##' @param data matrix with new data
+##'
+##' @return matrix with embedding coordinates
+umap.naive.predict = function(umap, data) {
+
+  ## check that data and knn are available
+  missing = setdiff(c("knn", "data", "config"), names(umap))
+  if (length(missing)>0) {
+    umap.error("missing components: ", paste(missing, collapse=", "))
+  }
+
+  ## create a configuration for the prediction
+  config = umap$config
+  config$n_epochs = floor(config$n_epochs/3)
+  training.V = nrow(umap$layout)
+  verbose = umap$config$verbose
+  
+  ## obtain nearest neighbors
+  message.w.date("creating graph of nearest neighbors", verbose)
+  spectator.knn = spectator.knn.info(data, umap$data, config)
+  knn = list(indexes=rbind(umap$knn$indexes, spectator.knn$indexes),
+             distances=rbind(umap$knn$distances, spectator.knn$distances))  
+  
+  ## create graph representation of primary and spectator data together
+  graph = naive.fuzzy.simplicial.set(knn, config)
+  ## create a joint embedding
+  message.w.date("creating initial embedding", verbose)
+  embedding = make.initial.spectator.embedding(umap$layout, spectator.knn$indexes)
+  embedding = rbind(umap$layout, embedding)
+  message.w.date("optimizing embedding", verbose)
+  embedding = naive.simplicial.set.embedding(graph, embedding, config,
+                                             fix.observations=training.V)  
+  ## extract coordinates for just the spectator data
+  embedding = embedding[training.V+(1:nrow(data)),,drop=FALSE]
+  message.w.date("done", verbose)
+  
+  embedding
 }
 
 
@@ -69,17 +114,14 @@ umap.naive = function(d, config) {
 ##' @param g matrix, graph connectivity as coo
 ##' @param embedding matrix, coordinates for an initial graph embedding
 ##' @param config list with settings
+##' @param fix.observations integer, number of points to avoid moving in optimization
 ##'
 ##' @return matrix with embedding,
 ##' nrows is from g, ncols determined from config
-naive.simplicial.set.embedding = function(g, embedding, config) {
-
-  ## create an initial embedding
-  result = embedding
-  rownames(result) = g$names
+naive.simplicial.set.embedding = function(g, embedding, config, fix.observations=NULL) {
 
   if (config$n_epochs==0) {
-    return(result)
+    return(embedding)
   }
   
   total.weight = sum(g$coo[, "value"])
@@ -92,8 +134,11 @@ naive.simplicial.set.embedding = function(g, embedding, config) {
   ## create an epochs-per-sample. Keep track of it together with the graph coo
   eps = cbind(g$coo,
               eps=make.epochs.per.sample(g$coo[, "value"], config$n_epochs))
+  if (!is.null(fix.observations)) {
+    eps = eps[eps[, "from"]>fix.observations,]
+  }
   
-  result = naive.optimize.embedding(result, config, eps)
+  result = naive.optimize.embedding(embedding, config, eps)
   rownames(result) = g$names
   
   result
@@ -117,8 +162,6 @@ naive.optimize.embedding = function(embedding, config, eps) {
   V = nrow(embedding)
   ## transpose to get observations in columns
   embedding = t(embedding)
-  ## extract some variables from config
-  abg = c(config$a, config$b, config$gamma)
 
   ## define some vectors for book-keeping
   ## integer matrix with pairs of data
@@ -133,6 +176,11 @@ naive.optimize.embedding = function(embedding, config, eps) {
   ## nns is next negative sample
   nns = rep(0, nrow(eps))
 
+  ## infer if some points should remain fixed
+  fix.observations = min(eps.pairs[,1])>1
+  ## extract some variables from config
+  abg = c(config$a, config$b, config$gamma, as.numeric(fix.observations))
+  
   for (n in seq_len(config$n_epochs)) {
     ## set the learning rate for this epoch
     alpha = config$alpha * (1 - ((n-1)/config$n_epochs))

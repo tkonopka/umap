@@ -2,6 +2,7 @@
 ## functions for argument checking
 
 
+
 ##' Validator functions for umap settings
 ##'
 ##' @keywords internal
@@ -10,11 +11,18 @@
 ##'
 ##' @return config object, may contain some different components from config in input
 umap.check.config = function(config=umap.defaults, ...) {
+
+  umap.check.config.class(config)
   
   ## transfer values from arguments into the config object
   arguments = list(...)
   for (onearg in names(arguments)) {
     config[[onearg]] = arguments[[onearg]]
+  }
+
+  missing = setdiff(names(umap.defaults), names(config))
+  if (length(missing)>0) {
+    umap.error(paste0("missing arguments: ", paste(missing, collapse=", ")))
   }
 
   ## manual adjustments on some settings
@@ -39,7 +47,7 @@ umap.check.config = function(config=umap.defaults, ...) {
 
   ## force some data types
   for (x in c("n_epochs", "n_neighbors", "n_components",
-              "random_state", "negative_sample_rate")) {
+              "random_state", "negative_sample_rate", "transform_state")) {
     config[[x]] = as.integer(config[[x]])
   }
   
@@ -110,5 +118,16 @@ umap.prep.input = function(d, config) {
 umap.error = function(...) {
   x = paste(..., collapse=" ")
   stop(paste0("umap: ", x, "\n"), call.=FALSE)
+}
+
+
+##' Validator for config class component
+##'
+##' @keywords internal
+##' @param config list with arguments (object of class umap.config)
+umap.check.config.class = function(config) {
+  if (class(config)!="umap.config") {
+    umap.error("config is absent or corrupt")
+  }
 }
 

@@ -130,6 +130,7 @@ umap.defaults = list(
   b=NA,
   spread=1,
   random_state=NA,
+  transform_state=NA,
   knn_repeats=1,
   verbose=FALSE,
   umap_learn_args = NA
@@ -152,8 +153,7 @@ class(umap.defaults) = "umap.config"
 ##' with an embedding and a component with configuration settings
 ##'
 ##' @examples
-##' # embedd iris dataset
-##' # (using default settings, but with reduced number of epochs)
+##' # embedd iris dataset using default settings
 ##' iris.umap = umap(iris[,1:4])
 ##'
 ##' # display object summary
@@ -171,11 +171,7 @@ umap = function(d, config=umap.defaults, method=c("naive", "umap-learn"), ...) {
   d = umap.prep.input(d, config)
 
   ## save existing RNG seed, set "internal" seed
-  if (exists(".Random.seed", envir=.GlobalEnv)) {
-    old.seed = .Random.seed
-  } else {
-    old.seed = NA
-  }
+  old.seed = get.global.seed()
   if (!is.na(config$random_state)) {
     set.seed(config$random_state)
   }
@@ -184,23 +180,71 @@ umap = function(d, config=umap.defaults, method=c("naive", "umap-learn"), ...) {
   if (nrow(d)<=2) {
     result = umap.small(d, config)
   } else {
-    implementations = c(naive=umap.naive, "umap-learn"=umap.learn)
+    implementations = c(naive=umap.naive,
+                        "umap-learn"=umap.learn)
     if (method %in% names(implementations)) {
       result = implementations[[method]](d, config)
     } 
-  }
-  
-  ## add a record of configuration into the result
-  if (!"config" %in% names(result)) {
-    result[["config"]] = config
-  }
+  }  
   class(result) = "umap"
   
-  ## restore old seed
-  if (length(old.seed)>1) {
-    assign(".Random.seed", old.seed, envir=.GlobalEnv)
-  }
-  
+  ## restore state and finish
+  set.global.seed(old.seed)
   result
 }
 
+
+
+
+##' project data points onto an existing umap embedding
+##'
+##' @param object trained object of class umap
+##' @param data matrix with data
+##' @param ... additional arguments (not used)
+##'
+##' @return new matrix
+##'
+##' @examples
+##' # embedd iris dataset using default settings
+##' iris.umap = umap(iris[,1:4])
+##'
+##' # create a dataset with structure like iris, but with perturbation
+##' iris.perturbed = iris[,1:4] + matrix(rnorm(nrow(iris)*4, 0, 0.1), ncol=4)
+##'
+##' # fit perturbed dataset onto the same embedding as iris.umap
+##' perturbed.embedding = predict(iris.umap, iris.perturbed)
+##'
+##' # output is a matrix with embedding coordinates
+##' head(perturbed.embedding)
+##'
+##' @export
+predict.umap = function(object, data, ...) {
+
+  umap.check.config.class(object$config)
+  if (object$config$input == "dist") {
+    umap.error("predict cannot work from object fitted by input='dist'")
+  }
+  if (nrow(object$layout)<=2) {
+    umap.error("predict cannot work when too-small initial training set")
+  }
+
+  old.seed = get.global.seed()
+  if (!is.na(object$config$transform_state)) {
+    set.seed(object$config$transform_state)
+  }
+  
+  ## extract method from the umap object
+  method = object$config$method
+  implementations = c(naive=umap.naive.predict,
+                      "umap-learn"=umap.learn.predict)
+  if (!method %in% names(implementations)) {
+    umap.error("unknown prediction method")
+  }
+  
+  ## carry out the predictions
+  result = implementations[[method]](object, data)
+
+  ## restore state and finish
+  set.global.seed(old.seed)
+  result
+}

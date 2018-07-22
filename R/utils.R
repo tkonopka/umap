@@ -18,3 +18,30 @@ message.w.date = function(x, verbose=FALSE) {
 }
 
 
+
+
+## ############################################################################
+## Random number generation seeds
+
+
+##' lookup .Random.seed in global environment
+##'
+##' @keywords internal
+get.global.seed = function() {
+  current.seed = NA
+  if (exists(".Random.seed", envir=.GlobalEnv)) {
+    current.seed = .Random.seed
+  }
+  current.seed
+}
+
+
+##' set .Random.seed to a pre-saved value
+##'
+##' @keywords internal
+##' @param x integer vector
+set.global.seed = function(x) {
+  if (length(x)>1) {
+    assign(".Random.seed", x, envir=.GlobalEnv)
+  }
+}

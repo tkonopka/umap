@@ -2,6 +2,7 @@
 
 cat("\ntest_knn\n")
 source("synthetic.R")
+source("train_test.R")
 
 
 ## ############################################################################
@@ -60,18 +61,40 @@ test_that("k nearest neighbors information", {
 ## Tests for well-formed output
 
 
-test_that("knn.info should preserve rownames", {
+test_that("knn.from.data should preserve rownames", {
   result = knn.from.data(t(syn0), 3, mdEuclidean)
   expect_equal(rownames(syn0), rownames(result$indexes))
   expect_equal(rownames(syn0), rownames(result$distances))
 })
 
 
-test_that("knn.from.data should preserve rownmaes", {
+test_that("knn.from.data should preserve rownames", {
   syn0dist = as.matrix(syn0.dist)
   result = knn.from.dist(syn0dist, 3)
   expect_equal(rownames(syn0), rownames(result$indexes))
   expect_equal(rownames(syn0), rownames(result$distances))  
+})
+
+
+test_that("knn.info (brute force) should preserve rownames", {
+  conf = umap.defaults
+  conf$n_neighbors = 4
+  conf$metric.function = mdEuclidean
+  result = knn.info(syn0, conf, brute.force=TRUE)
+  expected.rownames = c(rownames(result$indexes), rownames(result$distances))
+  result.rownames = c(rownames(syn0), rownames(syn0))
+  expect_equal(result.rownames, expected.rownames)
+})
+
+
+test_that("knn.info (from data) should preserve rownames", {
+  conf = umap.defaults
+  conf$n_neighbors = 4
+  conf$metric.function = mdEuclidean
+  result = knn.info(syn0, conf, brute.force=FALSE)
+  expected.rownames = c(rownames(result$indexes), rownames(result$distances))
+  result.rownames = c(rownames(syn0), rownames(syn0))
+  expect_equal(result.rownames, expected.rownames)
 })
 
 
@@ -101,10 +124,11 @@ test_that("knn from data complains about k (large dataset)", {
 
 test_that("knn from data complains about subsampling (large dataset)", {
   ## da is a dummy, but large, matrix 
-  da = matrix(0, ncol=3, nrow=3000)
-  expect_error(knn.from.data(da, 5, mdEuclidean, subsample.k=NA))
-  expect_error(knn.from.data(da, 5, mdEuclidean, subsample.k=-0.2))
-  expect_error(knn.from.data(da, 5, mdEuclidean, subsample.k=6000))
+  da = matrix(0, nrow=20, ncol=300)
+  expect_error(knn.from.data(da, 5, mdEuclidean, subsample.k=NA), "subsample")
+  expect_error(knn.from.data(da, 5, mdEuclidean, subsample.k=-0.2), "subsample")
+  expect_error(knn.from.data(da, 5, mdEuclidean, subsample.k=600), "subsample")
+  expect_silent(knn.from.data(da, 6, mdEuclidean, subsample.k=0.3))
 })
 
 
@@ -162,5 +186,71 @@ test_that("knn works with degenerate neighbors", {
   ## should always be at distance 0
   result = knn.from.data(t(syn1[, 1:2]), 4, mdEuclidean)
   expect_lt(mean(result$distances[,2]), 0.01)
+})
+
+
+
+
+## ############################################################################
+## Tests with spectators
+
+
+test_that("knn from data links spectators to primary data", {
+  ## create merged dataset with observations in columns
+  dT = cbind(t(i.train), t(i.test))
+  num.primary = nrow(i.train)
+  result = knn.from.data(dT, 6, mdEuclidean, fix.observations=num.primary)
+  ## result should have indexes and distance components
+  expect_true(all(c("indexes", "distances") %in% names(result)))
+  ## indexes should show all observation link to themselves
+  expect_equivalent(result$indexes[,1], 1:nrow(result$indexes))
+  ## indexes to further neighbors should only link to primary data
+  expect_lt(max(result$indexes[, 2:6]), num.primary+1)
+})
+
+
+train.size = nrow(i.train)/3
+test.size = nrow(i.test)/3
+
+
+test_that("spectator.info by brute force links spectators to primary data", {
+  conf = umap.check.config(umap.defaults)
+  conf$n_neighbors = 5
+  result = spectator.knn.info(i.test, i.train, conf, brute.force=TRUE)
+  ## check output sizes
+  expect_equal(dim(result$indexes), c(nrow(i.test), conf$n_neighbors))
+  expect_equal(dim(result$distances), c(nrow(i.test), conf$n_neighbors))
+  expect_equal(rownames(result$distances), rownames(i.test))
+  expect_equal(rownames(result$indexes), rownames(i.test))
+  ## ditances of first neighbor must be larger than zero
+  expect_equal(mean(result$distances[,1]), 0)
+  ## entries in i.test should connect to items in i4, which are more numerous than i.test
+  indexes = result$indexes[, 2:ncol(result$indexes)]
+  expect_gt(max(indexes), nrow(i.test))
+  ## the first 5 items in i.test must be neighbors to the first 15 indexes in i4, etc.
+  expect_lt(mean(indexes[1:test.size,]), train.size)
+  expect_lt(mean(indexes[test.size+(1:test.size),]), 2*train.size)
+  expect_gt(mean(indexes[2*test.size+(1:test.size),]), 2*train.size)
+})
+
+
+test_that("spectator.info by stochastic method links spectators to primary data", {
+  conf = umap.check.config(umap.defaults)
+  conf$n_neighbors = 5
+  result = spectator.knn.info(i.test, i.train, conf, brute.force=FALSE)
+  ## check output sizes
+  expect_equal(dim(result$indexes), c(nrow(i.test), conf$n_neighbors))
+  expect_equal(dim(result$distances), c(nrow(i.test), conf$n_neighbors))
+  expect_equal(rownames(result$distances), rownames(i.test))
+  expect_equal(rownames(result$indexes), rownames(i.test))
+  ## ditances of first neighbor must be larger than zero
+  expect_equal(mean(result$distances[,1]), 0)
+  ## entries in i.test should connect to items in i4, which are more numerous than i.test
+  indexes = result$indexes[, 2:ncol(result$indexes)]
+  expect_gt(max(indexes), nrow(i.test))
+  ## the first 5 items in i.test must be neighbors to the first 15 indexes in i4, etc.
+  expect_lt(mean(indexes[1:test.size,]), train.size)
+  expect_lt(mean(indexes[test.size+(1:test.size),]), 2*train.size)
+  expect_gt(mean(indexes[2*test.size+(1:test.size),]), 2*train.size)
 })
 

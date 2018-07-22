@@ -20,18 +20,6 @@ syn0.dist = dist(syn0)
 ## classic cmdscale
 syn0.cmd = cmdscale(syn0.dist)
 
-## tsne (using an R installation no-longer available from CRAN)
-syn0.tsne = matrix(0, ncol=2, nrow=9)
-syn0.tsne[1,] =c(  61.24178, -396.943619)
-syn0.tsne[2,] =c(-139.00944, -448.359430)
-syn0.tsne[3,] =c(-138.56847, -271.508935)
-syn0.tsne[4,] =c(-763.98933, -182.163985)
-syn0.tsne[5,] =c(-630.44555,  -66.752465)
-syn0.tsne[6,] =c(-854.86532,    6.652597)
-syn0.tsne[7,] =c( 732.00201,  517.885699)
-syn0.tsne[8,] =c( 813.09705,  331.150079)
-syn0.tsne[9,] =c( 920.53727, 510.040059)
-
 
 ## umap ouput from python
 syn0.umap = matrix(0, ncol=2, nrow=9)
@@ -46,10 +34,7 @@ syn0.umap[8,] =  c( -2.10594469,  -6.62200199)
 syn0.umap[9,] =  c( -1.83912037,  -6.35611235)
 
 
-
-
-
-## syn1 is a manually create dataset with degenerate neighbors
+## syn1 is a manually created dataset with degenerate neighbors
 syn1 = matrix(0, ncol=3, nrow=1200)
 syn1G1 = 100 + (1:300)
 syn1G2 = 900 + (1:300)

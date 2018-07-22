@@ -1,6 +1,6 @@
 ## tests using naive method
 
-cat("\ntest_checks.R\n")
+cat("\ntest_checks\n")
 
 
 
@@ -150,31 +150,47 @@ test_that("config sets custom metric function", {
 
 test_that("config reports unknown metric functions", {
   conf = umap.defaults
+  conf$method = "naive"
   conf$metric = "badfunction"
-  expect_error(umap.check.config(conf))
+  expect_error(umap.check.config(conf), "unrecognized")
 })
 
 
 test_that("config checks local connectivity", {
   conf = umap.defaults
   conf$local_connectivity = 0
-  expect_error(umap.check.config(conf))
+  expect_error(umap.check.config(conf), "connect")
   conf$local_connectivity = -0.2
-  expect_error(umap.check.config(conf))
+  expect_error(umap.check.config(conf), "connect")
 })
 
 
 test_that("config checks epochs", {
   conf = umap.defaults
   conf$n_epochs = NA
-  expect_error(umap.check.config(conf))
+  expect_error(umap.check.config(conf), "epoch")
   conf$n_epochs = -2
-  expect_error(umap.check.config(conf))
+  expect_error(umap.check.config(conf), "epoch")
+})
+
+
+test_that("config checks detect missing items", {
+  conf = umap.defaults
+  conf$n_epochs = NULL
+  conf$random_state = NULL
+  expect_error(umap.check.config(conf), "missing")
 })
 
 
 
 
+## ############################################################################
+## Tests for expected umap.config 
 
+
+test_that("config class is validated", {
+  expect_error(umap.check.config.class(NULL))
+  expect_error(umap.check.config.class(list(n_epochs=20)))
+})
 
 
