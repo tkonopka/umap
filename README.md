@@ -18,7 +18,12 @@ The figure below shows dimensional reduction on the [MNIST digits](https://en.wi
 <img src="https://github.com/tkonopka/umap/blob/master/images/readme_mnist.png?raw=true" alt="A UMAP visualization of the MNIST digits dataset" width="600px">
 </img>
 
-More information on usage can be found in the package [vignette](https://github.com/tkonopka/umap/tree/master/vignettes).
+The package also allows to project data onto an existing embedding. Below, the first figure shows a map created from a subset of 60,000 observations from the MNIST data. The second figure is a projection of the held-out 10,000 observations onto the layout defined by the training data. 
+
+<img src="https://github.com/tkonopka/umap/blob/master/images/readme_mnist_training.png?raw=true" alt="A UMAP visualization of the MNIST digits dataset" width="350px"></img>
+<img src="https://github.com/tkonopka/umap/blob/master/images/readme_mnist_test.png?raw=true" alt="A UMAP visualization of the MNIST digits dataset" width="350px"></img>
+
+More information on usage can be found in the package [vignettes](https://github.com/tkonopka/umap/tree/master/vignettes).
 
 
 
@@ -27,11 +32,11 @@ More information on usage can be found in the package [vignette](https://github.
 
 The package provides two implementations of the UMAP algorithm.
 
-The default implementation is one written mostly in R with some Rcpp. This implementation follows closely the original python code. However, any bugs or errors should be regarded as arising solely from this implementation, not from the original. The implementation has minimal dependencies and should work on most platforms, but is not optimized for speed. (The MNIST graphic is generated based on this default implementation).
+The default implementation is one written in R and Rcpp. This implementation follows the original python code. However, any bugs or errors should be regarded as arising solely from this implementation, not from the original. The implementation has minimal dependencies and should work on most platforms. (The MNIST graphic is generated based on this default implementation).
 
 A second implementation is a wrapper for the python package. This offers similar functionality to another existing package [umapr](https://github.com/ropenscilabs/umapr). To use this implementation, additional installation steps are required; see documentation for the [python package](https://github.com/lmcinnes/umap) for details. 
 
-
+Note: an independent R implementation of UMAP is also available in a separate package [uwot](https://github.com/jlmelville/uwot).
 
 
 ## References

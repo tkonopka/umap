@@ -1,9 +1,9 @@
 ---
 title: Uniform Manifold Approximation and Projection in R
-vignette: >
-  %\VignetteEngine{knitr::knitr}
-  %\VignetteIndexEntry{UMAP}
-  %\usepackage[UTF-8]{inputenc}
+output:
+  html_document:
+    toc: true
+    toc_float: true
 ---
 
 <style>
@@ -35,22 +35,33 @@ iris.colors = c("#1f77b4", "#d62728", "#7f7f7f")
 iris.colors = c("#ff7f00", "#e377c2", "#17becf")
 plot.iris = function(x, labels,
          main="A UMAP visualization of the Iris dataset",
-         pad=0.02, cex=0.65, pch=19,
+         pad=0.1, cex=0.65, pch=19, add=FALSE, legend.suffix="",
          cex.main=1, cex.legend=1) {
 
-  layout = x$layout
-  par(mar=c(0.2,0.7,1.2,0.7), ps=10)
+  layout = x
+  if (class(x)=="umap") {
+    layout = x$layout
+  } 
+  
   xylim = range(layout)
   xylim = xylim + ((xylim[2]-xylim[1])*pad)*c(-0.5, 0.5)
-  plot(xylim, xylim, type="n", axes=F, frame=F)
-  xylim = par()$usr
-  rect(xylim[1], xylim[1], xylim[2], xylim[2], border="#aaaaaa", lwd=0.2)
+  if (!add) {
+    par(mar=c(0.2,0.7,1.2,0.7), ps=10)
+    plot(xylim, xylim, type="n", axes=F, frame=F)
+    rect(xylim[1], xylim[1], xylim[2], xylim[2], border="#aaaaaa", lwd=0.25)  
+  }
   points(layout[,1], layout[,2], col=iris.colors[as.integer(labels)],
          cex=cex, pch=pch)
   mtext(side=3, main, cex=cex.main)
 
   labels.u = unique(labels)
-  legend("topright", legend=as.character(labels.u),
+  legend.pos = "topright"
+  legend.text = as.character(labels.u)
+  if (add) {
+    legend.pos = "bottomright"
+    legend.text = paste(as.character(labels.u), legend.suffix)
+  }
+  legend(legend.pos, legend=legend.text,
          col=iris.colors[as.integer(labels.u)],
          bty="n", pch=pch, cex=cex.legend)
 }
@@ -62,18 +73,22 @@ set.seed(123456)
 
 ## Introduction
 
-Uniform Manifold Approximation and Projection (UMAP) is an algorithm for dimensional reduction proposed by [McInnes and Healy](https://arxiv.org/abs/1802.03426). This vignette demonstrates how to use the `umap` R package to perform dimensional reduction with the UMAP method.
+Uniform Manifold Approximation and Projection (UMAP) is an algorithm for dimensional reduction proposed by [McInnes and Healy](https://arxiv.org/abs/1802.03426).
+
+This vignette demonstrates how to use the `umap` R package to perform dimensional reduction and data trasnformations with the UMAP method. The vignette uses a small dataset as an example, but the package is suited to process larger data with many thousands of data points.
+
+
 
 
 ## Usage
 
-For a practical demonstration, let's use the Iris dataset. This dataset is accessible through object `iris`.
+For a practical demonstration, let's use the [Iris dataset](https://en.wikipedia.org/wiki/Iris_flower_data_set), `iris`.
 
 ```{r}
 head(iris, 3)
 ```
 
-The first four columns contain data, the last column contains a label. It will be useful to 
+The first four columns contain data and the last column contains a label. It will be useful to 
 separate those components.
 
 ```{r}
@@ -81,14 +96,16 @@ iris.data = iris[, grep("Sepal|Petal", colnames(iris))]
 iris.labels = iris[, "Species"]
 ```
 
-Now, let's load the `umap` package and apply the UMAP transformation.
+### Creating a projection
+
+Let's now load the `umap` package and apply the UMAP transformation.
 
 ```{r iris.umap}
 library(umap)
 iris.umap = umap(iris.data)
 ```
 
-The output is here an object `iris.umap`. We can get a minimal summary of its contents by just printing it.
+The output, `iris.umap`, is an object of class `umap`. We can get a minimal summary of its contents by just printing it.
 
 ```{r umap.print}
 iris.umap
@@ -100,13 +117,43 @@ The main component of the object is `layout`, which holds a matrix with coordina
 head(iris.umap$layout, 3)
 ```
 
-We can now use these coordinates to visualize the dataset. (The custom plot function, `plot.iris`, is available at the end of this vignette.)
+These coordinates can be used to visualize the dataset. (The custom plot function, `plot.iris`, is available at the end of this vignette.)
 
 ```{r, fig.width=3.6, fig.height=3.6, dpi=150}
 plot.iris(iris.umap, iris.labels)
 ```
 
-The layout conveys separation between the groups and dispersion within the group. While this vignette example is simple by construction, the `umap` package can provide similar visualizations for larger datasets with many thousands of data points. 
+
+
+
+### Projecting new data
+
+Once we have a `umap` object describing a projection of one dataset into a low-dimensional layout, it becomes possible to project other data onto the same manifold. 
+
+To perform the projection, we need a second dataset with the same data features as the training data. For this demonstration, let's create such data by adding some noise to the original data.
+
+```{r}
+iris.wnoise = iris.data + matrix(rnorm(150*40, 0, 0.1), ncol=4)
+colnames(iris.wnoise) = colnames(iris.data)
+head(iris.wnoise, 3)
+```
+
+We can now request to arrange these perturbed observations onto the same layout as before. Following R's design pattern for fitted models, this is performed via `predict`.
+   
+```{r}
+iris.wnoise.umap = predict(iris.umap, iris.wnoise)
+head(iris.wnoise.umap, 3)
+```
+
+The output here is a matrix with coordinates. We can now visualize this new data alongside the original.
+
+```{r, fig.width=3.6, fig.height=3.6, dpi=150}
+plot.iris(iris.umap, iris.labels)
+plot.iris(iris.wnoise.umap, iris.labels, add=T, pch=4,
+          legend.suffix=" (with noise)")
+```
+
+Note the new observations lie close to their original counterparts.
 
 
 
@@ -143,10 +190,10 @@ We can observe the changed settings by inspecting the object again (try it). To 
 ```{r custom2, fig.width=3.6, fig.height=3.6, dpi=150}
 iris.umap.2 = umap(iris.data, custom.config)
 plot.iris(iris.umap.2, iris.labels,
-          main="Another UMAP visualization of the Iris dataset (different seed)")
+          main="Another UMAP visualization (different seed)")
 ```
 
-The result is slightly different due to a new instantiation of the random number generator.
+The result is slightly different than before due to a new instantiation of the random number generator.
 
 
 
@@ -163,7 +210,7 @@ The coordinates in this new output object should match the ones from `iris.umap.
 
 
 
-## Implementation
+## Implementations
 
 The package provides two implementations of the umap method, one written in R and one accessed via an external python module.
 
@@ -177,7 +224,7 @@ iris.umap.4 = umap(iris.data, method="umap-learn")
 
 This command has several dependencies. To make it work, you must have the `reticulate` package installed and loaded (use `install.packages("reticulate")` and `library(reticulate)`). Furthermore, you must have the `umap-learn` python package installed (see the [package repo](https://github.com/lmcinnes/umap) for instructions). If either of these components is not available, the above command will display an error message.
 
-Note that it will not be possible to produce exactly the same output from the two implementations due to inequivalent random number generators in R and python.
+Note that it will not be possible to produce exactly the same output from the two implementations due to inequivalent random number generators in R and python, and due to slight discrepancies in the implementations.
 
 
 &nbsp;
