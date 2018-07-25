@@ -27,7 +27,10 @@ NULL
 ## but gain additional functionality when those components are present
 python.umap = NULL
 .onLoad = function(libname, pkgname) {
-  has.reticulate = suppressWarnings(suppressMessages(requireNamespace("reticulate")))
+  has.reticulate = FALSE
+  tryCatch({
+    has.reticulate = suppressWarnings(suppressMessages(requireNamespace("reticulate")))
+  }, error=function(e) {}, warning=function(e) {})
   if (has.reticulate) {
     has.pkg.umap = reticulate::py_module_available("umap")
     if (has.pkg.umap) {
@@ -211,7 +214,7 @@ umap = function(d, config=umap.defaults, method=c("naive", "umap-learn"), ...) {
 ##' # create a dataset with structure like iris, but with perturbation
 ##' iris.perturbed = iris[,1:4] + matrix(rnorm(nrow(iris)*4, 0, 0.1), ncol=4)
 ##'
-##' # fit perturbed dataset onto the same embedding as iris.umap
+##' # project perturbed dataset
 ##' perturbed.embedding = predict(iris.umap, iris.perturbed)
 ##'
 ##' # output is a matrix with embedding coordinates

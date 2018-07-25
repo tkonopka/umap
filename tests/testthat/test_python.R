@@ -1,7 +1,13 @@
 ## tests for running python umap
 
 cat("\ntest_python\n")
-library(reticulate)
+has.reticulate = FALSE
+has.umap.learn = FALSE
+tryCatch({
+  library(reticulate)
+  has.reticulate = TRUE
+  has.umap.learn = reticulate::py_module_available("umap")
+}, error=function(e) {}, warning=function(e) {})
 
 
 ## for the python implemenation, small iris-based datasets give warnings
@@ -20,10 +26,10 @@ rownames(d.test) = paste0("Test", 1:nrow(d.test))
 ## Only test if umap is available as python package
 
 
-if (reticulate::py_module_available("umap")) {
+if (has.reticulate & has.umap.learn) {
   ## Note: a more elegant approach with skip() does not seem to work
   ## devtools::test() stops when skip() is invoked
-
+  
   ## create initial embedding
   u1 = umap(d.train, method="umap-learn", n_neighbors=10)
   
@@ -53,7 +59,7 @@ if (reticulate::py_module_available("umap")) {
     ## python implementation sets config, conveys arguments used
     expect_equal(length(result$config$umap_learn_args), 2)
   })
-
+  
   
   test_that("python umap considers user-specified inputs", {
     uconf = umap.defaults
@@ -70,7 +76,7 @@ if (reticulate::py_module_available("umap")) {
     result4 = umap(d.train, uconf, method="umap-learn", spread=2)
     expect_false(identical(result3, result4))
   })
-
+  
   
   test_that("transform requires presence of UMAP components", {
     u1small = u1
@@ -80,7 +86,7 @@ if (reticulate::py_module_available("umap")) {
     u1bad$UMAP = "some other object"
     expect_error(predict(u1bad, d.test), "corrupt")
   })
-
+  
   
   test_that("transform proeduces an embedding", {
     u2 = predict(u1, d.test)
@@ -89,4 +95,7 @@ if (reticulate::py_module_available("umap")) {
   })
   
 }
+
+
+
 

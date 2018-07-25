@@ -26,7 +26,7 @@ iris.umap = umap(iris[,1:4])
 # create a dataset with structure like iris, but with perturbation
 iris.perturbed = iris[,1:4] + matrix(rnorm(nrow(iris)*4, 0, 0.1), ncol=4)
 
-# fit perturbed dataset onto the same embedding as iris.umap
+# project perturbed dataset
 perturbed.embedding = predict(iris.umap, iris.perturbed)
 
 # output is a matrix with embedding coordinates

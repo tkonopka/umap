@@ -4,6 +4,10 @@ output:
   html_document:
     toc: true
     toc_float: true
+vignette: >
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteIndexEntry{Uniform Manifold Approximate and Projection in R}
+  %\usepackage[UTF-8]{inputenc}
 ---
 
 <style>
@@ -216,13 +220,15 @@ The package provides two implementations of the umap method, one written in R an
 
 The implementation written in R is the default. This implementation follows the design principles of the UMAP algorithm and its running time scales better-than-quadratically with the number of items (points) in a dataset. It is thus in principle suitable for use on datasets with thousands of points. It is the default because it should be functional without extensive dependencies.
 
-The second available implementation is a wrapper for a python package `umap-learn`. To enable this implementation, specify the argument `method`,
+The second available implementation is a wrapper for a python package `umap-learn`. To enable this implementation, specify the argument `method`.
 
 ```{r, eval=FALSE}
 iris.umap.4 = umap(iris.data, method="umap-learn")
 ```
 
-This command has several dependencies. To make it work, you must have the `reticulate` package installed and loaded (use `install.packages("reticulate")` and `library(reticulate)`). Furthermore, you must have the `umap-learn` python package installed (see the [package repo](https://github.com/lmcinnes/umap) for instructions). If either of these components is not available, the above command will display an error message.
+This command has several dependencies. You must have the `reticulate` package installed and loaded (use `install.packages("reticulate")` and `library(reticulate)`). Furthermore, you must have the `umap-learn` python package installed (see the [package repo](https://github.com/lmcinnes/umap) for instructions). If either of these components is not available, the above command will display an error message.
+
+A separate vignette explains additional aspects of interfacing with `umap-learn`, including handling of discrepancies between releases.
 
 Note that it will not be possible to produce exactly the same output from the two implementations due to inequivalent random number generators in R and python, and due to slight discrepancies in the implementations.
 
