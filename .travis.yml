@@ -18,7 +18,8 @@ r_github_packages:
 
 before_install:
   - pip install --user --upgrade pip
-  - pip install --user umap-learn
+
+#- pip install --user umap-learn
 
 after_success:
   - Rscript -e 'covr::codecov()'
