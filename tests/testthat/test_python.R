@@ -1,13 +1,7 @@
 ## tests for running python umap
 
 cat("\ntest_python\n")
-has.reticulate = FALSE
-has.umap.learn = FALSE
-tryCatch({
-  library(reticulate)
-  has.reticulate = TRUE
-  has.umap.learn = reticulate::py_module_available("umap")
-}, error=function(e) {}, warning=function(e) {})
+library(reticulate)
 
 
 ## for the python implemenation, small iris-based datasets give warnings
@@ -26,7 +20,7 @@ rownames(d.test) = paste0("Test", 1:nrow(d.test))
 ## Only test if umap is available as python package
 
 
-if (has.reticulate & has.umap.learn) {
+if (reticulate::py_module_available("umap")) {
   ## Note: a more elegant approach with skip() does not seem to work
   ## devtools::test() stops when skip() is invoked
   

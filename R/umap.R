@@ -27,11 +27,7 @@ NULL
 ## but gain additional functionality when those components are present
 python.umap = NULL
 .onLoad = function(libname, pkgname) {
-  has.reticulate = FALSE
-  tryCatch({
-    has.reticulate = suppressWarnings(suppressMessages(requireNamespace("reticulate")))
-  }, error=function(e) {}, warning=function(e) {})
-  if (has.reticulate) {
+  if (suppressWarnings(suppressMessages(requireNamespace("reticulate")))) {
     has.pkg.umap = reticulate::py_module_available("umap")
     if (has.pkg.umap) {
       ## assignment in parent environment!
