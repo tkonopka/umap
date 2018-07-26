@@ -76,7 +76,7 @@ umap.naive.predict = function(umap, data) {
   ## create a configuration for the prediction
   config = umap$config
   config$n_epochs = floor(config$n_epochs/3)
-  training.V = nrow(umap$layout)
+  V = nrow(umap$layout)
   verbose = umap$config$verbose
   
   ## obtain nearest neighbors
@@ -87,15 +87,15 @@ umap.naive.predict = function(umap, data) {
   
   ## create graph representation of primary and spectator data together
   graph = naive.fuzzy.simplicial.set(knn, config)
-  ## create a joint embedding
   message.w.date("creating initial embedding", verbose)
   embedding = make.initial.spectator.embedding(umap$layout, spectator.knn$indexes)
   embedding = rbind(umap$layout, embedding)
   message.w.date("optimizing embedding", verbose)
   embedding = naive.simplicial.set.embedding(graph, embedding, config,
-                                             fix.observations=training.V)  
+                                             fix.observations=V)  
+  
   ## extract coordinates for just the spectator data
-  embedding = embedding[training.V+(1:nrow(data)),,drop=FALSE]
+  embedding = embedding[V+(1:nrow(data)),,drop=FALSE]
   message.w.date("done", verbose)
   
   embedding

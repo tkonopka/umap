@@ -12,7 +12,7 @@ make.initial.spectator.embedding(embedding, knn.indexes)
 \item{knn.indexes}{matrix with indexes from spectators to components primary embedding}
 }
 \value{
-matrix with an embedding
+matrix with an embedding for the spectator elements
 }
 \description{
 Create an initial embedding for a set of spectators

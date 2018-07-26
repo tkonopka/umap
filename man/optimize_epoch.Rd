@@ -15,7 +15,7 @@ optimize_epoch(embedding, pairs, adjust, nns, abg, alpha)
 
 \item{nns}{vector with negative-neighbors-set size}
 
-\item{abg}{vector with configuration parameters, a, b, gamma}
+\item{abg}{vector with configuration parameters, a, b, gamma, move_other}
 
 \item{alpha}{numeric learning rate for this epoch}
 

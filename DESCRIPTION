@@ -14,6 +14,7 @@ Imports:
     RSpectra,
     stats
 License: MIT + file LICENSE
+URL: https://github.com/tkonopka/umap
 LinkingTo: Rcpp
 LazyData: true
 Suggests:

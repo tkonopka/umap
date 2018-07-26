@@ -1,9 +1,6 @@
 ---
 title: Uniform Manifold Approximation and Projection in R
-output:
-  html_document:
-    toc: true
-    toc_float: true
+output: rmarkdown::html_vignette
 vignette: >
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteIndexEntry{Uniform Manifold Approximate and Projection in R}

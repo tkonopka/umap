@@ -120,7 +120,7 @@ clip4 <- function(x, inner, outer) {
 #' @param adjust vector with 0/1 whether to adjust or not
 #' @param nns vector with negative-neighbors-set size
 #' @param book matrix with columns: eps, epns, eon2s, eons, nns (in that order)
-#' @param abg vector with configuration parameters, a, b, gamma
+#' @param abg vector with configuration parameters, a, b, gamma, move_other
 #' @param alpha numeric learning rate for this epoch
 #'
 optimize_epoch <- function(embedding, pairs, adjust, nns, abg, alpha) {

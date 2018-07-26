@@ -290,7 +290,6 @@ knn.from.data = function(dT, k, metric.function, subsample.k=0.5, fix.observatio
     }
     B = lapply(newB, trim.to.k)
   }
-  ##cat("epochs: ", epoch, "\n")
 
   ## make sure neighbors are sorted (trim.to.k does not guarantee that)
   B = lapply(B, function(x) { x[order(x[,2])[kseq],] })

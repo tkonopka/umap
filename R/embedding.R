@@ -153,7 +153,7 @@ make.initial.embedding = function(V, config, g=NULL) {
 ##' @param embedding matrix with an existing (primary) embedding
 ##' @param knn.indexes matrix with indexes from spectators to components primary embedding
 ##'
-##' @return matrix with an embedding
+##' @return matrix with an embedding for the spectator elements
 make.initial.spectator.embedding = function(embedding, knn.indexes) {
 
   ## crete an empty embedding for the spectators

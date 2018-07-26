@@ -1,9 +1,6 @@
 ---
 title: Interfacing with python package 'umap-learn'
-output:
-  html_document:
-    toc: true
-    toc_float: true
+output: rmarkdown::html_vignette
 vignette: >
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteIndexEntry{Interfacing with 'umap-learn'}

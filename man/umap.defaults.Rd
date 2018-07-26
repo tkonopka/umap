@@ -61,7 +61,9 @@ b: numeric; contributes to gradient calculationss during layout optimization.
 
 spread: numeric; used during automatic estimation of a/b parameters.
 
-random_state: integer; seed for random number generation
+random_state: integer; seed for random number generation used during umap()
+
+transform_state: integer; seed for random number generation used during predict()
 
 knn.repeat: number of times to restart knn search
 

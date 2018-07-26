@@ -41,7 +41,7 @@ NumericVector clip4(NumericVector x, double inner, double outer) {
 //' @param adjust vector with 0/1 whether to adjust or not
 //' @param nns vector with negative-neighbors-set size
 //' @param book matrix with columns: eps, epns, eon2s, eons, nns (in that order)
-//' @param abg vector with configuration parameters, a, b, gamma
+//' @param abg vector with configuration parameters, a, b, gamma, move_other
 //' @param alpha numeric learning rate for this epoch
 //'
 // [[Rcpp::export]]
