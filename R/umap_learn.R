@@ -43,6 +43,7 @@ umap.learn = function(d, config) {
 
 ##' predict embedding of new data given an existing umap object
 ##'
+##' @keywords internal
 ##' @param umap object of class umap
 ##' @param data matrix with new data
 ##'
@@ -121,6 +122,7 @@ detect.umap.learn = function(config) {
 
 
 ##' check whether python module is available, abort if not
+##' @keywords internal
 check.learn.available = function() {
   if (is.null(python.umap)) {
     umap.error("python package umap-learn is not available")

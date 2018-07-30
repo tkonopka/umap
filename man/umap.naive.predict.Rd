@@ -17,3 +17,4 @@ matrix with embedding coordinates
 \description{
 predict embedding of new data given an existing umap object
 }
+\keyword{internal}

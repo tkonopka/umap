@@ -61,6 +61,7 @@ umap.naive = function(d, config) {
 
 ##' predict embedding of new data given an existing umap object
 ##'
+##' @keywords internal
 ##' @param umap object of class umap
 ##' @param data matrix with new data
 ##'

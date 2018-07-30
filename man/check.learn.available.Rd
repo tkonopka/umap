@@ -9,3 +9,4 @@ check.learn.available()
 \description{
 check whether python module is available, abort if not
 }
+\keyword{internal}
