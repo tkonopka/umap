@@ -4,8 +4,9 @@
 \alias{smooth.knn.dist}
 \title{compute a "smooth" distance to the kth neighbor and approximate first neighbor}
 \usage{
-smooth.knn.dist(k.dist, neighbors, iterations = 64, local.connectivity = 1,
-  bandwidth = 1, tolerance = 1e-05, min.dist.scale = 0.001)
+smooth.knn.dist(k.dist, neighbors, iterations = 64,
+  local.connectivity = 1, bandwidth = 1, tolerance = 1e-05,
+  min.dist.scale = 0.001)
 }
 \arguments{
 \item{k.dist}{matrix with distances to k neighbors}

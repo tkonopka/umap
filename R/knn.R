@@ -25,6 +25,7 @@ knn.info = function(d, config, brute.force=TRUE) {
   } 
   
   distfun = config$metric.function
+  k = config$n_neighbors
 
   if (nrow(d)<2048 && brute.force) {
     ## compute a distance matrix
@@ -38,10 +39,10 @@ knn.info = function(d, config, brute.force=TRUE) {
     diag(d.dist) = -1
     rownames(d.dist) = rownames(d)
     ## compute neighbors from the distance matrix
-    result = knn.from.dist(d.dist, config$n_neighbors)
+    result = knn.from.dist(d.dist, k)
     result$distances[,1] = 0
   } else {
-    result = knn.from.data.reps(d, config$n_neighbors, distfun, reps=config$knn_repeats)
+    result = knn.from.data.reps(d, k, distfun, reps=config$knn_repeats)
   }
 
   class(result) = "umap.knn"
@@ -85,7 +86,7 @@ spectator.knn.info = function(spectators, d, config, brute.force=TRUE) {
     result$distances[,1] = 0
   } else {
     ## generate knn using a stochastic algorithm
-    result = knn.from.data(alldata, k, distfun, fix.observations=Vd)
+    result = knn.from.data(alldata, k, distfun, subsample.k=0.3, fix.observations=Vd)
     ## reduce result to just the knn components
     result$indexes = result$indexes[Vd+(1:Vs), ]
     result$distances = result$distances[Vd+(1:Vs),]
@@ -302,7 +303,7 @@ knn.from.data = function(dT, k, metric.function, subsample.k=0.5, fix.observatio
   ## by definition, distances to self are zero
   distances[,1] = 0
   rownames(indexes) = rownames(distances) = colnames(dT)
-  
+
   list(indexes=indexes, distances=distances)
 }
 
