@@ -63,7 +63,7 @@ make.spectral.embedding = function(d, g) {
     result = NULL
     ## try to create spectral eigenvectors, abort quietly if not possible
     tryCatch({
-      result = spectral.eigenvectors(g2, d+1)[,1:d]
+      result = spectral.eigenvectors(g2, d+1)[, 1:d, drop=FALSE]
     }, error=function(e) {}, warning=function(e) {} )
     result
   }

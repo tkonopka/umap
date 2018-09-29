@@ -144,3 +144,19 @@ test_that("predict is reproducible when seed is set", {
 })
 
 
+
+## ############################################################################
+## small datasets down to 1 component 
+
+test_that("embedding to one component", {
+  ## create full configuration object
+  conf = umap.defaults
+  conf$n_neighbors=3
+  conf$n_components=1
+  ## create small dataset 
+  ismall = iris[1:5,1:4]
+  ## perform calculation - only basic checks (no errors, correct format)
+  result = umap(ismall, conf)
+  expect_equal(dim(result$layout), c(5, 1))
+})
+
