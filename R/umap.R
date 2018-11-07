@@ -50,7 +50,7 @@ python.umap = NULL
 ##'
 ##' metric: character or function; determines how distances between
 ##' data points are computed. When using a string, available metrics are:
-##' euclidean, manhattan. Other availble generalized metrics are: cosine,
+##' euclidean, manhattan. Other available generalized metrics are: cosine,
 ##' pearson, pearson2. Note the triangle inequality may not be satisfied by
 ##' some generalized metrics, hence knn search may not be optimal.
 ##' When using metric.function as a function, the signature must be
@@ -80,7 +80,7 @@ python.umap = NULL
 ##'
 ##' alpha: numeric; initial value of "learning rate" of layout optimization
 ##'
-##' beta: numeric; determines, together with alpha, the learning rate of layout optimization
+##' gamma: numeric; determines, together with alpha, the learning rate of layout optimization
 ##'
 ##' negative_sample_rate: integer; determines how many non-neighbor points are
 ##' used per point and per iteration during layout optimization
@@ -88,7 +88,7 @@ python.umap = NULL
 ##' a: numeric; contributes to gradient calculations during layout optimization.
 ##' When left at NA, a suitable value will be estimated automatically.
 ##'
-##' b: numeric; contributes to gradient calculationss during layout optimization.
+##' b: numeric; contributes to gradient calculations during layout optimization.
 ##  When left at NA, a suitable value will be estimated automatically.
 ##'
 ##' spread: numeric; used during automatic estimation of a/b parameters.
