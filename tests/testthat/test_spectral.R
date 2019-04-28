@@ -6,7 +6,7 @@ cat("\ntest_spectral\n")
 ## ############################################################################
 ## Tests for counting of connected components using coo
 
-test_that("count components in single-componet ", {
+test_that("count components in single-component", {
   mat = matrix(0, ncol=6, nrow=6)
   mat[1,c(2,3)] = 1
   mat[2, c(3,4)] = 1
@@ -20,7 +20,7 @@ test_that("count components in single-componet ", {
 })
 
 
-test_that("count components, one two roughly equal-size componets", {
+test_that("count components, one two roughly equal-size components", {
   mat = matrix(0, ncol=6, nrow=6)
   mat[1,c(2,3)] = 1
   mat[2, c(3)] = 1

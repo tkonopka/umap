@@ -82,10 +82,7 @@ test_that("euclidean distances from matrix", {
   output = mdEuclidean(t(mat), 1, targets)
   ## compute several distance (loop in apply)
   expected = apply(mat[targets,], 1, dEuclidean, m1)
-  expect_equal(output, expected)
-  
-  #t0 = system.time(replicate(5e4, apply(mat[targets,,drop=FALSE], 1, dEuclidean, m1)))
-  #t1 = system.time(replicate(5e4, mdEuclidean(mat[c(1, targets),])))
+  expect_equal(output, expected)  
 })
 
 

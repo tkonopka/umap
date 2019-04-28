@@ -1,5 +1,5 @@
-## package umap
-## functions using coo graphs related to spectral analysis
+# package umap
+# functions using coo graphs related to spectral analysis
 
 
 
@@ -8,13 +8,13 @@
 ## Utility functions relevant for spectral decomposition of coo objects
 
 
-##' Construct an identity matrix
-##'
-##' @keywords internal
-##' @param n.elements integer, number of elements
-##' @param names character vector, names associated with the elements
-##'
-##' @return new coo object
+#' Construct an identity matrix
+#'
+#' @keywords internal
+#' @param n.elements integer, number of elements
+#' @param names character vector, names associated with the elements
+#'
+#' @return new coo object
 identity.coo = function(n.elements, names=NULL) {
   if (!is.null(names)) {
     if (length(names)!=n.elements) {
@@ -22,7 +22,7 @@ identity.coo = function(n.elements, names=NULL) {
     }
   }
 
-  ## construct coo matrix encoding diagonal elements
+  # construct coo matrix encoding diagonal elements
   coo = matrix(1, ncol=3, nrow=n.elements)
   coo[,1] = coo[,2] = 1:n.elements
 
@@ -32,19 +32,19 @@ identity.coo = function(n.elements, names=NULL) {
 
 
 
-##' Construct a normalized Laplacian for a graph
-##'
-##' This implementation constructs the laplacian  element-by-element.
-##' Diagonals: 1, Element_ij = -1/sqrt(deg_i deg_j)
-##'
-##' @keywords internal
-##' @param x coo object encoding a graph
-##'
-##' @return new coo object 
+#' Construct a normalized Laplacian for a graph
+#'
+#' This implementation constructs the laplacian  element-by-element.
+#' Diagonals: 1, Element_ij = -1/sqrt(deg_i deg_j)
+#'
+#' @keywords internal
+#' @param x coo object encoding a graph
+#'
+#' @return new coo object 
 laplacian.coo = function(x) {
   check.coo(x, "laplacian")
   
-  ## rely on a reduced representation of coo
+  # rely on a reduced representation of coo
   x = reduce.coo(x)
 
   num.from = length(unique(x$coo[, "from"]))
@@ -52,22 +52,22 @@ laplacian.coo = function(x) {
     stop.coo("laplacian", "singular degrees")
   }
 
-  ## get degrees
+  # get degrees
   degrees = x$coo[order(x$coo[, "from"]), ]
   degrees = sapply(split(degrees[,"value"], degrees[, "from"]), sum)
   
-  ## construct diagonal part of the laplacian
+  # construct diagonal part of the laplacian
   result = identity.coo(x$n.elements, x$names)
   
-  ## construct matrix with non-diagonal parts
+  # construct matrix with non-diagonal parts
   nondiag = x$coo
   nondiag = nondiag[nondiag[,1]!=nondiag[,2], ,drop=FALSE]
-  ## fill values of nondiagonal parts
+  # fill values of nondiagonal parts
   oldvalues = nondiag[, "value"]
   nondiag[, "value"] = degrees[nondiag[,"from"]] * degrees[nondiag[, "to"]]
   nondiag[, "value"] = -oldvalues/sqrt(nondiag[, "value"])
   
-  ## combine diagonal and non-diagonal parts
+  # combine diagonal and non-diagonal parts
   result$coo = rbind(result$coo, nondiag)
   result$coo = result$coo[order(result$coo[, "from"], result$coo[, "to"]), ]
   
@@ -77,13 +77,13 @@ laplacian.coo = function(x) {
 
 
 
-##' Count the number of connected components in a coo graph
-##'
-##' @keywords internal
-##' @param x coo object
-##'
-##' @return list with number of connected components and a vector
-##' assigning rows in object to components
+#' Count the number of connected components in a coo graph
+#'
+#' @keywords internal
+#' @param x coo object
+#'
+#' @return list with number of connected components and a vector
+#' assigning rows in object to components
 concomp.coo = function(x) {
   check.coo(x, "submat")
   
@@ -95,9 +95,9 @@ concomp.coo = function(x) {
     which(!visited)[1]
   }
   
-  ## make sure only looking at non-zero compoennts
+  # make sure only looking at non-zero components
   x = reduce.coo(x)
-  ## get lists of neighbors (this will be a list with keys e.g. "1", "2", etc.
+  # get lists of neighbors (this will be a list with keys e.g. "1", "2", etc.
   neighbors = split(x$coo[, "to"], x$coo[, "from"])
 
   epoch = 0
@@ -107,17 +107,16 @@ concomp.coo = function(x) {
     unvisited = which(!visited[tovisit])
     unvisited = tovisit[unvisited]
 
-    ## mark as visited
+    # mark as visited
     if (length(unvisited)>0) {
       visited[tovisit] = TRUE
       components[tovisit] = count
-      ## identify all neighbors
+      # identify all neighbors
       tovisit = unique(unlist(neighbors[as.character(tovisit)]))
     }
 
-    ## perhaps start a new component if this one is done
+    # perhaps start a new component if this one is done
     if (length(unvisited)==0 | length(tovisit)==0) {
-      ## need to start a new components
       count = count + 1
       tovisit = pick.next()
     }
@@ -129,26 +128,26 @@ concomp.coo = function(x) {
 
 
 
-##' Subset a coo
-##'
-##' @keywords internal
-##' @param x coo object
-##' @param items items (indexes) to keep
-##'
-##' @return new smaller coo object
+#' Subset a coo
+#'
+#' @keywords internal
+#' @param x coo object
+#' @param items items (indexes) to keep
+#'
+#' @return new smaller coo object
 subset.coo = function(x, items) {
   check.coo(x, "subset")
   
-  ## check for early exit
+  # check for early exit
   if (length(items)==x$n.elements) {
     return (x);
   }
 
-  ## get logical vector for x indexes to keep
+  # get logical vector for x indexes to keep
   x.keep = rep(FALSE, x$n.elements)
   x.keep[items] = TRUE
 
-  ## create result by trimming the input coo table
+  # create result by trimming the input coo table
   result = x
   result$coo = x$coo[x$coo[,"from"] %in% items & x$coo[, "to"] %in% items, ]
   if (!is.null(x$names)) {
@@ -157,10 +156,10 @@ subset.coo = function(x, items) {
   }
   result$n.elements = length(items)
 
-  ## re-label from-to
+  # re-label from-to
   new.indexes = rep(NA, x$n.elements)
   new.indexes[which(x.keep)] = 1:length(items)
-
+  
   result$coo[, "from"] = new.indexes[result$coo[, "from"]]
   result$coo[, "to"] = new.indexes[result$coo[, "to"]]
   
