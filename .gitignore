@@ -24,7 +24,3 @@ vignettes/*files*
 ## files meant for local calculations only
 vignettes/mnist*
 
-## auto-generated documentation files
-man
-
-
