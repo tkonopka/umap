@@ -1,5 +1,4 @@
-## ignoring temporary files from emacs/knitr/tex
-
+## temporary files from emacs/knitr/tex
 */*.*~
 */*/*.*~
 */*.tex
@@ -8,21 +7,24 @@
 */*.pdf
 */*.out
 
-## ignore compiled cpp
+## compiled cpp
 *o
 *so
 
-
-## ignore cache files from knitr
+## cache files from knitr
 vignettes/*.md
 vignettes/*html
 vignettes/*cache*
 vignettes/*files*
-
 *png
+
+## profiling
 *rprof
 
-## ignore certain files meant for local calculations only
+## files meant for local calculations only
 vignettes/mnist*
+
+## auto-generated documentation files
+man
 
 

@@ -4,7 +4,7 @@
 
 i.columns = c("Sepal.Length", "Sepal.Width", "Petal.Length", "Petal.Width")
 ## training set
-i.train.indexes = c(1:20, 51:70, 101:120)
+i.train.indexes = c(1:20, 51:70, 111:130)
 i.train = iris[i.train.indexes, i.columns]
 i.train.labels = iris[i.train.indexes, "Species"]
 rownames(i.train) = paste0("X", 1:nrow(i.train))

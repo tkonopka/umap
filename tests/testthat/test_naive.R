@@ -138,7 +138,6 @@ test_that("predict is reproducible when seed is set", {
   ## even though umap uses random numbers, seed in parent should remain unchanged
   r2 = runif(1)
   
-  abdiff = sum(abs(result.a-result.b))
   expect_equal(result.a, result.b, tolerance=1e-4)
   expect_equal(r1, r2, tolerance=1e-4)
 })
@@ -153,9 +152,8 @@ test_that("embedding to one component", {
   conf = umap.defaults
   conf$n_neighbors=3
   conf$n_components=1
-  ## create small dataset 
   ismall = iris[1:5,1:4]
-  ## perform calculation - only basic checks (no errors, correct format)
+  ## only basic checks (no errors, correct format)
   result = umap(ismall, conf)
   expect_equal(dim(result$layout), c(5, 1))
 })
