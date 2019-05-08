@@ -36,7 +36,12 @@ The default implementation is one written in R and Rcpp. This implementation fol
 
 A second implementation is a wrapper for the python package. This offers similar functionality to another existing package [umapr](https://github.com/ropenscilabs/umapr). To use this implementation, additional installation steps are required; see documentation for the [python package](https://github.com/lmcinnes/umap) for details. 
 
-Note: an independent R implementation of UMAP is also available in a separate package [uwot](https://github.com/jlmelville/uwot).
+Note: an independent R implementation of UMAP is also available in package [uwot](https://github.com/jlmelville/uwot), also available on [CRAN](TO DO)
+
+
+## Acknowledgments
+
+Many thanks to the R and github communities for comments, corrections, and bug reports.
 
 
 ## References
@@ -44,8 +49,6 @@ Note: an independent R implementation of UMAP is also available in a separate pa
 The original UMAP algorithm is described in the following article
 
 McInnes, Leland, and John Healy. "UMAP: Uniform Manifold Approximation and Projection for Dimension Reduction." [arXiv:1802.03426](https://arxiv.org/abs/1802.03426).
-
-
 
 
 ### License

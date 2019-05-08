@@ -87,9 +87,16 @@ if (reticulate::py_module_available("umap")) {
     expect_equal(dim(u2), c(nrow(d.test), 2))
     expect_equal(rownames(u2), rownames(d.test))
   })
+
+  
+  test_that("transform adjust with min_dist", {
+    # this test is based on a bug report
+    # In the bug, min_dist was ignored because a/b were inadvertely converted from
+    # NA into specific values during the R->python link.
+    md1 = umap(d.train, method="umap-learn", n_neighbors=5, min_dist=0.1, random_state=11)
+    md2 = umap(d.train, method="umap-learn", n_neighbors=5, min_dist=0.2, random_state=11)
+    expect_false(identical(md1$layout, md2$layout))
+  })
   
 }
-
-
-
 

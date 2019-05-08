@@ -5,7 +5,7 @@
 
 
 
-##' Create a umap embedding using a python package
+##' Create a umap embedding using python package umap-learn
 ##'
 ##' @keywords internal
 ##' @param d data object
@@ -30,7 +30,8 @@ umap.learn = function(d, config) {
   config$verbose = 0+as.logical(config$verbose)
 
   ## construct python object and create embedding
-  UMAP = do.call(python.umap$UMAP, config[config$umap_learn_args])
+  wo.NA = names(config[!is.na(config)])
+  UMAP = do.call(python.umap$UMAP, config[intersect(wo.NA, config$umap_learn_args)])
   embedding = UMAP$fit_transform(d)
   rownames(embedding) = rownames(d)
   message.w.date("done", config$verbose)
