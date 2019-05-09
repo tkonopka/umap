@@ -36,7 +36,7 @@ The default implementation is one written in R and Rcpp. This implementation fol
 
 A second implementation is a wrapper for the python package. This offers similar functionality to another existing package [umapr](https://github.com/ropenscilabs/umapr). To use this implementation, additional installation steps are required; see documentation for the [python package](https://github.com/lmcinnes/umap) for details. 
 
-Note: an independent R implementation of UMAP is also available in package [uwot](https://github.com/jlmelville/uwot), also available on [CRAN](TO DO)
+Note: an independent R implementation of UMAP is also available in package [uwot](https://github.com/jlmelville/uwot), also available on [CRAN](https://cran.r-project.org/web/packages/uwot/).
 
 
 ## Acknowledgments
