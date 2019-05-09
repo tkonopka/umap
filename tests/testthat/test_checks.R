@@ -185,6 +185,40 @@ test_that("config checks detect missing items", {
 
 
 ## ############################################################################
+## Tests for settings a/b vs min_dist/spread
+
+test_that("check gives warningg if a has a value but b is NA", {
+  conf = umap.defaults
+  conf$a = 1
+  expect_warning(umap.check.config(conf), "'b' is not")
+})
+
+test_that("check gives warning if b has a value but a is NA", {
+  conf = umap.defaults
+  conf$b = 1
+  expect_warning(umap.check.config(conf), "'a' is not")
+})
+
+test_that("check gives warning if attempting to over-specify min_dist", {
+  conf = umap.defaults
+  conf$a = conf$b = 1
+  expect_silent(umap.check.config(conf))
+  conf$min_dist = 0.2
+  expect_warning(umap.check.config(conf), "non-default")
+})
+
+test_that("check gives warning if attempting to over-specify spread", {
+  conf = umap.defaults
+  conf$a = conf$b = 1
+  expect_silent(umap.check.config(conf))
+  conf$spread = 2
+  expect_warning(umap.check.config(conf), "non-default")
+})
+
+
+
+
+## ############################################################################
 ## Tests for expected umap.config 
 
 

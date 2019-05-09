@@ -2,7 +2,7 @@
 % Please edit documentation in R/umap_learn.R
 \name{umap.learn}
 \alias{umap.learn}
-\title{Create a umap embedding using a python package}
+\title{Create a umap embedding using python package umap-learn}
 \usage{
 umap.learn(d, config)
 }
@@ -15,6 +15,6 @@ umap.learn(d, config)
 list, one element of which is matrix with embedding coordinates
 }
 \description{
-Create a umap embedding using a python package
+Create a umap embedding using python package umap-learn
 }
 \keyword{internal}

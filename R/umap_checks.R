@@ -45,6 +45,30 @@ umap.check.config = function(config=umap.defaults, ...) {
     umap.error("setting 'local_connectivity' must be >= 0")
   }
 
+  # checks on embedding control via (a, b) vs. (min_dist, spread)
+  if (!identical(config$a, NA) & identical(config$b, NA)) {
+    umap.warning("parameter 'a' is set but 'b' is not;\n",
+                 "value of 'a' will be ignored.\n",
+                 "(Embedding will be controlled via 'min_dist' and 'spread')")
+  }
+  if (!identical(config$b, NA) & identical(config$a, NA)) {
+    umap.warning("parameter 'b' is set but 'a' is not;\n",
+                 "value of 'b' will be ignored.\n",
+                 "(Embedding will be controlled via 'min_dist' and 'spread')") 
+  }
+  if (!identical(config$a, NA) & !identical(config$b, NA)) {
+    abcontrol = "(Embedding will be controlled via 'a' and 'b')"
+    if (!identical(config$min_dist, umap.defaults$min_dist)) {
+      umap.warning("parameters 'min_dist', 'a', 'b' are set to non-default values;\n",
+                   "parameter 'min_dist' will be ignored.\n", abcontrol)
+    }
+    if (!identical(config$spread, umap.defaults$spread)) {
+      umap.warning("parameters 'spread', 'a', 'b' are set to non-default values;\n",
+                   "parameter 'spread' will be ignored.\n", abcontrol)
+    }
+  }
+  
+
   ## force some data types
   for (x in c("n_epochs", "n_neighbors", "n_components",
               "random_state", "negative_sample_rate", "transform_state")) {
@@ -118,6 +142,16 @@ umap.prep.input = function(d, config) {
 umap.error = function(...) {
   x = paste(..., collapse=" ")
   stop(paste0("umap: ", x, "\n"), call.=FALSE)
+}
+
+
+##' create a warning message
+##'
+##' @keywords internal
+##' @param ... strings for error message
+umap.warning = function(...) {
+  x = paste(..., collapse=" ")
+  warning(paste0("umap: ", x, "\n"), call.=FALSE)
 }
 
 
