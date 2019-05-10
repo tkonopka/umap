@@ -67,8 +67,14 @@ umap.check.config = function(config=umap.defaults, ...) {
                    "parameter 'spread' will be ignored.\n", abcontrol)
     }
   }
-  
+  if (config$min_dist >= config$spread) {
+    umap.error("setting 'min_dist' must be smaller than 'spread'")
+  }
+  if (config$min_dist <=0) {
+    umap.error("setting 'min_dist' must be > 0")
+  }
 
+  
   ## force some data types
   for (x in c("n_epochs", "n_neighbors", "n_components",
               "random_state", "negative_sample_rate", "transform_state")) {
