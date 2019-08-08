@@ -4,10 +4,10 @@
 \alias{naive.optimize.embedding}
 \title{modify an existing embedding}
 \usage{
-naive.optimize.embedding(embedding, config, eps)
+naive.optimize.embedding(tembedding, config, eps)
 }
 \arguments{
-\item{embedding}{matrix holding an initial embedding}
+\item{tembedding}{matrix, transpose of matrix with an initial embedding}
 
 \item{config}{list with settings}
 
@@ -15,7 +15,7 @@ naive.optimize.embedding(embedding, config, eps)
 this must be a matrix with columns "from", "to", "value", and "eps"}
 }
 \value{
-matrix of same dimension as initial embedding
+matrix of same dimension as initial tembedding
 }
 \description{
 modify an existing embedding

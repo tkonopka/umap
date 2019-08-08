@@ -145,3 +145,29 @@ test_that("number clipping with default xmax", {
 })
 
 
+
+
+# ############################################################################
+# Tests for reproducible item-specific seeds
+
+test_that("column.seeds produces unique integers", {
+  mat = matrix(seq(0, 1, length=30), ncol=10)
+  result = column.seeds(mat)
+  expect_equal(length(result), 10)
+  expect_is(result, "numeric")
+  expect_equal(length(unique(result)), length(result))
+})
+
+
+test_that("column.seeds produces reproducible integers", {
+  # process a large dataset all at once
+  mat0 = matrix(seq(0, 1, length=30), ncol=10)
+  result0 = column.seeds(mat0)
+  # process two parts separately
+  mat1 = mat0[, 1, drop=FALSE]
+  mat2 = mat0[, 2:10]
+  result1 = column.seeds(mat1)
+  result2 = column.seeds(mat2)
+  expect_equal(result0, c(result1, result2))
+})
+

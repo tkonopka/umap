@@ -1,31 +1,31 @@
-## package umap
-## a from-scratch implementation of the UMAP algorithm
-##
-## This implementation is called naive because it is a rather direct translation
-## of the original implementation by Leland McInnes. This implementation does,
-## however, have some slight modifications.
-##
-## The original implementation is available at https://github.com/lmcinnes/umap.
-##
-## The original implementation was published under a BSD license.
-##
+# package umap
+# a from-scratch implementation of the UMAP algorithm
+#
+# This implementation is called naive because it is a rather direct translation
+# of the original implementation by Leland McInnes. This implementation does,
+# however, have some slight modifications.
+#
+# The original implementation is available at https://github.com/lmcinnes/umap.
+#
+# The original implementation was published under a BSD license.
+#
 
 
-##' Create a umap embedding
-##'
-##' This implementation is called naive because it is a rather straightforward
-##' translation of the original python code.
-##'
-##' @keywords internal
-##' @param d data object
-##' @param config list with settings
-##'
-##' @return list, one element of which is matrix with embedding coordinates
+#' Create a umap embedding
+#'
+#' This implementation is called naive because it is a rather straightforward
+#' translation of the original python code.
+#'
+#' @keywords internal
+#' @param d data object
+#' @param config list with settings
+#'
+#' @return list, one element of which is matrix with embedding coordinates
 umap.naive = function(d, config) {
   
   verbose = config$verbose
   
-  ## prep parameters
+  # prep parameters
   message.w.date("starting umap", verbose)
   if (is.na(config$a) | is.na(config$b)) {
     config[c("a", "b")] = find.ab.params(config$spread, config$min_dist)
@@ -34,7 +34,7 @@ umap.naive = function(d, config) {
     config$random_state= as.integer(stats::runif(1, 0, 2^30))
   }
   
-  ## perhaps extract knn from input
+  # perhaps extract knn from input
   knn = NULL
   if ("knn" %in% names(config)) {
     if (class(config$knn) == "umap.knn") {
@@ -47,7 +47,7 @@ umap.naive = function(d, config) {
     knn =  knn.info(d, config)
   }
   
-  ## create a graph representation
+  # create a graph representation
   graph = naive.fuzzy.simplicial.set(knn, config)
   message.w.date("creating initial embedding", verbose)
   embedding = make.initial.embedding(graph$n.elements, config, graph)
@@ -62,34 +62,34 @@ umap.naive = function(d, config) {
 
 
 
-##' predict embedding of new data given an existing umap object
-##'
-##' @keywords internal
-##' @param umap object of class umap
-##' @param data matrix with new data
-##'
-##' @return matrix with embedding coordinates
+#' predict embedding of new data given an existing umap object
+#'
+#' @keywords internal
+#' @param umap object of class umap
+#' @param data matrix with new data
+#'
+#' @return matrix with embedding coordinates
 umap.naive.predict = function(umap, data) {
 
-  ## check that data and knn are available
+  # check that data and knn are available
   missing = setdiff(c("knn", "data", "config"), names(umap))
   if (length(missing)>0) {
     umap.error("missing components: ", paste(missing, collapse=", "))
   }
 
-  ## create a configuration for the prediction
+  # create a configuration for the prediction
   config = umap$config
   config$n_epochs = floor(config$n_epochs/3)
   V = nrow(umap$layout)
   verbose = umap$config$verbose
   
-  ## obtain nearest neighbors
+  # obtain nearest neighbors
   message.w.date("creating graph of nearest neighbors", verbose)
   spectator.knn = spectator.knn.info(data, umap$data, config)
   knn = list(indexes=rbind(umap$knn$indexes, spectator.knn$indexes),
              distances=rbind(umap$knn$distances, spectator.knn$distances))  
   
-  ## create graph representation of primary and spectator data together
+  # create graph representation of primary and spectator data together
   graph = naive.fuzzy.simplicial.set(knn, config)
   message.w.date("creating initial embedding", verbose)
   embedding = make.initial.spectator.embedding(umap$layout, spectator.knn$indexes)
@@ -98,7 +98,7 @@ umap.naive.predict = function(umap, data) {
   embedding = naive.simplicial.set.embedding(graph, embedding, config,
                                              fix.observations=V)  
   
-  ## extract coordinates for just the spectator data
+  # extract coordinates for just the spectator data
   embedding = embedding[V+(1:nrow(data)),,drop=FALSE]
   message.w.date("done", verbose)
   
@@ -108,136 +108,165 @@ umap.naive.predict = function(umap, data) {
 
 
 
-## ############################################################################
-## Details of the implementation specific to umap.naive
+# ############################################################################
+# Details of the implementation specific to umap.naive
 
 
-##' create an embedding of graph into a low-dimensional space
-##'
-##' @keywords internal
-##' @param g matrix, graph connectivity as coo
-##' @param embedding matrix, coordinates for an initial graph embedding
-##' @param config list with settings
-##' @param fix.observations integer, number of points to avoid moving in optimization
-##'
-##' @return matrix with embedding,
-##' nrows is from g, ncols determined from config
+#' create an embedding of graph into a low-dimensional space
+#'
+#' @keywords internal
+#' @param g matrix, graph connectivity as coo
+#' @param embedding matrix, coordinates for an initial graph embedding
+#' @param config list with settings
+#' @param fix.observations integer, number of points to avoid moving in optimization
+#'
+#' @return matrix with embedding,
+#' nrows is from g, ncols determined from config
 naive.simplicial.set.embedding = function(g, embedding, config, fix.observations=NULL) {
 
   if (config$n_epochs==0) {
     return(embedding)
   }
+
+  # create a new matrix with an optimized embedding (here work in transpose mode)
+  result = t(embedding)
   
-  total.weight = sum(g$coo[, "value"])
-  
-  ## simplify graph a little bit
+  # simplify graph a little bit
   gmax = max(g$coo[, "value"])
   g$coo[g$coo[, "value"] < gmax/config$n_epochs, "value"] = 0
   g = reduce.coo(g)
   
-  ## create an epochs-per-sample. Keep track of it together with the graph coo
+  # create an epochs-per-sample. Keep track of it together with the graph coo
   eps = cbind(g$coo,
               eps=make.epochs.per.sample(g$coo[, "value"], config$n_epochs))
-  if (!is.null(fix.observations)) {
-    eps = eps[eps[, "from"]>fix.observations,]
+
+  # adjust the initial embedding guess
+  if (is.null(fix.observations)) {
+    # this branch occurs during an initial embedding
+    result = naive.optimize.embedding(result, config, eps)
+  } else {
+    # this branch occurs during prediction
+    # (many fixed observations, a few left to predict/optimize)
+    use.new = TRUE
+    if (use.new) {
+      eps = eps[eps[, "from"]>fix.observations, ]
+      # define the indeces that need optimizing (skips the fixed observations)
+      indeces = seq(fix.observations+1, ncol(result))
+      seeds = column.seeds(result[, indeces, drop=FALSE], key=config$transform_state)
+      # construct temporary embeddings that hold fix.observations plus one "temp" item
+      # the "temp" items will be the one that will be optimized on its own
+      temp.index = fix.observations + 1
+      temp.embedding = result[, seq_len(fix.observations+1)]
+      temp.eps = split.data.frame(eps, eps[, "from"])
+      for (i in seq_along(indeces)) {
+        temp.embedding[, temp.index] = result[, indeces[i]]
+        set.seed(seeds[i])
+        i.eps = temp.eps[[as.character(indeces[i])]]
+        if (!is.null(i.eps)) {
+          i.eps[, "from"] = temp.index
+          temp.result = naive.optimize.embedding(temp.embedding, config, i.eps)
+        }
+        result[, indeces[i]] = temp.result[, temp.index]
+      }
+    } else {
+      # original "else" implementation
+      eps = eps[eps[, "from"]>fix.observations,]
+      result = naive.optimize.embedding(result, config, eps)
+    }
   }
-  
-  result = naive.optimize.embedding(embedding, config, eps)
-  rownames(result) = g$names
-  
-  result
+
+  colnames(result) = g$names
+  t(result)
 }
 
 
 
 
-##' modify an existing embedding 
-##' 
-##' @keywords internal
-##' @param embedding matrix holding an initial embedding
-##' @param config list with settings
-##' @param eps matrix with connectivity coo graph and epochs per sample;
-##' this must be a matrix with columns "from", "to", "value", and "eps"
-##'
-##' @return matrix of same dimension as initial embedding
-naive.optimize.embedding = function(embedding, config, eps) {
+#' modify an existing embedding 
+#' 
+#' @keywords internal
+#' @param tembedding matrix, transpose of matrix with an initial embedding
+#' @param config list with settings
+#' @param eps matrix with connectivity coo graph and epochs per sample;
+#' this must be a matrix with columns "from", "to", "value", and "eps"
+#'
+#' @return matrix of same dimension as initial tembedding
+naive.optimize.embedding = function(tembedding, config, eps) {
 
-  ## number of vertices in embedding
-  V = nrow(embedding)
-  ## transpose to get observations in columns
-  embedding = t(embedding)
-
-  ## define some vectors for book-keeping
-  ## integer matrix with pairs of data
+  # number of vertices in embedding
+  V = ncol(tembedding)
+  
+  # define some vectors for book-keeping
+  # integer matrix with pairs of data
   eps.pairs = matrix(as.integer(eps[, c("from", "to")]), ncol=2)-1
   eps.val = eps[, "eps"]
-  ## epns is short for "epochs per negative sample"
+  # epns is short for "epochs per negative sample"
   epns = eps.val/config$negative_sample_rate
-  ## eon2s is short for "epochs of next negative sample"
+  # eon2s is short for "epochs of next negative sample"
   eon2s = epns
-  ## eons is short for "epochs of next sample"
+  # eons is short for "epochs of next sample"
   eons = eps.val
-  ## nns is next negative sample
+  # nns is next negative sample
   nns = rep(0, nrow(eps))
 
-  ## infer if some points should remain fixed
+  # infer if some points should remain fixed
   fix.observations = min(eps.pairs[,1])>1
-  ## extract some variables from config
+  # extract some variables from config
   abg = c(config$a, config$b, config$gamma, as.numeric(fix.observations))
   
   for (n in seq_len(config$n_epochs)) {
-    ## set the learning rate for this epoch
+    # set the learning rate for this epoch
     alpha = config$alpha * (1 - ((n-1)/config$n_epochs))
     
-    ## occasional message or output
+    # occasional message or output
     if (config$verbose) {
       message.w.date(paste0("epoch: ", n), (n %% config$verbose) == 0)
       if (!is.null(config$save)) {
-        embedding.in.progress = t(embedding)
+        embedding.in.progress = t(tembedding)
         save(embedding.in.progress, file=paste0(config$save, ".", n, ".Rda"))
       }
     }
     
-    ## identify links in graph that require attention, then process those in loop
+    # identify links in graph that require attention, then process those in loop
     adjust = eons<=n
     ihits = which(adjust)
     nns[ihits] = floor((n-eon2s[ihits])/epns[ihits])
-    embedding = optimize_epoch(embedding, eps.pairs,
-                               as.integer(adjust), nns, abg, alpha)
+    tembedding = optimize_epoch(tembedding, eps.pairs,
+                                as.integer(adjust), nns, abg, alpha)
     
-    ## prepare for next epoch
+    # prepare for next epoch
     eons[ihits] = eons[ihits] + eps.val[ihits]
     eon2s[ihits] = eon2s[ihits] + (nns[ihits]*epns[ihits])    
   } 
   
-  t(embedding)
+  tembedding
 }
 
 
 
 
-##' create a simplicial set from a distance object
-##'
-##' @keywords internal
-##' @param knn list with inform about nearest neighbors (output of knn.info)
-##' @param config list with settings
-##'
-##' @return matrix 
+#' create a simplicial set from a distance object
+#'
+#' @keywords internal
+#' @param knn list with inform about nearest neighbors (output of knn.info)
+#' @param config list with settings
+#'
+#' @return matrix 
 naive.fuzzy.simplicial.set = function(knn, config) {
   
-  ## prepare constants
+  # prepare constants
   V = nrow(knn$indexes)
   mix.ratio = config$set_op_mix_ratio
   bandwidth = config$bandwidth
   nk = config$n_neighbors
   connectivity = config$local_connectivity
 
-  ## construct a smooth map to non-integer neighbors
+  # construct a smooth map to non-integer neighbors
   n.smooth = smooth.knn.dist(knn$distance, nk,
                              local.connectivity=connectivity,
                              bandwidth=bandwidth)
 
-  ## construct a weighted connectivity matrix (manually)
+  # construct a weighted connectivity matrix (manually)
   conn = base::vector("list", V)
   for (i in 1:V) {
     conn.i = rep(0, nk)
@@ -262,11 +291,11 @@ naive.fuzzy.simplicial.set = function(knn, config) {
   class(conn) = "coo"
   
   connT = t.coo(conn)
-  ## here product is indended as a element-by-element product
+  # here product is indended as a element-by-element product
   connP = multiply.coo(conn, connT)
   
-  ## formula with standard matrix objects:
-  ##result = mix.ratio*(conn+connT-connP) + (1-mix.ratio)*(connP)
+  # formula with standard matrix objects:
+  #result = mix.ratio*(conn+connT-connP) + (1-mix.ratio)*(connP)
   result = add.coo(add.coo(conn, connT), connP, b=-1)
   result = add.coo(result, connP, a=mix.ratio, b=(1-mix.ratio))
   
@@ -276,19 +305,19 @@ naive.fuzzy.simplicial.set = function(knn, config) {
 
 
 
-##' compute a "smooth" distance to the kth neighbor and approximate first neighbor
-##'
-##' @keywords internal
-##' @param k.dist matrix with distances to k neighbors
-##' @param neighbors numeric, number of neighbors to approximate for
-##' @param iterations integers, number of iterations
-##' @param local.connectivity iteger
-##' @param bandwidth numeric
-##' @param tolerance numeric, for numeric precision
-##' @param min.dist.scale numeric, minimum distance to nearest neighbor (for display)
-##'
-##' @return list with two vectors, distances to the kth neighbor,
-##' and distance to the first nearest neighbor 
+#' compute a "smooth" distance to the kth neighbor and approximate first neighbor
+#'
+#' @keywords internal
+#' @param k.dist matrix with distances to k neighbors
+#' @param neighbors numeric, number of neighbors to approximate for
+#' @param iterations integers, number of iterations
+#' @param local.connectivity iteger
+#' @param bandwidth numeric
+#' @param tolerance numeric, for numeric precision
+#' @param min.dist.scale numeric, minimum distance to nearest neighbor (for display)
+#'
+#' @return list with two vectors, distances to the kth neighbor,
+#' and distance to the first nearest neighbor 
 smooth.knn.dist = function(k.dist, neighbors,
                            iterations=64,
                            local.connectivity=1,
@@ -299,16 +328,16 @@ smooth.knn.dist = function(k.dist, neighbors,
   target = log2(neighbors)*bandwidth
   result = rho = rep(0, nrow(k.dist))
   
-  ## for numeric interpolation
+  # for numeric interpolation
   local.int = floor(local.connectivity)
   interpolation = local.connectivity-local.int
   
-  ## precompute constants used within loop
+  # precompute constants used within loop
   k.dist.mean = mean(k.dist)
   k.dist.cols = 1:ncol(k.dist)
   
   for (i in 1:nrow(k.dist)) {
-    ## identify distances to ith point
+    # identify distances to ith point
     i.dist = k.dist[i,]
     i.nonzero = i.dist[i.dist!=0]
     i.num.nonzero = length(i.nonzero)
@@ -327,7 +356,7 @@ smooth.knn.dist = function(k.dist, neighbors,
     hi = Inf
     mid = 1
     
-    ## iterate to get a normalization factor
+    # iterate to get a normalization factor
     for (n in 2:iterations) {
       val = sapply(k.dist[i,2:ncol(k.dist)]-rho[i], max, 0)
       val = sum(exp(-val/mid))

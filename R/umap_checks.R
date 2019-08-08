@@ -117,9 +117,9 @@ umap.check.config = function(config=umap.defaults, ...) {
 ##' @return d as matrix
 umap.prep.input = function(d, config) {
   ## for d into a matrix
-  if (class(d)=="matrix") {
+  if (is(d, "matrix")) {
     d = d
-  } else if (sum(class(d) %in% c("data.frame", "data.table"))) {
+  } else if (is(d, "data.frame")) {
     d = as.matrix(d)
   } else {
     umap.error("input must be a matrix or matrix-compatible\n")

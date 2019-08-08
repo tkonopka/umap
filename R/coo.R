@@ -43,7 +43,7 @@ coo = function(x) {
 #'
 #' @return coo object
 make.coo = function(x, names, n.elements) {
-  x = x[,1:3]
+  x = x[, 1:3, drop=FALSE]
   colnames(x) = c("from", "to", "value")
   result = list(coo=x, names=names, n.elements=n.elements)
   class(result) = "coo"

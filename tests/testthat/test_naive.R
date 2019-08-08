@@ -1,11 +1,11 @@
-## tests using naive method
+# tests using naive method
 
 cat("\ntest_naive\n")
 source("synthetic.R")
 source("train_test.R")
 
 
-## configuration for testing
+# configuration for testing
 conf.testing = umap.defaults
 conf.testing$n_neighbors = 5
 conf.testing = umap.check.config(conf.testing)
@@ -16,7 +16,7 @@ test_that("synthetic fuzzy simplicial set (from dist)", {
   conf$input = "dist"
   knn = knn.info(syn0.dist, conf)
   graph = naive.fuzzy.simplicial.set(knn, conf)
-  ## top-part of expected graph (computed by python implementation)
+  # top-part of expected graph (computed by python implementation)
   expected.graph = matrix(0, ncol=3, nrow=3)
   expected.graph[1,] = c(1,2, 1)
   expected.graph[2,] = c(1,3, 0.958418847698)
@@ -37,19 +37,19 @@ test_that("synthetic fuzzy simplicial set (from data)", {
   conf$input = "data"
   knn = knn.info(syn0, conf)
   graph = naive.fuzzy.simplicial.set(knn, conf)
-  ## top-part of expected graph (computed by python implementation)
+  # top-part of expected graph (computed by python implementation)
   expected.graph = matrix(0, ncol=3, nrow=3)
   expected.graph[1,] = c(1,2, 1)
   expected.graph[2,] = c(1,3, 0.958418847698)
   expected.graph[3,] = c(1,4, 0.204675928724)  
   colnames(expected.graph) = c("from", "to", "value")
-  ## compoare top parts of graph
+  # compoare top parts of graph
   expect_equal(expected.graph, graph$coo[1:3, ], tolerance=1e-4)
 })
 
 
 test_that("saving intermediate embeddings", {
-  ## must enable verbose
+  # must enable verbose
   conf = umap.defaults
   conf$n_neighbors = 4
   conf$n_epochs = 2
@@ -64,8 +64,25 @@ test_that("saving intermediate embeddings", {
 
 
 
-## ############################################################################
-## predictions (this uses data from train_test.R
+# ############################################################################
+# small datasets down to 1 component 
+
+test_that("embedding to one component", {
+  # create full configuration object
+  conf = umap.defaults
+  conf$n_neighbors=3
+  conf$n_components=1
+  ismall = iris[1:5,1:4]
+  # only basic checks (no errors, correct format)
+  result = umap(ismall, conf)
+  expect_equal(dim(result$layout), c(5, 1))
+})
+
+
+
+
+# ############################################################################
+# predictions (this uses data from train_test.R
 
 
 test_that("predict checks knn, data components are available", {
@@ -86,7 +103,7 @@ test_that("predict returns an embedding", {
 
 test_that("predicted layout is reasonable", {  
   result = predict(i.train.u, i.test)
-  ## both training and test data are in batches of 3 from iris species
+  # both training and test data are in batches of 3 from iris species
   setsize = nrow(i.train.u$layout)/3
   primary = i.train.u$layout
   cluster.centers = matrix(0, ncol=2, nrow=3)
@@ -106,14 +123,14 @@ test_that("predicted layout is reasonable", {
 
 
 test_that("predicted layout changes with epochs", {
-  ## predict with no optimization
+  # predict with no optimization
   u0 = i.train.u
   u0$config$n_epochs=0
   result0 = predict(u0, i.test)
-  ## predict with optimization
+  # predict with optimization
   u1 = i.train.u
   result1 = predict(u1, i.test)
-  ## the two results should be different
+  # the two results should be different
   expect_gt(sum(abs(result1-result0)), 0)
 
   #plot(i.train.u$layout, pch=19, col=i.train.labels)
@@ -127,18 +144,18 @@ test_that("predict is reproducible when seed is set", {
   conf$random_state= 102030405
   conf$n_neighbors = 6
   conf$transform_state = 982771
-  conf$n_epochs=60
+  conf$n_epochs = 60
   i.seeded = umap(i.train, conf)
   
-  ## start rng in this environment
+  # start rng in this environment
   set.seed(9001)
   r1 = runif(1)
 
-  ## restart rng in this environment
+  # restart rng in this environment
   set.seed(9001)
   result.a = predict(i.seeded, i.test)
   result.b = predict(i.seeded, i.test)
-  ## even though umap uses random numbers, seed in parent should remain unchanged
+  # even though umap uses random numbers, seed in parent should remain unchanged
   r2 = runif(1)
   
   expect_equal(result.a, result.b, tolerance=1e-4)
@@ -146,18 +163,50 @@ test_that("predict is reproducible when seed is set", {
 })
 
 
+test_that("predict gives slightly different result based on seed", {
+  conf1 = umap.defaults
+  conf1$random_state= 102030405
+  conf1$n_neighbors = 6
+  conf1$transform_state = 982771
+  conf1$n_epochs = 60
+  conf2 = copy(conf1)
+  conf2$transform_state = 987654
+  u1 = umap(i.train, conf1)
+  u2 = umap(i.train, conf2)
+  
+  # initial layouts should be the same (random_state is the same)
+  expect_equal(u1$layout, u2$layout)
 
-## ############################################################################
-## small datasets down to 1 component 
+  # predictions should be different
+  p1 = predict(u1, i.test)
+  p2 = predict(u2, i.test)
+  expect_gt(sum(abs(p1-p2)), 0)  
+})
 
-test_that("embedding to one component", {
-  ## create full configuration object
+
+# ###########################################################################
+# stability of predictions (this uses data from train_test.R
+
+
+test_that("predict return same layout individually and in batch", {
   conf = umap.defaults
-  conf$n_neighbors=3
-  conf$n_components=1
-  ismall = iris[1:5,1:4]
-  ## only basic checks (no errors, correct format)
-  result = umap(ismall, conf)
-  expect_equal(dim(result$layout), c(5, 1))
+  conf$random_state= 102030405
+  conf$n_neighbors = 4
+  conf$transform_state = 982771
+  conf$n_epochs=50
+  i.seeded = umap(i.train, conf)
+  
+  result.batch = predict(i.seeded, i.test)
+  result.individual = matrix(0, ncol=2, nrow=nrow(i.test))
+  for (i in seq_len(nrow(i.test))) {
+    result.individual[i,] = predict(i.seeded, i.test[i,,drop=FALSE])
+  }
+  rownames(result.individual) = rownames(i.test)
+  
+  # sanity check = two output objects should match in structure
+  expect_equal(dim(result.individual), dim(result.batch))
+  # all the coordinates should match
+  expect_equal(result.batch[,1], result.individual[,1])
+  expect_equal(result.batch[,2], result.individual[,2])
 })
 
