@@ -7,9 +7,10 @@
 optimize_epoch(embedding, pairs, adjust, nns, abg, alpha)
 }
 \arguments{
-\item{embedding}{matrix with embedding coordinates (coordinates along columns)}
+\item{embedding}{matrix with embedding coordinates
+(This should be transpose of final embedding, with coordinates along columns, items in rows)}
 
-\item{pairs}{matrix with rows: from to; indexes must be 0-based}
+\item{pairs}{matrix with two columns; rows should link to (from to); indexes 0-based}
 
 \item{adjust}{vector with 0/1 whether to adjust or not}
 
@@ -18,8 +19,6 @@ optimize_epoch(embedding, pairs, adjust, nns, abg, alpha)
 \item{abg}{vector with configuration parameters, a, b, gamma, move_other}
 
 \item{alpha}{numeric learning rate for this epoch}
-
-\item{book}{matrix with columns: eps, epns, eon2s, eons, nns (in that order)}
 }
 \description{
 run one epoch of the umap optimization

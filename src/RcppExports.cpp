@@ -134,6 +134,23 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// optimize_embedding
+NumericMatrix optimize_embedding(NumericMatrix& embedding, IntegerMatrix& pairs, NumericVector& eps, NumericVector& epns, NumericVector& abg, double alpha0, int num_epochs);
+RcppExport SEXP _umap_optimize_embedding(SEXP embeddingSEXP, SEXP pairsSEXP, SEXP epsSEXP, SEXP epnsSEXP, SEXP abgSEXP, SEXP alpha0SEXP, SEXP num_epochsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericMatrix& >::type embedding(embeddingSEXP);
+    Rcpp::traits::input_parameter< IntegerMatrix& >::type pairs(pairsSEXP);
+    Rcpp::traits::input_parameter< NumericVector& >::type eps(epsSEXP);
+    Rcpp::traits::input_parameter< NumericVector& >::type epns(epnsSEXP);
+    Rcpp::traits::input_parameter< NumericVector& >::type abg(abgSEXP);
+    Rcpp::traits::input_parameter< double >::type alpha0(alpha0SEXP);
+    Rcpp::traits::input_parameter< int >::type num_epochs(num_epochsSEXP);
+    rcpp_result_gen = Rcpp::wrap(optimize_embedding(embedding, pairs, eps, epns, abg, alpha0, num_epochs));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_umap_dEuclidean", (DL_FUNC) &_umap_dEuclidean, 2},
@@ -146,6 +163,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_umap_mdCosine", (DL_FUNC) &_umap_mdCosine, 3},
     {"_umap_clip4", (DL_FUNC) &_umap_clip4, 3},
     {"_umap_optimize_epoch", (DL_FUNC) &_umap_optimize_epoch, 6},
+    {"_umap_optimize_embedding", (DL_FUNC) &_umap_optimize_embedding, 7},
     {NULL, NULL, 0}
 };
 

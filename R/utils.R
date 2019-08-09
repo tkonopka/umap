@@ -1,16 +1,16 @@
-## package umap
-## some handy and generic functions, including distance 
+# package umap
+# some handy and generic functions, including distance 
 
 
-## ############################################################################
-## Logging
+# ############################################################################
+# Logging
 
 
-##' Send a message() with a prefix with a data
-##'
-##' @keywords internal
-##' @param x character
-##' @param verbose logical
+#' Send a message() with a prefix with a data
+#'
+#' @keywords internal
+#' @param x character
+#' @param verbose logical
 message.w.date = function(x, verbose=FALSE) {
   if (verbose) {
     message(paste0("[",Sys.time(), "]  ", x))
@@ -20,13 +20,13 @@ message.w.date = function(x, verbose=FALSE) {
 
 
 
-## ############################################################################
-## Random number generation seeds
+# ############################################################################
+# Random number generation seeds
 
 
-##' lookup .Random.seed in global environment
-##'
-##' @keywords internal
+#' lookup .Random.seed in global environment
+#'
+#' @keywords internal
 get.global.seed = function() {
   current.seed = NA
   if (exists(".Random.seed", envir=.GlobalEnv)) {
@@ -36,10 +36,10 @@ get.global.seed = function() {
 }
 
 
-##' set .Random.seed to a pre-saved value
-##'
-##' @keywords internal
-##' @param x integer vector
+#' set .Random.seed to a pre-saved value
+#'
+#' @keywords internal
+#' @param x integer vector
 set.global.seed = function(x) {
   if (length(x)>1) {
     assign(".Random.seed", x, envir=.GlobalEnv)

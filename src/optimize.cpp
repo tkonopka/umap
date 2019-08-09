@@ -36,11 +36,11 @@ NumericVector clip4(NumericVector x, double inner, double outer) {
 //' run one epoch of the umap optimization
 //'
 //' @keywords internal
-//' @param embedding matrix with embedding coordinates (coordinates along columns)
-//' @param pairs matrix with rows: from to; indexes must be 0-based
+//' @param embedding matrix with embedding coordinates
+//' (This should be transpose of final embedding, with coordinates along columns, items in rows)
+//' @param pairs matrix with two columns; rows should link to (from to); indexes 0-based
 //' @param adjust vector with 0/1 whether to adjust or not
 //' @param nns vector with negative-neighbors-set size
-//' @param book matrix with columns: eps, epns, eon2s, eons, nns (in that order)
 //' @param abg vector with configuration parameters, a, b, gamma, move_other
 //' @param alpha numeric learning rate for this epoch
 //'
@@ -103,3 +103,61 @@ NumericMatrix optimize_epoch (NumericMatrix &embedding,
   return embedding;
 }
 				  
+
+
+//' run a series of epochs of the umap optimization
+//'
+//' @keywords internal
+//' @param embedding matrix with embedding coordinates 
+//' (This should be transpose of final embedding, with coordinates along columns, items in rows)
+//' @param pairs matrix with two columns; rows should linke to (from, to); indexes 0-based
+//' @param eps numeric vector, epochs for next sample
+//' @param epns numeric vector, epochs for next negative sample
+//' @param abg vector with configuration parameters, a, b, gamma, move_other
+//' @param alpha0 numeric, initial learning rate 
+//'
+// [[Rcpp::export]]
+NumericMatrix optimize_embedding (NumericMatrix &embedding,
+				  IntegerMatrix &pairs,		      
+				  NumericVector &eps,
+				  NumericVector &epns,
+				  NumericVector &abg,
+				  double alpha0,
+				  int num_epochs) {
+
+  int N = eps.size();
+  
+  // next negative sample (initially all zero)
+  IntegerVector nns(N);
+  // epochs of next sample (initially equal to eps)
+  NumericVector eons(N);
+  // epochs of next negative sample (initially equal to epns)
+  NumericVector eon2s(N);
+  for (int i=0; i<N; i++) {
+    eons[i] = eps[i];
+    eon2s[i] = epns[i];
+  }
+  IntegerVector adjust(N);
+  double alpha = 0.0;
+  
+  for (int n = 0; n < num_epochs; n++) {
+    alpha = alpha0 * (1 - (double(n)/double(num_epochs)));
+    int np1 = n + 1;
+    for (int i=0; i<N; i++) {
+      adjust[i] = (eons[i] <= np1);
+      if (adjust[i]) {
+    	nns[i] = floor((1.0+double(n)-eon2s[i])/epns[i]);
+      }
+    }
+    embedding = optimize_epoch(embedding, pairs, adjust, nns, abg, alpha);
+    for (int i=0; i<N; i++) {
+      if (adjust[i]) {
+    	eons[i] += eps[i];
+    	eon2s[i] += nns[i]*epns[i];
+      }
+    }
+  }
+  
+  return embedding;
+}
+

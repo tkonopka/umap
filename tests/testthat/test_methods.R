@@ -105,16 +105,7 @@ test_that("log messages during prediction verbose mode", {
   conf$n_epochs = 0
   u4 = suppressMessages(umap(i4, conf))
   expect_message(predict(u4, i4), "creating")
-})
-
-
-test_that("progress messages in verbose mode", {
-  conf = umap.defaults
-  conf$verbose = TRUE
-  conf$init = "random"
-  conf$n_epochs = 13
-  conf$verbose = 4
-  expect_message(umap(i4, conf), "12")
+  expect_message(predict(u4, i4), "optimizing")
 })
 
 

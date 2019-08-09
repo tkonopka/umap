@@ -1,20 +1,20 @@
-## package umap
-## functions for argument checking
+# package umap
+# functions for argument checking
 
 
 
-##' Validator functions for umap settings
-##'
-##' @keywords internal
-##' @param config list with umap arguments
-##' @param ... other arguments
-##'
-##' @return config object, may contain some different components from config in input
+#' Validator functions for umap settings
+#'
+#' @keywords internal
+#' @param config list with umap arguments
+#' @param ... other arguments
+#'
+#' @return config object, may contain some different components from config in input
 umap.check.config = function(config=umap.defaults, ...) {
 
   umap.check.config.class(config)
   
-  ## transfer values from arguments into the config object
+  # transfer values from arguments into the config object
   arguments = list(...)
   for (onearg in names(arguments)) {
     config[[onearg]] = arguments[[onearg]]
@@ -25,10 +25,10 @@ umap.check.config = function(config=umap.defaults, ...) {
     umap.error(paste0("missing arguments: ", paste(missing, collapse=", ")))
   }
 
-  ## manual adjustments on some settings
+  # manual adjustments on some settings
   config$n_neighbors = ceiling(config$n_neighbors)
 
-  ## checks on individual parameters
+  # checks on individual parameters
   if (config$n_neighbors<2) {
     umap.error("number of neighbors must be greater than 1")
   }
@@ -75,21 +75,21 @@ umap.check.config = function(config=umap.defaults, ...) {
   }
 
   
-  ## force some data types
+  # force some data types
   for (x in c("n_epochs", "n_neighbors", "n_components",
               "random_state", "negative_sample_rate", "transform_state")) {
     config[[x]] = as.integer(config[[x]])
   }
   
-  ## always give a metric name
+  # always give a metric name
   if (class(config$metric)=="function") {
     config$metric.function = config$metric
     config$metric = "custom"
   } else {
-    ## replace a distance description by a function
+    # replace a distance description by a function
     available.metrics = c(manhattan=mdManhattan,
-                          pearson2=mdCenteredPearson, ## relies on centering during prep
-                          pearson=mdCosine, ## relies on centering during prep
+                          pearson2=mdCenteredPearson, # relies on centering during prep
+                          pearson=mdCosine, # relies on centering during prep
                           cosine=mdCosine,
                           euclidean=mdEuclidean)
     if (config$metric %in% names(available.metrics)) {
@@ -101,22 +101,23 @@ umap.check.config = function(config=umap.defaults, ...) {
     }
   }
   
-  ## return prepared configuration
+  # return prepared configuration
   config
 }
 
 
 
 
-##' Prep primary input as a data matrix
-##'
-##' @keywords internal
-##' @param d matrix or compatible
-##' @param config list with settings
-##'
-##' @return d as matrix
+#' Prep primary input as a data matrix
+#'
+#' @keywords internal
+#' @param d matrix or compatible
+#' @param config list with settings
+#' @importFrom methods is
+#'
+#' @return d as matrix
 umap.prep.input = function(d, config) {
-  ## for d into a matrix
+  # for d into a matrix
   if (is(d, "matrix")) {
     d = d
   } else if (is(d, "data.frame")) {
@@ -124,13 +125,13 @@ umap.prep.input = function(d, config) {
   } else {
     umap.error("input must be a matrix or matrix-compatible\n")
   }
-  ## ensure data is numeric (not integer or other data type)
+  # ensure data is numeric (not integer or other data type)
   d[,1] = as.numeric(d[,1])
   
-  ## perhaps adjust the data matrix
+  # perhaps adjust the data matrix
   if (config$metric %in% c("pearson", "pearson2")) {
-    ## for pearson correlation distance, center by-sample
-    ## (this avoids computing means during correlations)
+    # for pearson correlation distance, center by-sample
+    # (this avoids computing means during correlations)
     d = t(d)
     d = t(d) - apply(d, 2, mean)
   }
@@ -141,30 +142,30 @@ umap.prep.input = function(d, config) {
 
 
 
-##' stop execution with a custom error message
-##'
-##' @keywords internal
-##' @param ... strings for error message
+#' stop execution with a custom error message
+#'
+#' @keywords internal
+#' @param ... strings for error message
 umap.error = function(...) {
   x = paste(..., collapse=" ")
   stop(paste0("umap: ", x, "\n"), call.=FALSE)
 }
 
 
-##' create a warning message
-##'
-##' @keywords internal
-##' @param ... strings for error message
+#' create a warning message
+#'
+#' @keywords internal
+#' @param ... strings for error message
 umap.warning = function(...) {
   x = paste(..., collapse=" ")
   warning(paste0("umap: ", x, "\n"), call.=FALSE)
 }
 
 
-##' Validator for config class component
-##'
-##' @keywords internal
-##' @param config list with arguments (object of class umap.config)
+#' Validator for config class component
+#'
+#' @keywords internal
+#' @param config list with arguments (object of class umap.config)
 umap.check.config.class = function(config) {
   if (class(config)!="umap.config") {
     umap.error("config is absent or corrupt")

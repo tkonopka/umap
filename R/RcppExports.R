@@ -115,15 +115,30 @@ clip4 <- function(x, inner, outer) {
 #' run one epoch of the umap optimization
 #'
 #' @keywords internal
-#' @param embedding matrix with embedding coordinates (coordinates along columns)
-#' @param pairs matrix with rows: from to; indexes must be 0-based
+#' @param embedding matrix with embedding coordinates
+#' (This should be transpose of final embedding, with coordinates along columns, items in rows)
+#' @param pairs matrix with two columns; rows should link to (from to); indexes 0-based
 #' @param adjust vector with 0/1 whether to adjust or not
 #' @param nns vector with negative-neighbors-set size
-#' @param book matrix with columns: eps, epns, eon2s, eons, nns (in that order)
 #' @param abg vector with configuration parameters, a, b, gamma, move_other
 #' @param alpha numeric learning rate for this epoch
 #'
 optimize_epoch <- function(embedding, pairs, adjust, nns, abg, alpha) {
     .Call('_umap_optimize_epoch', PACKAGE = 'umap', embedding, pairs, adjust, nns, abg, alpha)
+}
+
+#' run a series of epochs of the umap optimization
+#'
+#' @keywords internal
+#' @param embedding matrix with embedding coordinates 
+#' (This should be transpose of final embedding, with coordinates along columns, items in rows)
+#' @param pairs matrix with two columns; rows should linke to (from, to); indexes 0-based
+#' @param eps numeric vector, epochs for next sample
+#' @param epns numeric vector, epochs for next negative sample
+#' @param abg vector with configuration parameters, a, b, gamma, move_other
+#' @param alpha0 numeric, initial learning rate 
+#'
+optimize_embedding <- function(embedding, pairs, eps, epns, abg, alpha0, num_epochs) {
+    .Call('_umap_optimize_embedding', PACKAGE = 'umap', embedding, pairs, eps, epns, abg, alpha0, num_epochs)
 }
 

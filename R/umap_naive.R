@@ -202,44 +202,15 @@ naive.optimize.embedding = function(tembedding, config, eps) {
   eps.val = eps[, "eps"]
   # epns is short for "epochs per negative sample"
   epns = eps.val/config$negative_sample_rate
-  # eon2s is short for "epochs of next negative sample"
-  eon2s = epns
-  # eons is short for "epochs of next sample"
-  eons = eps.val
-  # nns is next negative sample
-  nns = rep(0, nrow(eps))
-
+  
   # infer if some points should remain fixed
   fix.observations = min(eps.pairs[,1])>1
   # extract some variables from config
   abg = c(config$a, config$b, config$gamma, as.numeric(fix.observations))
-  
-  for (n in seq_len(config$n_epochs)) {
-    # set the learning rate for this epoch
-    alpha = config$alpha * (1 - ((n-1)/config$n_epochs))
-    
-    # occasional message or output
-    if (config$verbose) {
-      message.w.date(paste0("epoch: ", n), (n %% config$verbose) == 0)
-      if (!is.null(config$save)) {
-        embedding.in.progress = t(tembedding)
-        save(embedding.in.progress, file=paste0(config$save, ".", n, ".Rda"))
-      }
-    }
-    
-    # identify links in graph that require attention, then process those in loop
-    adjust = eons<=n
-    ihits = which(adjust)
-    nns[ihits] = floor((n-eon2s[ihits])/epns[ihits])
-    tembedding = optimize_epoch(tembedding, eps.pairs,
-                                as.integer(adjust), nns, abg, alpha)
-    
-    # prepare for next epoch
-    eons[ihits] = eons[ihits] + eps.val[ihits]
-    eon2s[ihits] = eon2s[ihits] + (nns[ihits]*epns[ihits])    
-  } 
-  
-  tembedding
+
+  optimize_embedding(tembedding, eps.pairs,
+                     eps.val, epns,
+                     abg, config$alpha, as.integer(config$n_epochs)) 
 }
 
 

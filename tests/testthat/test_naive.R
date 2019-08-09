@@ -48,20 +48,6 @@ test_that("synthetic fuzzy simplicial set (from data)", {
 })
 
 
-test_that("saving intermediate embeddings", {
-  # must enable verbose
-  conf = umap.defaults
-  conf$n_neighbors = 4
-  conf$n_epochs = 2
-  conf$verbose = TRUE
-  conf$save = file.path("syn0.intermediate")
-  expect_message(umap(syn0, conf))
-  expected.files = c("syn0.intermediate.1.Rda", "syn0.intermediate.2.Rda")
-  expect_true(all(file.exists(expected.files)))
-  file.remove(expected.files)
-})
-
-
 
 
 # ############################################################################
@@ -164,12 +150,14 @@ test_that("predict is reproducible when seed is set", {
 
 
 test_that("predict gives slightly different result based on seed", {
+  # a configuration with a fixed seed
   conf1 = umap.defaults
   conf1$random_state= 102030405
   conf1$n_neighbors = 6
   conf1$transform_state = 982771
   conf1$n_epochs = 60
-  conf2 = copy(conf1)
+  # a second configuration with a different seed
+  conf2 = conf1
   conf2$transform_state = 987654
   u1 = umap(i.train, conf1)
   u2 = umap(i.train, conf2)
@@ -180,7 +168,7 @@ test_that("predict gives slightly different result based on seed", {
   # predictions should be different
   p1 = predict(u1, i.test)
   p2 = predict(u2, i.test)
-  expect_gt(sum(abs(p1-p2)), 0)  
+  expect_gt(sum(abs(p1-p2)), 0)
 })
 
 
