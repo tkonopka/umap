@@ -12,6 +12,12 @@ h1.title {
   margin-top: 1em;
   margin-bottom: 1.5em;
 }
+h2 {
+  font-size: 26px;
+}
+h3 {
+  font-size: 22px;
+}
 h2, h3 {
   margin-top: 2em;
   margin-bottom: 0.7em;
@@ -21,8 +27,11 @@ p {
   margin-bottom: 0.7em;
 }
 pre {
-  font-size: 16px;
-  line-height: 1.5;
+  font-size: 18px;
+  line-height: 1.35;
+}
+body {
+  max-width: 800px;
 }
 </style>
 
@@ -63,7 +72,7 @@ set.seed(123456)
 
 (For general information on usage of package `umap`, see the introductory vignette.)
 
-R package `umap` provides an interface to uniform manifold approximation and projection (UMAP) algorithms. There are now several implementations, including some provided by versions of python package `umap-learn'. This vignette explains some nuanced aspects of interfacing with the python package.
+R package `umap` provides an interface to uniform manifold approximation and projection (UMAP) algorithms. There are now several implementations, including versions of python package `umap-learn'. This vignette explains some aspects of interfacing with the python package.
 
 
 
@@ -82,6 +91,7 @@ The basic command to perform dimensional reduction is `umap`. By default, this f
 After completing installations, the UMAP transformation can be performed by specifying a `method` argument.
 
 ```{r umap.learn, eval=FALSE}
+library(reticulate)
 iris.umap_learn = umap(iris.data, method="umap-learn")
 ```
 
