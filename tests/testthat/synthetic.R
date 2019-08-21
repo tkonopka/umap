@@ -14,11 +14,10 @@ syn0[7,] = c(0.2, 3.5, 0.3)
 syn0[8,] = c(0.4, 3.1, 0.1)
 syn0[9,] = c(0.1, 3.3, 0.5)
 rownames(syn0) = letters[1:nrow(syn0)]
-
 syn0.dist = dist(syn0)
 
 ## classic cmdscale
-syn0.cmd = cmdscale(syn0.dist)
+#syn0.cmd = cmdscale(syn0.dist)
 
 
 ## umap ouput from python
