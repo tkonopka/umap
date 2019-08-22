@@ -171,7 +171,7 @@ make.initial.spectator.embedding = function(embedding, knn.indexes) {
   
   # fill in coordinates by simple averaging 
   for (i in 1:nrow(result)) {
-    result[i,] = colMeans(embedding[knn.indexes[i,], ])
+    result[i,] = colMeans(embedding[knn.indexes[i,], , drop=FALSE])
   }
   
   result

@@ -65,6 +65,21 @@ test_that("embedding to one component", {
 })
 
 
+test_that("prediction based on one component", {
+  # create full configuration object
+  conf = umap.defaults
+  conf$n_neighbors=3
+  conf$n_components=1
+  ismall = iris[1:5,1:4]
+  usmall = umap(ismall, conf)
+  # predict on a small dataset
+  result = predict(usmall, ismall)
+  expect_equal(dim(result), c(5, 1))
+  # predict on a single item
+  result1 = predict(usmall, ismall[1,])
+  expect_equal(dim(result1), c(1, 1))
+})
+
 
 
 # ############################################################################
