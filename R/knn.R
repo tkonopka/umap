@@ -1,23 +1,21 @@
-## package umap
-## functions to compute k nearest neighbors
+# package umap
+# functions to compute k nearest neighbors
 
 
-
-
-##' Compute knn information
-##'
-##' This function determines whether to obtain knn information using an exact
-##' brute force approach or using an approximate algorithm
-##'
-##' @keywords internal
-##' @param d data matrix
-##' @param config list with settings; relevant settings are as follows:
-##' input - "data" or "dist"
-##' n.neighbors - number of neighbors k
-##' metric.function - function with signature f(a, b)
-##' @param brute.force logical, during development, set FALSE to force stochastic knn
-##'
-##' @return list with at least two components, indexes and distances
+#' Compute knn information
+#'
+#' This function determines whether to obtain knn information using an exact
+#' brute force approach or using an approximate algorithm
+#'
+#' @keywords internal
+#' @param d data matrix
+#' @param config list with settings; relevant settings are as follows:
+#' input - "data" or "dist"
+#' n.neighbors - number of neighbors k
+#' metric.function - function with signature f(a, b)
+#' @param brute.force logical, during development, set FALSE to force stochastic knn
+#'
+#' @return list with at least two components, indexes and distances
 knn.info = function(d, config, brute.force=TRUE) {
 
   if (config$input=="dist") {
@@ -28,7 +26,7 @@ knn.info = function(d, config, brute.force=TRUE) {
   k = config$n_neighbors
 
   if (nrow(d)<2048 && brute.force) {
-    ## compute a distance matrix
+    # compute a distance matrix
     V = nrow(d)
     dT = t(d)
     d.dist = matrix(0, ncol=V, nrow=V)
@@ -38,7 +36,7 @@ knn.info = function(d, config, brute.force=TRUE) {
     d.dist = abs(d.dist + t(d.dist))
     diag(d.dist) = -1
     rownames(d.dist) = rownames(d)
-    ## compute neighbors from the distance matrix
+    # compute neighbors from the distance matrix
     result = knn.from.dist(d.dist, k)
     result$distances[,1] = 0
   } else {
@@ -50,15 +48,15 @@ knn.info = function(d, config, brute.force=TRUE) {
 }
 
 
-##' compute knn information for spectators relative to data
-##'
-##' @keywords internal
-##' @param spectators matrix with data for spectators
-##' @param d matrix with primary data
-##' @param config list with settings
-##' @param brute.force logical, during developemnt, set FALSE to force stochastic knn
-##'
-##' @return list with at least two components, indexes and distances
+#' compute knn information for spectators relative to data
+#'
+#' @keywords internal
+#' @param spectators matrix with data for spectators
+#' @param d matrix with primary data
+#' @param config list with settings
+#' @param brute.force logical, during developemnt, set FALSE to force stochastic knn
+#'
+#' @return list with at least two components, indexes and distances
 spectator.knn.info = function(spectators, d, config, brute.force=TRUE) {
   
   distfun = config$metric.function
@@ -67,27 +65,27 @@ spectator.knn.info = function(spectators, d, config, brute.force=TRUE) {
   Vs = nrow(spectators)
   k = config$n_neighbors
   
-  ## create a joint dataset with both primary and spectator data
+  # create a joint dataset with both primary and spectator data
   alldata = cbind(t(d), t(spectators))
   
   if (nrow(spectators)<1024 && brute.force) {
-    ## compute distances from spectators to data
+    # compute distances from spectators to data
     d.dist = matrix(0, ncol=Vd, nrow=Vs)
     rownames(d.dist) = rownames(spectators)
     for (i in 1:nrow(spectators)) {
-      ## compute from the ith spectator to all the 
+      # compute from the ith spectator to all the 
       d.dist[i, ] = distfun(alldata, Vd+i, Vdseq)
     }
     result = knn.from.dist(d.dist, k)
-    ## adjust result to let each item be closest to itself
+    # adjust result to let each item be closest to itself
     result$indexes[, 2:k] = result$indexes[,1:(k-1),drop=FALSE]
     result$distances[, 2:k] = result$distances[,1:(k-1),drop=FALSE]
     result$indexes[,1] = Vd+(1:Vs)
     result$distances[,1] = 0
   } else {
-    ## generate knn using a stochastic algorithm
+    # generate knn using a stochastic algorithm
     result = knn.from.data(alldata, k, distfun, subsample.k=0.3, fix.observations=Vd)
-    ## reduce result to just the knn components
+    # reduce result to just the knn components
     result$indexes = result$indexes[Vd+(1:Vs), ]
     result$distances = result$distances[Vd+(1:Vs),]
   }
@@ -97,32 +95,30 @@ spectator.knn.info = function(spectators, d, config, brute.force=TRUE) {
 }
 
 
+# ############################################################################
+# Specific implementations
 
 
-## ############################################################################
-## Specific implementations
-
-
-##' get information about k nearest neighbors from a distance object or from a matrix
-##' with distances
-##'
-##' This implementation uses sorting of distances to identify the k elements 
-##' that are nearest to each data point. The result is deterministic and exact.
-##'
-##' By definition, the first nearest neighbor to each point is the point itself.
-##' Subsequent neighbors are "true" neighbors.
-##'
-##' @keywords internal
-##' @param d dist object or matrix with distances
-##' @param k integer, number of neighbors
-##'
-##' @return list with two components;
-##' indexes identifies, for each point in dataset, the set of k neighbors
-##' distances provides distances from each point to those neighbors 
+#' get information about k nearest neighbors from a distance object or from a matrix
+#' with distances
+#'
+#' This implementation uses sorting of distances to identify the k elements 
+#' that are nearest to each data point. The result is deterministic and exact.
+#'
+#' By definition, the first nearest neighbor to each point is the point itself.
+#' Subsequent neighbors are "true" neighbors.
+#'
+#' @keywords internal
+#' @param d dist object or matrix with distances
+#' @param k integer, number of neighbors
+#'
+#' @return list with two components;
+#' indexes identifies, for each point in dataset, the set of k neighbors
+#' distances provides distances from each point to those neighbors 
 knn.from.dist = function(d, k) {
 
   ## internally, use d as a matrix
-  if (class(d)=="dist") {
+  if (is(d, "dist")) {
     d = as.matrix(d)
   }
   
@@ -134,13 +130,13 @@ knn.from.dist = function(d, k) {
     umap.error("number of neighbors must be greater than 1")
   }
   
-  ## get indexes of nearest neighbors 
+  # get indexes of nearest neighbors 
   items = 1:ncol(d)
   indexes = t(apply(d, 1, function(x) {
     items[order(x)][1:k]
   }))
   
-  ## extract a subset of the distances
+  # extract a subset of the distances
   distances = matrix(0, ncol=k, nrow=nrow(d))
   for (i in 1:nrow(d)) {
     distances[i, ] = d[i, indexes[i, ]]
@@ -152,32 +148,30 @@ knn.from.dist = function(d, k) {
 }
 
 
-
-
-##' get information about approximate k nearest neighbors from a data matrix
-##'
-##' This implementation uses a randomization scheme and thus produces
-##' results that are nondeterministic and only approximately correct. The
-##' algorithm is roughly inspired by Dong et al, but there are differences.
-##' This is a rough implementation and improvements are possible.
-##'
-##' @keywords internal
-##' @param dT matrix with data (observations in columns, features in rows)
-##' @param k integer, number of neighbors
-##' @param metric.function function that returns a metric distance
-##' @param subsample.k numeric, used for internal tuning of implementation
-##' @param fix.observations integer, number of observations in dT that will appear in knn
-##'
-##' @return list with two components;
-##' indexes - identifies, for each point in dataset, the set of k neighbors
-##' distances - provides distances from each point to those neighbors
-##' num.computed - for diagnostics only, gives the number of distances computed internally
-##' avg.
+#' get information about approximate k nearest neighbors from a data matrix
+#'
+#' This implementation uses a randomization scheme and thus produces
+#' results that are nondeterministic and only approximately correct. The
+#' algorithm is roughly inspired by Dong et al, but there are differences.
+#' This is a rough implementation and improvements are possible.
+#'
+#' @keywords internal
+#' @param dT matrix with data (observations in columns, features in rows)
+#' @param k integer, number of neighbors
+#' @param metric.function function that returns a metric distance
+#' @param subsample.k numeric, used for internal tuning of implementation
+#' @param fix.observations integer, number of observations in dT that will appear in knn
+#'
+#' @return list with two components;
+#' indexes - identifies, for each point in dataset, the set of k neighbors
+#' distances - provides distances from each point to those neighbors
+#' num.computed - for diagnostics only, gives the number of distances computed internally
+#' avg.
 knn.from.data = function(dT, k, metric.function, subsample.k=0.5, fix.observations=NULL) {
 
-  ## number of vertices, i.e. items in dataset
+  # number of vertices, i.e. items in dataset
   V = ncol(dT)
-  ## number of neighbors
+  # number of neighbors
   k = floor(k)
 
   if (!is.finite(k) | k>V | k<=1) {
@@ -193,23 +187,23 @@ knn.from.data = function(dT, k, metric.function, subsample.k=0.5, fix.observatio
     subsample.k = min(V-1, max(4, ceiling(k*subsample.k)))
   }
   
-  ## Vseq is a set of observations to link to (targets)
+  # Vseq is a set of observations to link to (targets)
   Vseq = 1:V
   if (!is.null(fix.observations)) {
     Vseq = 1:fix.observations
   }
-  ## kseq is to select first-k items in a list
+  # kseq is to select first-k items in a list
   kseq = 1:k
   Vkseq = rep(1:V, each=k)
   subsample.ratio = subsample.k/k
   
-  ## internal helper; creates a set of (neighbor-1) indexes that does not include x
+  # internal helper; creates a set of (neighbor-1) indexes that does not include x
   pick.random.k = function(x) {
     result = sample(Vseq, k, replace=F)
     result[result!=x][1:(k-1)]
   }
 
-  ## trim matrices to k rows
+  # trim matrices to k rows
   trim.to.k = function(x) {
     if (nrow(x)>k) {
       x = x[order(x[,2])[kseq],]
@@ -217,17 +211,17 @@ knn.from.data = function(dT, k, metric.function, subsample.k=0.5, fix.observatio
     x
   }
   
-  ## create a neighborhoods using a list
-  ## each element will be a matrix. Col 1 -> indexes to neighbors, Col2 -> distances 
+  # create a neighborhoods using a list
+  # each element will be a matrix. Col 1 -> indexes to neighbors, Col2 -> distances 
   B = lapply(as.list(1:V), function(i) {
     neighbors = pick.random.k(i)
     neighbor.distances = metric.function(dT, i, neighbors)
-    ## create matrix with indexes to neighbors and distances
-    ## set distance to self as -1; this ensures that self is always rank 1 
+    # create matrix with indexes to neighbors and distances
+    # set distance to self as -1; this ensures that self is always rank 1 
     result = matrix(c(i, neighbors, -1, neighbor.distances), ncol=2)
     result[order(result[,2]),]
   })
-  ## create reverse neighborhoods
+  # create reverse neighborhoods
   make.revB = function() {
     result = unlist(lapply(B, function(x) { x[kseq,1]}))
     result = split(Vkseq, result)
@@ -237,7 +231,7 @@ knn.from.data = function(dT, k, metric.function, subsample.k=0.5, fix.observatio
     result
   }
   
-  ## get indeces of neighbors for an index or a set of indeces
+  # get indeces of neighbors for an index or a set of indeces
   get.neighbors = function(x) {
     x[,1]
   }
@@ -247,32 +241,32 @@ knn.from.data = function(dT, k, metric.function, subsample.k=0.5, fix.observatio
     c(b.set, rev.set)
   }
 
-  ## keep track of what neighbors have been checked 
+  # keep track of what neighbors have been checked 
   checked = lapply(B, function(x) {x[,1]} )
   
-  ## helper; starts with a working matrix and suggests better neighbors
+  # helper; starts with a working matrix and suggests better neighbors
   get.better.neighbors = function(i) {
     mat = B[[i]]
-    ## identify neighbors from this matrix, pick a few
+    # identify neighbors from this matrix, pick a few
     i.neighbors = unique(c(mat[,1], revB[[i]]))
     i.pick = ceiling(length(i.neighbors)*subsample.ratio)
     selection = sample(i.neighbors, i.pick, replace=F)
-    ## identify neighbors not already in i.neighbors
+    # identify neighbors not already in i.neighbors
     selection.neighbors = get.Bbar.set(selection)
     already.checked = checked[[i]]
     selection = setdiff(selection.neighbors, already.checked)
     if (length(selection)==0) {
       return (matrix(0, ncol=2, nrow=0))
     }
-    ## compute distances to the candidates, but return only the good ones
+    # compute distances to the candidates, but return only the good ones
     checked[[i]] <<- c(already.checked, selection)
     result = matrix(c(selection, metric.function(dT, i, selection)), ncol=2)
     result[result[,2] < mat[k,2], , drop=FALSE]
   }
 
-  ## main iteration loop over dataset
+  # main iteration loop over dataset
   epoch = 0
-  ## keep track of vertices that have found good neighbors and those that require work
+  # keep track of vertices that have found good neighbors and those that require work
   process = rep(TRUE, V)
   while (sum(process)>0) {
     continue = 0
@@ -282,7 +276,7 @@ knn.from.data = function(dT, k, metric.function, subsample.k=0.5, fix.observatio
     for (i in which(process)) {
       better = get.better.neighbors(i)
       if (nrow(better)>0) {
-        ## update the representation of the i'th neighborhood
+        # update the representation of the i'th neighborhood
         newB[[i]] = rbind(B[[i]], better)
         process[B[[i]][,1]] = TRUE
       } else {
@@ -292,15 +286,15 @@ knn.from.data = function(dT, k, metric.function, subsample.k=0.5, fix.observatio
     B = lapply(newB, trim.to.k)
   }
 
-  ## make sure neighbors are sorted (trim.to.k does not guarantee that)
+  # make sure neighbors are sorted (trim.to.k does not guarantee that)
   B = lapply(B, function(x) { x[order(x[,2])[kseq],] })
   
-  ## convert from matrix representations 
+  # convert from matrix representations 
   indexes = lapply(B, function(x) { x[,1]} )
   indexes = do.call(rbind, indexes)
   distances = lapply(B, function(x) { x[,2]})
   distances = do.call(rbind, distances)
-  ## by definition, distances to self are zero
+  # by definition, distances to self are zero
   distances[,1] = 0
   rownames(indexes) = rownames(distances) = colnames(dT)
 
@@ -308,24 +302,22 @@ knn.from.data = function(dT, k, metric.function, subsample.k=0.5, fix.observatio
 }
 
 
-
-
-##' Repeat knn.from.data multiple times, pick the best neighbors
-##'
-##' @keywords internal
-##' @param d matrix with data
-##' @param k integer, number of neighbors
-##' @param metric.function function that returns a metric distance
-##' @param subsample.k numeric, used for internal tuning of implementation
-##' @param reps integer, number of repeats to carry out
-##'
-##' @return list of same format as knn.from.data
+#' Repeat knn.from.data multiple times, pick the best neighbors
+#'
+#' @keywords internal
+#' @param d matrix with data
+#' @param k integer, number of neighbors
+#' @param metric.function function that returns a metric distance
+#' @param subsample.k numeric, used for internal tuning of implementation
+#' @param reps integer, number of repeats to carry out
+#'
+#' @return list of same format as knn.from.data
 knn.from.data.reps = function(d, k, metric.function, subsample.k=0.5, reps=2) {
 
   V = nrow(d)
   dT = t(d)
   
-  ## generate an initial knn
+  # generate an initial knn
   result = knn.from.data(dT, k, metric.function, subsample.k)
 
   reps = ceiling(reps)
@@ -333,7 +325,7 @@ knn.from.data.reps = function(d, k, metric.function, subsample.k=0.5, reps=2) {
     return(result)
   }
   
-  ## perform more knn, keep best results
+  # perform more knn, keep best results
   for (rr in 2:reps) {
     counter = 0
     newresult = knn.from.data(dT, k, metric.function, subsample.k)

@@ -37,7 +37,7 @@ umap.naive = function(d, config) {
   # perhaps extract knn from input
   knn = NULL
   if ("knn" %in% names(config)) {
-    if (class(config$knn) == "umap.knn") {
+    if (is(config$knn, "umap.knn")) {
       message.w.date("using supplied nearest neighbors", verbose)
       knn = config$knn
     }
@@ -166,12 +166,8 @@ naive.simplicial.set.embedding = function(g, embedding, config, fix.observations
       }
       result[, indeces[i]] = temp.result[, temp.index]
     }
-
-    # original "else" implementation
-    #eps = eps[eps[, "from"]>fix.observations,]
-    #result = naive.optimize.embedding(result, config, eps)
   }
-
+  
   colnames(result) = g$names
   t(result)
 }

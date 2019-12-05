@@ -4,8 +4,13 @@
 \alias{find.ab.params}
 \title{Estimate a/b parameters}
 \usage{
-find.ab.params(spread, min.dist, alim = c(0, 20), blim = c(0, 20),
-  tolerance = 1e-08)
+find.ab.params(
+  spread,
+  min.dist,
+  alim = c(0, 20),
+  blim = c(0, 20),
+  tolerance = 1e-08
+)
 }
 \arguments{
 \item{spread}{numeric}

@@ -2,7 +2,6 @@
 # functions used in umap that manipulate coo graphs
 
 
-
 #' Create a coo representation of a square matrix
 #'
 #' @keywords internal
@@ -11,7 +10,7 @@
 #' @return matrix with three columns (from index, to index, value)
 coo = function(x) {
   
-  if (class(x)!="matrix") {
+  if (!is(x, "matrix")) {
     stop("x must be a square matrix\n")
   }
   if (nrow(x)!=ncol(x)) {
@@ -32,8 +31,6 @@ coo = function(x) {
 }
 
 
-
-
 #' Helper to construct coo objects
 #'
 #' @keywords internal
@@ -49,8 +46,6 @@ make.coo = function(x, names, n.elements) {
   class(result) = "coo"
   result
 }
-
-
 
 
 # ############################################################################
@@ -76,7 +71,7 @@ stop.coo = function(msg1, msg2="") {
 #' @param x object of class coo
 #' @param msg character, message to print alongside error
 check.coo = function(x, msg="") {
-  if (class(x)!="coo") {
+  if (!is(x, "coo")) {
     stop.coo("expecting object of class coo ", msg)
   }
 }
@@ -98,8 +93,6 @@ check.compatible.coo = function(x, y, msg="") {
 }
 
 
-
-
 # ############################################################################
 # Utility functions on coo objects
 
@@ -119,8 +112,6 @@ reduce.coo = function(x) {
 }
 
 
-
-
 #' Transpose a coo matrix
 #'
 #' @keywords internal
@@ -134,8 +125,6 @@ t.coo = function(x) {
   x$coo[,"to"] = old.from
   x
 }
-
-
 
 
 #' Multiply two coo objects element-wise
@@ -166,8 +155,6 @@ multiply.coo = function(x, y, a=1) {
 }
 
 
-
-
 #' Add two coo objects element-wise
 #'
 #' @keywords internal
@@ -193,8 +180,6 @@ add.coo = function(x, y, a=1, b=1) {
   
   result
 }
-
-
 
 
 # ############################################################################

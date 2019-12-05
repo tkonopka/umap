@@ -2,7 +2,6 @@
 # functions for argument checking
 
 
-
 #' Validator functions for umap settings
 #'
 #' @keywords internal
@@ -82,7 +81,7 @@ umap.check.config = function(config=umap.defaults, ...) {
   }
   
   # always give a metric name
-  if (class(config$metric)=="function") {
+  if (is(config$metric, "function")) {
     config$metric.function = config$metric
     config$metric = "custom"
   } else {
@@ -167,7 +166,7 @@ umap.warning = function(...) {
 #' @keywords internal
 #' @param config list with arguments (object of class umap.config)
 umap.check.config.class = function(config) {
-  if (class(config)!="umap.config") {
+  if (!is(config, "umap.config")) {
     umap.error("config is absent or corrupt")
   }
 }

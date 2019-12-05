@@ -4,8 +4,7 @@
 \alias{naive.simplicial.set.embedding}
 \title{create an embedding of graph into a low-dimensional space}
 \usage{
-naive.simplicial.set.embedding(g, embedding, config,
-  fix.observations = NULL)
+naive.simplicial.set.embedding(g, embedding, config, fix.observations = NULL)
 }
 \arguments{
 \item{g}{matrix, graph connectivity as coo}

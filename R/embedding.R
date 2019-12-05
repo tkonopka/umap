@@ -124,7 +124,7 @@ make.initial.embedding = function(V, config, g=NULL) {
   numcomp = config$n_components
   
   # make am ebedding, either using a premade matrix, or with random numbers
-  if (class(config$init) == "matrix") {
+  if (is(config$init, "matrix")) {
     result = config$init
   } else {
     result = NULL
@@ -176,5 +176,4 @@ make.initial.spectator.embedding = function(embedding, knn.indexes) {
   
   result
 }
-
 

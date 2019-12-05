@@ -1,23 +1,23 @@
-## package umap
-## functions for pretty-printing umap objects with print()
+# package umap
+# functions for pretty-printing umap objects with print()
 
 
-##' Display a summary of a umap object
-##'
-##' @keywords internal
-##' @param x umap object
-##' @param ... other parameters (not used)
-##'
-##' @export
+#' Display a summary of a umap object
+#'
+#' @keywords internal
+#' @param x umap object
+#' @param ... other parameters (not used)
+#'
+#' @export
 print.umap = function(x, ...) {
-  if (class(x)!="umap") {
+  if (!is(x, "umap")) {
     umap.error("x is not a umap object")
   }
-
+  
   V = nrow(x$layout)
   d = ncol(x$layout)
 
-  ## create output string
+  # create output string
   out = c(paste0("umap embedding of ", V, " items in ", d, " dimensions"),
           paste0("object components: ", paste(names(x), collapse=", ")))
   
@@ -27,21 +27,19 @@ print.umap = function(x, ...) {
 }
 
 
-
-
-##' Display contents of a umap configuration
-##'
-##' @keywords internal
-##' @param x object of class umap.config
-##' @param ... ignored
-##'
-##' @export
+#' Display contents of a umap configuration
+#'
+#' @keywords internal
+#' @param x object of class umap.config
+#' @param ... ignored
+#'
+#' @export
 print.umap.config = function(x, ...) {
-  if (class(x)!="umap.config") {
+  if (!is(x, "umap.config")) {
     umap.error("x is not a umap configuration object")
   }
-
-  ## produce a string of form "  z:  " of total length width
+  
+  # produce a string of form "  z:  " of total length width
   padspaces = function(z, width=24) {
     padleft = max(0, width-nchar(z)-2)
     paste(c(rep(" ", padleft), z, ": "), collapse="")
@@ -50,10 +48,10 @@ print.umap.config = function(x, ...) {
   message("umap configuration parameters")
   sapply(names(x), function(z) {
     zval = x[[z]]
-    if (class(zval) %in% c("numeric", "integer", "character", "logical")) {
+    if (sum(class(zval) %in% c("numeric", "integer", "character", "logical"))) {
       message(padspaces(z), paste(zval, collapse=" "))
     } else {
-      message(padspaces(z), "[", class(zval), "]")
+      message(padspaces(z), "[", paste(class(zval), collapse=","), "]")
     }
   })
 
@@ -61,24 +59,22 @@ print.umap.config = function(x, ...) {
 }
 
 
-
-
-##' Display summary of knn.info
-##'
-##' @keywords internal
-##' @param x object of class umap.knn
-##' @param ... ignored
-##'
-##' @export
+#' Display summary of knn.info
+#'
+#' @keywords internal
+#' @param x object of class umap.knn
+#' @param ... ignored
+#'
+#' @export
 print.umap.knn = function(x, ...) {
-  if (class(x)!="umap.knn") {
+  if (!is(x, "umap.knn")) {
     umap.error("x is not a umap knn object")
   }
-
+  
   V = nrow(x$indexes)
   k = ncol(x$indexes)
-
-  ## create output string
+  
+  # create output string
   out = c(paste0("k-nearest neighbors for ", V, " items with k=", k, ""),
           paste0("object components: ", paste(names(x), collapse=", ")),
           paste0("Note: nearest neighbors may be approximate"))
