@@ -17,3 +17,4 @@ vector of integers
 \description{
 deterministically produce random-like integers for each column in a dataset
 }
+\keyword{internal}

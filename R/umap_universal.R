@@ -123,6 +123,7 @@ center.embedding = function(x) {
 
 #' deterministically produce random-like integers for each column in a dataset
 #'
+#' @keywords internal
 #' @param x matrix, items in columns
 #' @param key numeric, a "salt" used trigger different random-like integers if needed
 #' @importFrom openssl md5
