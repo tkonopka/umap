@@ -72,7 +72,7 @@ make.spectral.embedding = function(d, g) {
   one.embedding = function(g2) {
     result = execute.spectral(g2)
     if (is.null(result)) {
-      warning("failed creating initial embedding; using random embedding insteadx",
+      warning("failed creating initial embedding; using random embedding instead",
               call.=FALSE)
       result = make.random.embedding(d, g2$n.elements)
     }
