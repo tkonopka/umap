@@ -26,12 +26,12 @@ if (reticulate::py_module_available("umap")) {
   
   ## create initial embedding
   u1 = umap(d.train, method="umap-learn", n_neighbors=10)
-  
+
   
   test_that("python umap produces output", {
     ## just check the rough type of expected output
     ## i.e. that some output came out of the python UMAP fit
-    expect_equal(class(u1), "umap")
+    expect_is(u1, "umap")
     expect_true("layout" %in% names(u1))
     expect_true("config" %in% names(u1))
     ## python implementation sets config, conveys arguments used

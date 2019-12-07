@@ -38,9 +38,9 @@ test_that("input is forced into numeric data type", {
   conf = umap.defaults
   conf$metric = "euclidean"
   mat = matrix(1:4, ncol=2)
-  expect_equal(class(mat[,1]), "integer")
+  expect_is(mat[,1], "integer")
   result = umap.prep.input(mat, conf)
-  expect_equal(class(result[,1]), "numeric")
+  expect_is(result[,1], "numeric")
 })
 
 
@@ -84,7 +84,7 @@ test_that("config detects input methods", {
 
 test_that("config replaced metric.function by a function", {
   conf = umap.check.config(umap.defaults)
-  expect_equal(class(conf$metric.function), "function")
+  expect_is(conf$metric.function, "function")
 })
 
 

@@ -33,7 +33,7 @@ test_that("coo construction from matrix with names", {
 test_that("coo in simple matrix", {
   result = coo(conmat)
   ## check construction of object
-  expect_equal(class(result), "coo")
+  expect_is(result, "coo")
   ## check size of coo object
   expect_equal(result$n.elements, 3)
   
@@ -137,7 +137,7 @@ test_that("multiplication between incompatible objects", {
 })
 
 
-test_that("multiplication gives object of correct class and size", {
+test_that("multiplication gives object of correct size", {
   mm = conmat
   rownames(mm) = colnames(mm) = letters[1:3]
   c1 = coo(mm)
