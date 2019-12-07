@@ -72,7 +72,6 @@ umap.check.config = function(config=umap.defaults, ...) {
   if (config$min_dist <=0) {
     umap.error("setting 'min_dist' must be > 0")
   }
-
   
   # force some data types
   for (x in c("n_epochs", "n_neighbors", "n_components",
@@ -100,7 +99,6 @@ umap.check.config = function(config=umap.defaults, ...) {
     }
   }
   
-  # return prepared configuration
   config
 }
 
@@ -137,8 +135,6 @@ umap.prep.input = function(d, config) {
   
   d
 }
-
-
 
 
 #' stop execution with a custom error message

@@ -123,7 +123,7 @@ make.initial.embedding = function(V, config, g=NULL) {
 
   numcomp = config$n_components
   
-  # make am ebedding, either using a premade matrix, or with random numbers
+  # make an ebedding, either using a pre-made matrix, or with random numbers
   if (is(config$init, "matrix")) {
     result = config$init
   } else {
