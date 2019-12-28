@@ -17,8 +17,6 @@ make.random.embedding = function(d, V, lims=c(-10, 10)) {
 }
 
 
-
-
 #' get a set of k eigenvectors for the laplacian of x
 #'
 #' This implementation uses package RSpectra to compute eigenvectors.
@@ -42,8 +40,6 @@ spectral.eigenvectors = function(x, k) {
   rownames(result) = x$names
   result
 }
-
-
 
 
 #' Create a spectral embedding for a connectivity graph
@@ -107,8 +103,6 @@ make.spectral.embedding = function(d, g) {
 }
 
 
-
-
 #' Create an initial embedding for a graph
 #'
 #' This either takes a set embedding from config, or sets a random state
@@ -149,8 +143,6 @@ make.initial.embedding = function(V, config, g=NULL) {
   
   result 
 }
-
-
 
 
 #' Create an initial embedding for a set of spectators
