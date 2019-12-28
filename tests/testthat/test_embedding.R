@@ -76,13 +76,13 @@ test_that("spectral embedding can revert to random", {
 
 
 test_that("spectral embedding with multiple components (2D)", {
-  ## small dataset with three disjoint components
-  ## spectral embedding should produce three layouts and stitch them together
-  mm = matrix(0, ncol=2, nrow=12)
-  mmdata = c(0,0,1,1, 0,1,0,1)
-  mm[1:4, 1:2] = mmdata
-  mm[5:8, 1:2] = mmdata + 100
-  mm[9:12, 1:2] = mmdata + 10000
+  # small dataset with three disjoint components
+  # components are of sizes 6,5,4 points
+  # spectral embedding should produce three layouts and stitch them together
+  mm = matrix(0, ncol=2, nrow=15)
+  mm[1:6, 1:2] = c(0,0,1,1,0.5,0.5,  0,1,0,1,0,1)
+  mm[7:11, 1:2] = c(0,0,1,1,0.5, 0,1,0,1,0) + 100
+  mm[12:15, 1:2] = c(0,0,1,1, 0,1,0,1) + 10000
   mmdist = as.matrix(dist(mm))
 
   ## prepare a graph 
@@ -96,33 +96,33 @@ test_that("spectral embedding with multiple components (2D)", {
   graph = naive.fuzzy.simplicial.set(knn, config)
 
   result = make.initial.embedding(graph$n.elements, config, graph)
-  expect_equal(dim(result), c(12, 2))
+  expect_equal(dim(result), c(15, 2))
 
   # test that all values in x are within
   within.range = function(x, lim=c(-10, 10)) {
     all(x >= lim[1] & x <= lim[2])
   }
   
-  # first group should be around (0, 0)
-  expect_true(within.range(result[1:4, 1], c(-10, 10)))
-  expect_true(within.range(result[1:4, 2], c(-10, 10)))
+  # first group, which is the biggest group, should be centered around (0, 0)
+  expect_true(within.range(result[1:6, 1], c(-10, 10)))
+  expect_true(within.range(result[1:6, 2], c(-10, 10)))
   # second group should be around (20, 0)
-  expect_true(within.range(result[5:8, 1], c(10, 30)))
-  expect_true(within.range(result[5:8, 2], c(-10, 10)))
-  # third group should be around (0, 20)
-  expect_true(within.range(result[9:12, 1], c(-10, 10)))
-  expect_true(within.range(result[9:12, 2], c(10, 30)))
+  expect_true(within.range(result[7:11, 1], c(10, 30)))
+  expect_true(within.range(result[7:11, 2], c(-10, 10)))
+  # third group, which is the smallest group, should be centered around (0, 20)
+  expect_true(within.range(result[12:15, 1], c(-10, 10)))
+  expect_true(within.range(result[12:15, 2], c(10, 30)))
 })
   
 
 test_that("spectral embedding with multiple components (1D)", {
-  ## small dataset with three disjoint components
-  ## spectral embedding should produce three layouts and stitch them together
-  mm = matrix(0, ncol=2, nrow=12)
-  mmdata = c(0,0,1,1, 0,1,0,1)
-  mm[1:4, 1:2] = mmdata
-  mm[5:8, 1:2] = mmdata + 100
-  mm[9:12, 1:2] = mmdata + 10000
+  # small dataset with three disjoint components
+  # components are of sizes 6,5,4 points
+  # spectral embedding should produce three layouts and stitch them together
+  mm = matrix(0, ncol=2, nrow=15)
+  mm[1:6, 1:2] = c(0,0,1,1,0.5,0.5, 0,1,0,1,0,1)
+  mm[7:11, 1:2] = c(0,0,1,1,0.5, 0,1,0,1,0) + 100
+  mm[12:15, 1:2] = c(0,0,1,1, 0,1,0,1) + 10000
   mmdist = as.matrix(dist(mm))
 
   ## prepare a graph 
@@ -136,18 +136,18 @@ test_that("spectral embedding with multiple components (1D)", {
   graph = naive.fuzzy.simplicial.set(knn, config)
 
   result = make.initial.embedding(graph$n.elements, config, graph)
-  expect_equal(dim(result), c(12, 1))
+  expect_equal(dim(result), c(15, 1))
 
   # test that all values in x are within
   within.range = function(x, lim=c(-10, 10)) {
     all(x >= lim[1] & x <= lim[2])
   }
   
-  # first group should be around (0)
-  expect_true(within.range(result[1:4, 1], c(-10, 10)))
+  # first group, which is the biggest group, should be centered around (0)
+  expect_true(within.range(result[1:6, 1], c(-10, 10)))
   # second group should be around (20)
-  expect_true(within.range(result[5:8, 1], c(10, 30)))
-  # third group should be around (40)
-  expect_true(within.range(result[9:12, 1], c(30, 50)))
+  expect_true(within.range(result[7:11, 1], c(10, 30)))
+  # third group, which is the smallest group, should be centered around (40)
+  expect_true(within.range(result[12:15, 1], c(30, 50)))
 })
-  
+
