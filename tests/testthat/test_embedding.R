@@ -83,6 +83,10 @@ test_that("spectral embedding with multiple components (2D)", {
   mm[1:6, 1:2] = c(0,0,1,1,0.5,0.5,  0,1,0,1,0,1)
   mm[7:11, 1:2] = c(0,0,1,1,0.5, 0,1,0,1,0) + 100
   mm[12:15, 1:2] = c(0,0,1,1, 0,1,0,1) + 10000
+  rownames(mm) = letters[1:nrow(mm)]
+  print("")
+  print("multiple components 2D")
+  print(mm)
   mmdist = as.matrix(dist(mm))
 
   ## prepare a graph 
@@ -96,6 +100,7 @@ test_that("spectral embedding with multiple components (2D)", {
   graph = naive.fuzzy.simplicial.set(knn, config)
 
   result = make.initial.embedding(graph$n.elements, config, graph)
+  print(result)
   expect_equal(dim(result), c(15, 2))
 
   # test that all values in x are within
@@ -123,6 +128,10 @@ test_that("spectral embedding with multiple components (1D)", {
   mm[1:6, 1:2] = c(0,0,1,1,0.5,0.5, 0,1,0,1,0,1)
   mm[7:11, 1:2] = c(0,0,1,1,0.5, 0,1,0,1,0) + 100
   mm[12:15, 1:2] = c(0,0,1,1, 0,1,0,1) + 10000
+  rownames(mm) = LETTERS[1:nrow(mm)]
+  print("")
+  print("multiple components 1D")
+  print(mm)
   mmdist = as.matrix(dist(mm))
 
   ## prepare a graph 
@@ -136,6 +145,7 @@ test_that("spectral embedding with multiple components (1D)", {
   graph = naive.fuzzy.simplicial.set(knn, config)
 
   result = make.initial.embedding(graph$n.elements, config, graph)
+  print(result)
   expect_equal(dim(result), c(15, 1))
 
   # test that all values in x are within
@@ -150,4 +160,8 @@ test_that("spectral embedding with multiple components (1D)", {
   # third group, which is the smallest group, should be centered around (40)
   expect_true(within.range(result[12:15, 1], c(30, 50)))
 })
+
+print("")
+print("warnings?")
+print(warnings())
 
