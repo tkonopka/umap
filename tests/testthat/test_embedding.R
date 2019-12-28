@@ -12,6 +12,15 @@ cat("\ntest_embedding\n")
 i4 = iris[, grep("Sepal|Petal", colnames(iris))]
 i4m = as.matrix(dist(i4))
 
+# check that all values in x are within
+all.within.range = function(x, lim=c(-10, 10)) {
+  all(x >= lim[1] & x <= lim[2])
+}
+mean.within.range = function(x, lim=c(-10, 10)) {
+  xmean = mean(x)
+  xmean >= lim[1] & xmean<= lim[2]
+}
+
 
 test_that("random initial embedding", {
   conf = umap.defaults
@@ -102,21 +111,16 @@ test_that("spectral embedding with multiple components (2D)", {
   result = make.initial.embedding(graph$n.elements, config, graph)
   print(result)
   expect_equal(dim(result), c(15, 2))
-
-  # test that all values in x are within
-  within.range = function(x, lim=c(-10, 10)) {
-    all(x >= lim[1] & x <= lim[2])
-  }
   
   # first group, which is the biggest group, should be centered around (0, 0)
-  expect_true(within.range(result[1:6, 1], c(-10, 10)))
-  expect_true(within.range(result[1:6, 2], c(-10, 10)))
+  expect_true(mean.within.range(result[1:6, 1], c(-10, 10)))
+  expect_true(mean.within.range(result[1:6, 2], c(-10, 10)))
   # second group should be around (20, 0)
-  expect_true(within.range(result[7:11, 1], c(10, 30)))
-  expect_true(within.range(result[7:11, 2], c(-10, 10)))
+  expect_true(mean.within.range(result[7:11, 1], c(10, 30)))
+  expect_true(mean.within.range(result[7:11, 2], c(-10, 10)))
   # third group, which is the smallest group, should be centered around (0, 20)
-  expect_true(within.range(result[12:15, 1], c(-10, 10)))
-  expect_true(within.range(result[12:15, 2], c(10, 30)))
+  expect_true(mean.within.range(result[12:15, 1], c(-10, 10)))
+  expect_true(mean.within.range(result[12:15, 2], c(10, 30)))
 })
   
 
@@ -148,20 +152,10 @@ test_that("spectral embedding with multiple components (1D)", {
   print(result)
   expect_equal(dim(result), c(15, 1))
 
-  # test that all values in x are within
-  within.range = function(x, lim=c(-10, 10)) {
-    all(x >= lim[1] & x <= lim[2])
-  }
-  
   # first group, which is the biggest group, should be centered around (0)
-  expect_true(within.range(result[1:6, 1], c(-10, 10)))
+  expect_true(mean.within.range(result[1:6, 1], c(-10, 10)))
   # second group should be around (20)
-  expect_true(within.range(result[7:11, 1], c(10, 30)))
+  expect_true(mean.within.range(result[7:11, 1], c(10, 30)))
   # third group, which is the smallest group, should be centered around (40)
-  expect_true(within.range(result[12:15, 1], c(30, 50)))
+  expect_true(mean.within.range(result[12:15, 1], c(30, 50)))
 })
-
-print("")
-print("warnings?")
-print(warnings())
-
