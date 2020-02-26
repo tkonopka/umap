@@ -80,7 +80,8 @@ python.umap = NULL
 #'
 #' alpha: numeric; initial value of "learning rate" of layout optimization
 #'
-#' gamma: numeric; determines, together with alpha, the learning rate of layout optimization
+#' gamma: numeric; determines, together with alpha, the learning rate of layout
+#' optimization
 #'
 #' negative_sample_rate: integer; determines how many non-neighbor points are
 #' used per point and per iteration during layout optimization
@@ -141,6 +142,7 @@ class(umap.defaults) = "umap.config"
 
 #' Computes a manifold approximation and projection
 #'
+#' @export
 #' @param d matrix, input data
 #' @param config object of class umap.config
 #' @param method character, implementation. Available methods are 'naive'
@@ -161,7 +163,6 @@ class(umap.defaults) = "umap.config"
 #' # display embedding coordinates
 #' head(iris.umap$layout)
 #'
-#' @export
 umap = function(d, config=umap.defaults, method=c("naive", "umap-learn"), ...) {
   
   # prep - check inputs, configuration settings
@@ -195,6 +196,7 @@ umap = function(d, config=umap.defaults, method=c("naive", "umap-learn"), ...) {
 
 #' project data points onto an existing umap embedding
 #'
+#' @export
 #' @param object trained object of class umap
 #' @param data matrix with data
 #' @param ... additional arguments (not used)
@@ -214,7 +216,6 @@ umap = function(d, config=umap.defaults, method=c("naive", "umap-learn"), ...) {
 #' # output is a matrix with embedding coordinates
 #' head(perturbed.embedding)
 #'
-#' @export
 predict.umap = function(object, data, ...) {
   
   umap.check.config.class(object$config)

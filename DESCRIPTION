@@ -1,6 +1,6 @@
 Package: umap
 Title: Uniform Manifold Approximation and Projection
-Version: 0.2.4.1
+Version: 0.2.4.2
 Authors@R: 
     person("Tomasz", "Konopka", , "tokonopka@gmail.com", role = c("aut", "cre"))
 Author: Tomasz Konopka [aut, cre]
@@ -23,6 +23,7 @@ Imports:
     stats
 License: MIT + file LICENSE
 URL: https://github.com/tkonopka/umap
+BugReports: https://github.com/tkonopka/umap/issues
 LinkingTo: Rcpp
 LazyData: true
 Suggests:

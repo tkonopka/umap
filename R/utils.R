@@ -9,6 +9,7 @@
 #' Send a message() with a prefix with a data
 #'
 #' @keywords internal
+#' @noRd
 #' @param x character
 #' @param verbose logical
 message.w.date = function(x, verbose=FALSE) {
@@ -27,6 +28,7 @@ message.w.date = function(x, verbose=FALSE) {
 #' lookup .Random.seed in global environment
 #'
 #' @keywords internal
+#' @noRd
 get.global.seed = function() {
   current.seed = NA
   if (exists(".Random.seed", envir=.GlobalEnv)) {
@@ -39,6 +41,7 @@ get.global.seed = function() {
 #' set .Random.seed to a pre-saved value
 #'
 #' @keywords internal
+#' @noRd
 #' @param x integer vector
 set.global.seed = function(x) {
   if (length(x)>1) {

@@ -84,7 +84,7 @@ set.seed(123456)
 
 Uniform Manifold Approximation and Projection (UMAP) is an algorithm for dimensional reduction proposed by [McInnes and Healy](https://arxiv.org/abs/1802.03426).
 
-This vignette demonstrates how to use the `umap` R package to perform dimensional reduction and data trasnformations with the UMAP method. The vignette uses a small dataset as an example, but the package is suited to process larger data with many thousands of data points.
+This vignette demonstrates how to use the `umap` R package to perform dimensional reduction and data transformations with the UMAP method. The vignette uses a small dataset as an example, but the package is suited to process larger data with many thousands of data points.
 
 The vignette covers basic usage, tuning, stability and reproducibility, and discusses toggling between different implementations of the UMAP algorithm. 
 
@@ -233,7 +233,7 @@ As demonstrated in the section on tuning, embedding of a raw dataset can be stab
 
 ### Prediction
 
-Projection of new data onto an existing embedding uses a separate random number generator, which can be controlled via parameter `transform_state`. This seed ensures that predictions executed in the exactly the same way produce identical ouput each time. In addition to stability provided by the `transform_state` seed, the default algorithm further implements a mechanism by which predictions are consistent when performed individually or in batch. Let's look at an example based on the Iris data.
+Projection of new data onto an existing embedding uses a separate random number generator, which can be controlled via parameter `transform_state`. This seed ensures that predictions executed in the exactly the same way produce identical output each time. In addition to stability provided by the `transform_state` seed, the default algorithm further implements a mechanism by which predictions are consistent when performed individually or in batch. Let's look at an example based on the Iris data.
 
 ```{r, eval=TRUE}
 # predict in batch, display first item

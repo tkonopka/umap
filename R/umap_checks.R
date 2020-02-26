@@ -5,6 +5,7 @@
 #' Validator functions for umap settings
 #'
 #' @keywords internal
+#' @noRd
 #' @param config list with umap arguments
 #' @param ... other arguments
 #'

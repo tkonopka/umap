@@ -6,6 +6,7 @@
 #' Create an embedding object compatible with package umap for very small inputs
 #'
 #' @keywords internal
+#' @noRd
 #' @param d matrix
 #' @param config list with settings
 #'

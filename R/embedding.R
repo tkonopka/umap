@@ -1,5 +1,5 @@
-## package umap
-## functions related to creating an initial embedding
+# package umap
+# functions related to creating an initial embedding
 
 
 
@@ -7,13 +7,15 @@
 #' Make an initial embedding with random coordinates
 #'
 #' @keywords internal
+#' @noRd
 #' @param d integer, number of diemsions (columns)
 #' @param V integer, number of vertices (rows)
 #' @param lims numeric vector with lower and upper bounds
-#'
+#' @importFrom stats runif
+#' 
 #' @return matrix (V,d) with random numbers
 make.random.embedding = function(d, V, lims=c(-10, 10)) {
-  matrix(stats::runif(V*d, lims[1], lims[2]), nrow=V, ncol=d)
+  matrix(runif(V*d, lims[1], lims[2]), nrow=V, ncol=d)
 }
 
 
@@ -24,19 +26,22 @@ make.random.embedding = function(d, V, lims=c(-10, 10)) {
 #' credited to https://github.com/jlmelville/uwot
 #'
 #' @keywords internal
+#' @noRd
 #' @param x coo object
 #' @param k integer
-#'
+#' @importFrom methods new as
+#' @importFrom RSpectra eigs
+#' 
 #' @return list with
 spectral.eigenvectors = function(x, k) {
   x.laplacian = laplacian.coo(x)
-  x.sparse = methods::new("dgTMatrix",
+  x.sparse = new("dgTMatrix",
                           i = as.integer(x.laplacian$coo[,"from"]-1),
                           j = as.integer(x.laplacian$coo[, "to"]-1),
                           Dim = as.integer(rep(x.laplacian$n.elements, 2)),
                           x = as.numeric(x.laplacian$coo[, "value"]))
-  x.sparse = methods::as(x.sparse, "dgCMatrix")
-  result = RSpectra::eigs(x.sparse, k, which="SM")$vectors
+  x.sparse = as(x.sparse, "dgCMatrix")
+  result = eigs(x.sparse, k, which="SM")$vectors
   rownames(result) = x$names
   result
 }
@@ -45,10 +50,13 @@ spectral.eigenvectors = function(x, k) {
 #' Create a spectral embedding for a connectivity graph
 #'
 #' @keywords internal
+#' @noRd
 #' @param d integer, number of dimensions
 #' @param g coo object
+#' @importFrom stats rnorm quantile
 #'
-#' @return embedding matrix. Might fallback on random embedding if spectral embedding fails
+#' @return embedding matrix. Might fallback on random embedding if
+#' spectral embedding fails
 make.spectral.embedding = function(d, g) {
 
   # identify connected components in graph
@@ -74,7 +82,7 @@ make.spectral.embedding = function(d, g) {
     }
     # center and rescale so that most points are in range [-10, 10]
     result = center.embedding(result)
-    range1 = stats::quantile(result[,1], p=c(0.01, 0.99))
+    range1 = quantile(result[,1], p=c(0.01, 0.99))
     expansion = 10/(range1[2]-range1[1])
     expansion*result
   }
@@ -82,11 +90,14 @@ make.spectral.embedding = function(d, g) {
   if (gcomp$n.components==1) {
     result = one.embedding(g)
   } else {
-    compsizes = sort(table(gcomp$components), decreasing=T)
+    compsizes = sort(table(gcomp$components), decreasing=TRUE)
     # create a grid of offset vectors
-    offset = lapply(as.list(1:d), function(x) { seq(0, ceiling(sqrt(length(compsizes)))) }) 
+    offset = lapply(as.list(1:d), function(x) {
+      seq(0, ceiling(sqrt(length(compsizes))))
+    }) 
     offset = as.matrix(expand.grid(offset))
-    offset = offset[order(apply(offset, 1, sum), apply(offset, 1, max)),,drop=FALSE]
+    offset = offset[order(apply(offset, 1, sum), apply(offset, 1, max)),,
+                    drop=FALSE]
     # create layout for each component in turn
     result = matrix(0, ncol=d, nrow=V)
     for (i in seq_along(compsizes)) {
@@ -94,12 +105,13 @@ make.spectral.embedding = function(d, g) {
       ioffset = offset[i,]
       ihits = gcomp$components==iname
       ig = subset.coo(g, (1:V)[ihits])
-      result[ihits, ] = one.embedding(ig) + 20*matrix(rep(ioffset, each=ig$n.elements), ncol=d)
+      result[ihits, ] = one.embedding(ig) +
+        20*matrix(rep(ioffset, each=ig$n.elements), ncol=d)
     }
   }
   
   # add some small noise
-  result + matrix(stats::rnorm(V*d, 0, 0.001), nrow=V, ncol=d)
+  result + matrix(rnorm(V*d, 0, 0.001), nrow=V, ncol=d)
 }
 
 
@@ -108,6 +120,7 @@ make.spectral.embedding = function(d, g) {
 #' This either takes a set embedding from config, or sets a random state
 #'
 #' @keywords internal
+#' @noRd
 #' @param V integer, number of vertices
 #' @param config list with settings
 #' @param g coo object with graph connectivity
@@ -148,8 +161,10 @@ make.initial.embedding = function(V, config, g=NULL) {
 #' Create an initial embedding for a set of spectators
 #'
 #' @keywords internal
+#' @noRd
 #' @param embedding matrix with an existing (primary) embedding
-#' @param knn.indexes matrix with indexes from spectators to components primary embedding
+#' @param knn.indexes matrix with indexes from spectators to components
+#' primary embedding
 #'
 #' @return matrix with an embedding for the spectator elements
 make.initial.spectator.embedding = function(embedding, knn.indexes) {

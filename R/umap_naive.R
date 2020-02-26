@@ -17,9 +17,11 @@
 #' translation of the original python code.
 #'
 #' @keywords internal
+#' @noRd
 #' @param d data object
 #' @param config list with settings
-#'
+#' @importFrom stats runif
+#' 
 #' @return list, one element of which is matrix with embedding coordinates
 umap.naive = function(d, config) {
   
@@ -31,7 +33,7 @@ umap.naive = function(d, config) {
     config[c("a", "b")] = find.ab.params(config$spread, config$min_dist)
   }
   if (is.na(config$random_state)) {
-    config$random_state= as.integer(stats::runif(1, 0, 2^30))
+    config$random_state= as.integer(runif(1, 0, 2^30))
   }
   
   # perhaps extract knn from input
@@ -65,6 +67,7 @@ umap.naive = function(d, config) {
 #' predict embedding of new data given an existing umap object
 #'
 #' @keywords internal
+#' @noRd
 #' @param umap object of class umap
 #' @param data matrix with new data
 #'
@@ -115,6 +118,7 @@ umap.naive.predict = function(umap, data) {
 #' create an embedding of graph into a low-dimensional space
 #'
 #' @keywords internal
+#' @noRd
 #' @param g matrix, graph connectivity as coo
 #' @param embedding matrix, coordinates for an initial graph embedding
 #' @param config list with settings
@@ -178,6 +182,7 @@ naive.simplicial.set.embedding = function(g, embedding, config, fix.observations
 #' modify an existing embedding 
 #' 
 #' @keywords internal
+#' @noRd
 #' @param tembedding matrix, transpose of matrix with an initial embedding
 #' @param config list with settings
 #' @param eps matrix with connectivity coo graph and epochs per sample;
@@ -212,9 +217,10 @@ naive.optimize.embedding = function(tembedding, config, eps) {
 #' create a simplicial set from a distance object
 #'
 #' @keywords internal
+#' @noRd
 #' @param knn list with inform about nearest neighbors (output of knn.info)
 #' @param config list with settings
-#'
+#' 
 #' @return matrix 
 naive.fuzzy.simplicial.set = function(knn, config) {
   
@@ -272,6 +278,7 @@ naive.fuzzy.simplicial.set = function(knn, config) {
 #' compute a "smooth" distance to the kth neighbor and approximate first neighbor
 #'
 #' @keywords internal
+#' @noRd
 #' @param k.dist matrix with distances to k neighbors
 #' @param neighbors numeric, number of neighbors to approximate for
 #' @param iterations integers, number of iterations

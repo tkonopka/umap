@@ -49,7 +49,8 @@ bandwidth: numeric; used during construction of fuzzy simplicial set
 
 alpha: numeric; initial value of "learning rate" of layout optimization
 
-gamma: numeric; determines, together with alpha, the learning rate of layout optimization
+gamma: numeric; determines, together with alpha, the learning rate of layout
+optimization
 
 negative_sample_rate: integer; determines how many non-neighbor points are
 used per point and per iteration during layout optimization

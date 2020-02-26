@@ -8,6 +8,7 @@
 #' brute force approach or using an approximate algorithm
 #'
 #' @keywords internal
+#' @noRd
 #' @param d data matrix
 #' @param config list with settings; relevant settings are as follows:
 #' input - "data" or "dist"
@@ -51,6 +52,7 @@ knn.info = function(d, config, brute.force=TRUE) {
 #' compute knn information for spectators relative to data
 #'
 #' @keywords internal
+#' @noRd
 #' @param spectators matrix with data for spectators
 #' @param d matrix with primary data
 #' @param config list with settings
@@ -109,6 +111,7 @@ spectator.knn.info = function(spectators, d, config, brute.force=TRUE) {
 #' Subsequent neighbors are "true" neighbors.
 #'
 #' @keywords internal
+#' @noRd
 #' @param d dist object or matrix with distances
 #' @param k integer, number of neighbors
 #'
@@ -156,6 +159,7 @@ knn.from.dist = function(d, k) {
 #' This is a rough implementation and improvements are possible.
 #'
 #' @keywords internal
+#' @noRd
 #' @param dT matrix with data (observations in columns, features in rows)
 #' @param k integer, number of neighbors
 #' @param metric.function function that returns a metric distance
@@ -199,7 +203,7 @@ knn.from.data = function(dT, k, metric.function, subsample.k=0.5, fix.observatio
   
   # internal helper; creates a set of (neighbor-1) indexes that does not include x
   pick.random.k = function(x) {
-    result = sample(Vseq, k, replace=F)
+    result = sample(Vseq, k, replace=FALSE)
     result[result!=x][1:(k-1)]
   }
 
@@ -250,7 +254,7 @@ knn.from.data = function(dT, k, metric.function, subsample.k=0.5, fix.observatio
     # identify neighbors from this matrix, pick a few
     i.neighbors = unique(c(mat[,1], revB[[i]]))
     i.pick = ceiling(length(i.neighbors)*subsample.ratio)
-    selection = sample(i.neighbors, i.pick, replace=F)
+    selection = sample(i.neighbors, i.pick, replace=FALSE)
     # identify neighbors not already in i.neighbors
     selection.neighbors = get.Bbar.set(selection)
     already.checked = checked[[i]]
@@ -305,6 +309,7 @@ knn.from.data = function(dT, k, metric.function, subsample.k=0.5, fix.observatio
 #' Repeat knn.from.data multiple times, pick the best neighbors
 #'
 #' @keywords internal
+#' @noRd
 #' @param d matrix with data
 #' @param k integer, number of neighbors
 #' @param metric.function function that returns a metric distance
@@ -342,5 +347,4 @@ knn.from.data.reps = function(d, k, metric.function, subsample.k=0.5, reps=2) {
 
   result
 }
-
 

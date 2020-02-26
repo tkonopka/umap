@@ -8,9 +8,11 @@
 #' Create a umap embedding using python package umap-learn
 #'
 #' @keywords internal
+#' @noRd
 #' @param d data object
 #' @param config list with settings
-#'
+#' @importFrom stats runif
+#' 
 #' @return list, one element of which is matrix with embedding coordinates
 umap.learn = function(d, config) {
   check.learn.available()
@@ -25,7 +27,7 @@ umap.learn = function(d, config) {
   
   # adjust values in config to please python type checkers
   if (is.na(config$random_state)) {
-    config$random_state= as.integer(stats::runif(1, 0, 2^30))
+    config$random_state= as.integer(runif(1, 0, 2^30))
   }
   config$verbose = 0+as.logical(config$verbose)
 
@@ -43,6 +45,7 @@ umap.learn = function(d, config) {
 #' predict embedding of new data given an existing umap object
 #'
 #' @keywords internal
+#' @noRd
 #' @param umap object of class umap
 #' @param data matrix with new data
 #'
@@ -76,6 +79,7 @@ umap.learn.predict = function(umap, data) {
 #' adjust config depending on umap-learn version
 #'
 #' @keywords internal
+#' @noRd
 #' @param config list with settings
 #'
 #' @return config list with set umap_learn_args
@@ -119,8 +123,10 @@ detect.umap.learn = function(config) {
 
 #' check whether python module is available, abort if not
 #' @keywords internal
+#' @noRd
 check.learn.available = function() {
   if (is.null(python.umap)) {
     umap.error("python package umap-learn is not available")
   }
 }
+

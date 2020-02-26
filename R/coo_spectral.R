@@ -11,6 +11,7 @@
 #' Construct an identity matrix
 #'
 #' @keywords internal
+#' @noRd
 #' @param n.elements integer, number of elements
 #' @param names character vector, names associated with the elements
 #'
@@ -30,14 +31,13 @@ identity.coo = function(n.elements, names=NULL) {
 }
 
 
-
-
 #' Construct a normalized Laplacian for a graph
 #'
 #' This implementation constructs the laplacian  element-by-element.
 #' Diagonals: 1, Element_ij = -1/sqrt(deg_i deg_j)
 #'
 #' @keywords internal
+#' @noRd
 #' @param x coo object encoding a graph
 #'
 #' @return new coo object 
@@ -75,11 +75,10 @@ laplacian.coo = function(x) {
 }
 
 
-
-
 #' Count the number of connected components in a coo graph
 #'
 #' @keywords internal
+#' @noRd
 #' @param x coo object
 #'
 #' @return list with number of connected components and a vector
@@ -126,11 +125,10 @@ concomp.coo = function(x) {
 }
 
 
-
-
 #' Subset a coo
 #'
 #' @keywords internal
+#' @noRd
 #' @param x coo object
 #' @param items items (indexes) to keep
 #'
@@ -140,9 +138,9 @@ subset.coo = function(x, items) {
   
   # check for early exit
   if (length(items)==x$n.elements) {
-    return (x);
+    return (x)
   }
-
+  
   # get logical vector for x indexes to keep
   x.keep = rep(FALSE, x$n.elements)
   x.keep[items] = TRUE
@@ -165,5 +163,4 @@ subset.coo = function(x, items) {
   
   result
 }
-
 

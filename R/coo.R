@@ -5,6 +5,7 @@
 #' Create a coo representation of a square matrix
 #'
 #' @keywords internal
+#' @noRd
 #' @param x square matrix
 #'
 #' @return matrix with three columns (from index, to index, value)
@@ -17,7 +18,8 @@ coo = function(x) {
     stop("x must be a square matrix\n")
   }
   
-  # construct coo matrix (relies on as.vector linearizing matrix column-by-column)
+  # construct coo matrix
+  # (relies on as.vector linearizing matrix column-by-column)
   nx = nrow(x)
   coo = matrix(0, ncol=3, nrow=nx*nx)
   coo[,1] = rep(1:nx, nx)
@@ -34,6 +36,7 @@ coo = function(x) {
 #' Helper to construct coo objects
 #'
 #' @keywords internal
+#' @noRd
 #' @param x coo matrix
 #' @param names character vector
 #' @param n.elements integer
@@ -55,6 +58,7 @@ make.coo = function(x, names, n.elements) {
 #' Stop execution with a custom message
 #'
 #' @keywords internal
+#' @noRd
 #' @param msg1 character
 #' @param msg2 character
 stop.coo = function(msg1, msg2="") {
@@ -68,6 +72,7 @@ stop.coo = function(msg1, msg2="") {
 #' Check class for coo
 #'
 #' @keywords internal
+#' @noRd
 #' @param x object of class coo
 #' @param msg character, message to print alongside error
 check.coo = function(x, msg="") {
@@ -80,6 +85,7 @@ check.coo = function(x, msg="") {
 #' Check that two coo objects are compatible for addition, multiplication
 #'
 #' @keywords internal
+#' @noRd
 #' @param x object of class coo
 #' @param y object of class coos
 #' @param msg character, message to print alongside error
@@ -100,6 +106,7 @@ check.compatible.coo = function(x, y, msg="") {
 #' Remove some entires in a coo matrix where values are zero
 #'
 #' @keywords internal
+#' @noRd
 #' @param x coo object
 #'
 #' @return matrix based on x, perhaps with some lines in original removed
@@ -115,6 +122,7 @@ reduce.coo = function(x) {
 #' Transpose a coo matrix
 #'
 #' @keywords internal
+#' @noRd
 #' @param x coo object
 #'
 #' @return another coo object describing a transposed matrix
@@ -132,6 +140,7 @@ t.coo = function(x) {
 #' The two input objects must be compatible (have equivalent names)
 #'
 #' @keywords internal
+#' @noRd
 #' @param x coo object
 #' @param y coo object
 #' @param a numeric, scalar for multiplication
@@ -158,6 +167,7 @@ multiply.coo = function(x, y, a=1) {
 #' Add two coo objects element-wise
 #'
 #' @keywords internal
+#' @noRd
 #' @param x coo object
 #' @param y coo object
 #' @param a numeric, scalar for addition
@@ -189,6 +199,7 @@ add.coo = function(x, y, a=1, b=1) {
 #' Convert from coo object into conventional matrix
 #'
 #' @keywords internal
+#' @noRd
 #' @param x coo object
 #'
 #' @return matrix

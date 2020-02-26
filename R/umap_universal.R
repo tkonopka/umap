@@ -10,6 +10,7 @@
 #' The algorithm assumes a narrowing-down search will produce a decent fit.
 #'
 #' @keywords internal
+#' @noRd
 #' @param spread numeric
 #' @param min.dist numeric
 #' @param alim numeric vector of length 2, initial search range for parameter a
@@ -73,6 +74,7 @@ find.ab.params = function(spread, min.dist,
 #' Compute a value to capture how often each item contributes to layout optimization
 #'
 #' @keywords internal
+#' @noRd
 #' @param w numeric vector or matrix
 #' @param epochs integer
 #'
@@ -95,6 +97,7 @@ make.epochs.per.sample = function(w, epochs) {
 #' facilitate testing the Rcpp version.
 #'
 #' @keywords internal
+#' @noRd
 #' @param x numeric; single value or a vector
 #' @param xmax maximum value for x
 #'
@@ -110,6 +113,7 @@ clip = function(x, xmax=4) {
 #' Adjust a matrix so that each column is centered around zero
 #'
 #' @keywords internal
+#' @noRd
 #' @param x matrix
 #'
 #' @return matrix of same shape as x
@@ -124,6 +128,7 @@ center.embedding = function(x) {
 #' deterministically produce random-like integers for each column in a dataset
 #'
 #' @keywords internal
+#' @noRd
 #' @param x matrix, items in columns
 #' @param key numeric, a "salt" used trigger different random-like integers if needed
 #' @importFrom openssl md5
