@@ -10,6 +10,7 @@ using namespace Rcpp;
 //' perform a compound transformation on a vector, including clipping
 //'
 //' @keywords internal
+//' @noRd
 //' @param x numeric vector
 //' @param inner numeric constant
 //' @param outer numeric constan
@@ -31,11 +32,10 @@ NumericVector clip4(NumericVector x, double inner, double outer) {
 }
 
 
-
-
 //' run one epoch of the umap optimization
 //'
 //' @keywords internal
+//' @noRd
 //' @param embedding matrix with embedding coordinates
 //' (This should be transpose of final embedding, with coordinates along columns, items in rows)
 //' @param pairs matrix with two columns; rows should link to (from to); indexes 0-based
@@ -104,10 +104,10 @@ NumericMatrix optimize_epoch (NumericMatrix &embedding,
 }
 				  
 
-
 //' run a series of epochs of the umap optimization
 //'
 //' @keywords internal
+//' @noRd
 //' @param embedding matrix with embedding coordinates 
 //' (This should be transpose of final embedding, with coordinates along columns, items in rows)
 //' @param pairs matrix with two columns; rows should linke to (from, to); indexes 0-based

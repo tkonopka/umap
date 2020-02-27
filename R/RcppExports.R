@@ -4,6 +4,7 @@
 #' compute Euclidean distance between two vectors
 #'
 #' @keywords internal
+#' @noRd
 #' @param x numeric vector
 #' @param y numeric vector
 #'
@@ -15,6 +16,7 @@ dEuclidean <- function(x, y) {
 #' compute Euclidean distances
 #'
 #' @keywords internal
+#' @noRd
 #' @param m matrix with raw data
 #' @param origin index (1-based) of origin element
 #' @param targets indexes (1-based) of target elements
@@ -27,6 +29,7 @@ mdEuclidean <- function(m, origin, targets) {
 #' compute Manhattan distance between two vectors
 #'
 #' @keywords internal
+#' @noRd
 #' @param x numeric vector
 #' @param y numeric vector
 #'
@@ -38,6 +41,7 @@ dManhattan <- function(x, y) {
 #' compute Manhattan distances
 #'
 #' @keywords internal
+#' @noRd
 #' @param m matrix with raw data
 #' @param origin index (1-based) of origin element
 #' @param targets indexes (1-based) of target elements
@@ -55,6 +59,7 @@ mdManhattan <- function(m, origin, targets) {
 #' i.e. that mean(x) = mean(y) = 0
 #'
 #' @keywords internal
+#' @noRd
 #' @param x numeric vector
 #' @param y numeric vector
 #'
@@ -66,6 +71,7 @@ dCenteredPearson <- function(x, y) {
 #' compute pearson correlation distances 
 #'
 #' @keywords internal
+#' @noRd
 #' @param m matrix with raw data
 #' @param origin index (1-based) of origin element
 #' @param targets indexes (1-based) of target elements
@@ -80,6 +86,7 @@ mdCenteredPearson <- function(m, origin, targets) {
 #' Note: values output from this function do not satisfy the triangle inequality
 #'
 #' @keywords internal
+#' @noRd
 #' @param x numeric vector
 #' @param y numeric vector
 #'
@@ -91,6 +98,7 @@ dCosine <- function(x, y) {
 #' compute cosine distances
 #'
 #' @keywords internal
+#' @noRd
 #' @param m matrix with raw data
 #' @param origin index (1-based) of origin element
 #' @param targets indexes (1-based) of target elements
@@ -103,6 +111,7 @@ mdCosine <- function(m, origin, targets) {
 #' perform a compound transformation on a vector, including clipping
 #'
 #' @keywords internal
+#' @noRd
 #' @param x numeric vector
 #' @param inner numeric constant
 #' @param outer numeric constan
@@ -115,6 +124,7 @@ clip4 <- function(x, inner, outer) {
 #' run one epoch of the umap optimization
 #'
 #' @keywords internal
+#' @noRd
 #' @param embedding matrix with embedding coordinates
 #' (This should be transpose of final embedding, with coordinates along columns, items in rows)
 #' @param pairs matrix with two columns; rows should link to (from to); indexes 0-based
@@ -130,6 +140,7 @@ optimize_epoch <- function(embedding, pairs, adjust, nns, abg, alpha) {
 #' run a series of epochs of the umap optimization
 #'
 #' @keywords internal
+#' @noRd
 #' @param embedding matrix with embedding coordinates 
 #' (This should be transpose of final embedding, with coordinates along columns, items in rows)
 #' @param pairs matrix with two columns; rows should linke to (from, to); indexes 0-based

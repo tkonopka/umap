@@ -48,3 +48,4 @@ set.global.seed = function(x) {
     assign(".Random.seed", x, envir=.GlobalEnv)
   }
 }
+

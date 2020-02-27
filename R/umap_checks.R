@@ -109,6 +109,7 @@ umap.check.config = function(config=umap.defaults, ...) {
 #' Prep primary input as a data matrix
 #'
 #' @keywords internal
+#' @noRd
 #' @param d matrix or compatible
 #' @param config list with settings
 #' @importFrom methods is
@@ -141,6 +142,7 @@ umap.prep.input = function(d, config) {
 #' stop execution with a custom error message
 #'
 #' @keywords internal
+#' @noRd
 #' @param ... strings for error message
 umap.error = function(...) {
   x = paste(..., collapse=" ")
@@ -151,6 +153,7 @@ umap.error = function(...) {
 #' create a warning message
 #'
 #' @keywords internal
+#' @noRd
 #' @param ... strings for error message
 umap.warning = function(...) {
   x = paste(..., collapse=" ")
@@ -161,6 +164,7 @@ umap.warning = function(...) {
 #' Validator for config class component
 #'
 #' @keywords internal
+#' @noRd
 #' @param config list with arguments (object of class umap.config)
 umap.check.config.class = function(config) {
   if (!is(config, "umap.config")) {

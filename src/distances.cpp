@@ -7,11 +7,10 @@
 using namespace Rcpp;
 
 
-
-
 //' compute Euclidean distance between two vectors
 //'
 //' @keywords internal
+//' @noRd
 //' @param x numeric vector
 //' @param y numeric vector
 //'
@@ -27,11 +26,10 @@ double dEuclidean(const NumericVector &x, const NumericVector &y) {
 }
 
 
-
-
 //' compute Euclidean distances
 //'
 //' @keywords internal
+//' @noRd
 //' @param m matrix with raw data
 //' @param origin index (1-based) of origin element
 //' @param targets indexes (1-based) of target elements
@@ -49,11 +47,10 @@ NumericVector mdEuclidean(const NumericMatrix &m, int origin, const NumericVecto
 }
 
 
-
-
 //' compute Manhattan distance between two vectors
 //'
 //' @keywords internal
+//' @noRd
 //' @param x numeric vector
 //' @param y numeric vector
 //'
@@ -74,11 +71,10 @@ double dManhattan(const NumericVector &x, const NumericVector &y) {
 }
 
 
-
-
 //' compute Manhattan distances
 //'
 //' @keywords internal
+//' @noRd
 //' @param m matrix with raw data
 //' @param origin index (1-based) of origin element
 //' @param targets indexes (1-based) of target elements
@@ -96,8 +92,6 @@ NumericVector mdManhattan(const NumericMatrix &m, int origin, const NumericVecto
 }
 
 
-
-
 //' compute pearson correlation distance between two vectors
 //'
 //' Pearson distance is (1-r^2)
@@ -106,6 +100,7 @@ NumericVector mdManhattan(const NumericMatrix &m, int origin, const NumericVecto
 //' i.e. that mean(x) = mean(y) = 0
 //'
 //' @keywords internal
+//' @noRd
 //' @param x numeric vector
 //' @param y numeric vector
 //'
@@ -125,11 +120,10 @@ double dCenteredPearson(const NumericVector &x, const NumericVector &y) {
 }
 
 
-
-
 //' compute pearson correlation distances 
 //'
 //' @keywords internal
+//' @noRd
 //' @param m matrix with raw data
 //' @param origin index (1-based) of origin element
 //' @param targets indexes (1-based) of target elements
@@ -147,13 +141,12 @@ NumericVector mdCenteredPearson(const NumericMatrix &m, int origin, const Numeri
 }
 
 
-
-
 //' compute cosine dissimilarity between two vectors
 //'
 //' Note: values output from this function do not satisfy the triangle inequality
 //'
 //' @keywords internal
+//' @noRd
 //' @param x numeric vector
 //' @param y numeric vector
 //'
@@ -173,11 +166,10 @@ double dCosine(const NumericVector &x, const NumericVector &y) {
 }
 
 
-
-
 //' compute cosine distances
 //'
 //' @keywords internal
+//' @noRd
 //' @param m matrix with raw data
 //' @param origin index (1-based) of origin element
 //' @param targets indexes (1-based) of target elements
