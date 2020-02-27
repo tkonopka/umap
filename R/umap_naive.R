@@ -95,7 +95,8 @@ umap.naive.predict = function(umap, data) {
   # create graph representation of primary and spectator data together
   graph = naive.fuzzy.simplicial.set(knn, config)
   message.w.date("creating initial embedding", verbose)
-  embedding = make.initial.spectator.embedding(umap$layout, spectator.knn$indexes)
+  embedding = make.initial.spectator.embedding(umap$layout,
+                                               spectator.knn$indexes)
   embedding = rbind(umap$layout, embedding)
   message.w.date("optimizing embedding", verbose)
   embedding = naive.simplicial.set.embedding(graph, embedding, config,
@@ -122,17 +123,20 @@ umap.naive.predict = function(umap, data) {
 #' @param g matrix, graph connectivity as coo
 #' @param embedding matrix, coordinates for an initial graph embedding
 #' @param config list with settings
-#' @param fix.observations integer, number of points to avoid moving in optimization
+#' @param fix.observations integer, number of points to avoid moving during
+#' optimization
 #'
 #' @return matrix with embedding,
 #' nrows is from g, ncols determined from config
-naive.simplicial.set.embedding = function(g, embedding, config, fix.observations=NULL) {
-
+naive.simplicial.set.embedding = function(g, embedding, config,
+                                          fix.observations=NULL) {
+  
   if (config$n_epochs==0) {
     return(embedding)
   }
-
-  # create a new matrix with an optimized embedding (here work in transpose mode)
+  
+  # create a new matrix with an optimized embedding
+  # (here work in transpose mode)
   result = t(embedding)
   
   # simplify graph a little bit
@@ -140,7 +144,7 @@ naive.simplicial.set.embedding = function(g, embedding, config, fix.observations
   g$coo[g$coo[, "value"] < gmax/config$n_epochs, "value"] = 0
   g = reduce.coo(g)
   
-  # create an epochs-per-sample. Keep track of it together with the graph coo
+  # create an epochs-per-sample. Track it together with the graph coo
   eps = cbind(g$coo,
               eps=make.epochs.per.sample(g$coo[, "value"], config$n_epochs))
 
@@ -154,9 +158,10 @@ naive.simplicial.set.embedding = function(g, embedding, config, fix.observations
     eps = eps[eps[, "from"]>fix.observations, , drop=FALSE]
     # define the indeces that need optimizing (skips the fixed observations)
     indeces = seq(fix.observations+1, ncol(result))
-    seeds = column.seeds(result[, indeces, drop=FALSE], key=config$transform_state)
-    # construct temporary embeddings that hold fix.observations plus one "temp" item
-    # the "temp" items will be the one that will be optimized on its own
+    seeds = column.seeds(result[, indeces, drop=FALSE],
+                         key=config$transform_state)
+    # construct temporary embeddings that hold fix.observations plus one
+    # "temp" item. The "temp" items will be optimized on its own
     temp.index = fix.observations + 1
     temp.embedding = result[, seq_len(fix.observations+1), drop=FALSE]
     temp.eps = split.data.frame(eps, eps[, "from"])
@@ -273,9 +278,7 @@ naive.fuzzy.simplicial.set = function(knn, config) {
 }
 
 
-
-
-#' compute a "smooth" distance to the kth neighbor and approximate first neighbor
+#' compute a "smooth" distance to the kth neighbor and first neighbor
 #'
 #' @keywords internal
 #' @noRd
@@ -285,7 +288,8 @@ naive.fuzzy.simplicial.set = function(knn, config) {
 #' @param local.connectivity iteger
 #' @param bandwidth numeric
 #' @param tolerance numeric, for numeric precision
-#' @param min.dist.scale numeric, minimum distance to nearest neighbor (for display)
+#' @param min.dist.scale numeric, minimum distance to nearest neighbor
+#' (for display)
 #'
 #' @return list with two vectors, distances to the kth neighbor,
 #' and distance to the first nearest neighbor 

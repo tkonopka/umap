@@ -2,8 +2,6 @@
 # functions related to creating an initial embedding
 
 
-
-
 #' Make an initial embedding with random coordinates
 #'
 #' @keywords internal
@@ -36,10 +34,10 @@ make.random.embedding = function(d, V, lims=c(-10, 10)) {
 spectral.eigenvectors = function(x, k) {
   x.laplacian = laplacian.coo(x)
   x.sparse = new("dgTMatrix",
-                          i = as.integer(x.laplacian$coo[,"from"]-1),
-                          j = as.integer(x.laplacian$coo[, "to"]-1),
-                          Dim = as.integer(rep(x.laplacian$n.elements, 2)),
-                          x = as.numeric(x.laplacian$coo[, "value"]))
+                 i = as.integer(x.laplacian$coo[,"from"]-1),
+                 j = as.integer(x.laplacian$coo[, "to"]-1),
+                 Dim = as.integer(rep(x.laplacian$n.elements, 2)),
+                 x = as.numeric(x.laplacian$coo[, "value"]))
   x.sparse = as(x.sparse, "dgCMatrix")
   result = eigs(x.sparse, k, which="SM")$vectors
   rownames(result) = x$names
@@ -76,8 +74,9 @@ make.spectral.embedding = function(d, g) {
   one.embedding = function(g2) {
     result = execute.spectral(g2)
     if (is.null(result)) {
-      warning("failed creating initial embedding; using random embedding instead",
-              call.=FALSE)
+      warn.msg = c("failed creating initial embedding;",
+                   "using random embedding instead")
+      warning(paste(warn.msg, collapse=" "), call.=FALSE)
       result = make.random.embedding(d, g2$n.elements)
     }
     # center and rescale so that most points are in range [-10, 10]
@@ -96,7 +95,7 @@ make.spectral.embedding = function(d, g) {
       seq(0, ceiling(sqrt(length(compsizes))))
     }) 
     offset = as.matrix(expand.grid(offset))
-    offset = offset[order(apply(offset, 1, sum), apply(offset, 1, max)),,
+    offset = offset[order(apply(offset, 1, sum), apply(offset, 1, max)), ,
                     drop=FALSE]
     # create layout for each component in turn
     result = matrix(0, ncol=d, nrow=V)
@@ -140,9 +139,10 @@ make.initial.embedding = function(V, config, g=NULL) {
     } else if (config$init=="random") {
       result = make.random.embedding(numcomp, V)
     }
-    if (is.null(result)) {    
-      warning("failed creating initial embedding; using random embedding instead",
-              call.=FALSE)
+    if (is.null(result)) {
+      warn.msg = c("failed creating initial embedding;",
+                   "using random embedding instead")
+      warning(paste(warn.msg, collapse=" "), call.=FALSE)
       result = make.random.embedding(numcomp, V)
     }
   }

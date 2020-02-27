@@ -29,28 +29,30 @@ the origin column and the target columns
 n_epochs: integer; number of iterations performed during
 layout optimization
 
-input: character, use either "data" or "dist"; determines whether the primary
-input argument to umap() is treated as a data matrix or as a distance matrix
+input: character, use either "data" or "dist"; determines whether the
+primary input argument to umap() is treated as a data matrix or as a
+distance matrix
 
 init: character or matrix. The default string "spectral" computes an initial
-embedding using eigenvectors of the connectivity graph matrix. An alternative is
-the string "random", which creates an initial layout based on random coordinates. 
-This setting.can also be set to a matrix, in which case layout optimization
-begins from the provided coordinates.
+embedding using eigenvectors of the connectivity graph matrix. An
+alternative is the string "random", which creates an initial layout based on
+random coordinates. This setting.can also be set to a matrix, in which case
+layout optimization begins from the provided coordinates.
 
 min_dist: numeric; determines how close points appear in the final layout
 
 set_op_ratio_mix_ratio: numeric in range [0,1]; determines who the knn-graph
 is used to create a fuzzy simplicial graph
 
-local_connectivity: numeric; used during construction of fuzzy simplicial set
+local_connectivity: numeric; used during construction of fuzzy simplicial
+set
 
 bandwidth: numeric; used during construction of fuzzy simplicial set
 
 alpha: numeric; initial value of "learning rate" of layout optimization
 
-gamma: numeric; determines, together with alpha, the learning rate of layout
-optimization
+gamma: numeric; determines, together with alpha, the learning rate of
+layout optimization
 
 negative_sample_rate: integer; determines how many non-neighbor points are
 used per point and per iteration during layout optimization
@@ -64,7 +66,8 @@ spread: numeric; used during automatic estimation of a/b parameters.
 
 random_state: integer; seed for random number generation used during umap()
 
-transform_state: integer; seed for random number generation used during predict()
+transform_state: integer; seed for random number generation used during
+predict()
 
 knn.repeat: number of times to restart knn search
 

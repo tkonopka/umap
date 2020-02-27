@@ -122,13 +122,15 @@ test_that("predicted layout is reasonable", {
   distances = as.matrix(dist(rbind(result, cluster.centers)))
   distances.to.medoids = distances[1:nrow(result), rownames(cluster.centers)]
   nearest.medoid = apply(distances.to.medoids, 1, which.min)
-  expected = setNames(rep(c(1,2), c(nrow(result)/3, 2*nrow(result)/3)), rownames(result))
+  expected = setNames(rep(c(1,2), c(nrow(result)/3, 2*nrow(result)/3)),
+                      rownames(result))
   # 3. all the setosa test points should be close to the setosa cluster centre
   # the other test points should be closer to the alternative cluster centre
   # expect_equal(sum(abs(nearest.medoid-expected)), 0)
   #
-  # Because the above test might still fail. Try a different test here
-  # Instead, check if predictions are within a reasonable range of original data
+  # The above test might still fail. So try a different test
+  # Instead, check if predictions are within a reasonable range
+  # of original data
   xr = range(i.train.u$layout[,1])
   xw = xr[2] - xr[1]
   yr = range(i.train.u$layout[,2])
@@ -167,7 +169,8 @@ test_that("predict is reproducible when seed is set", {
   set.seed(9001)
   result.a = predict(i.seeded, i.test)
   result.b = predict(i.seeded, i.test)
-  # even though umap uses random numbers, seed in parent should remain unchanged
+  # even though umap uses random numbers,
+  # seed in parent should remain unchanged
   r2 = runif(1)
   
   expect_equal(result.a, result.b, tolerance=1e-4)

@@ -83,7 +83,8 @@ mdCenteredPearson <- function(m, origin, targets) {
 
 #' compute cosine dissimilarity between two vectors
 #'
-#' Note: values output from this function do not satisfy the triangle inequality
+#' Note: values output from this function do not satisfy the
+#' triangle inequality
 #'
 #' @keywords internal
 #' @noRd
@@ -126,8 +127,10 @@ clip4 <- function(x, inner, outer) {
 #' @keywords internal
 #' @noRd
 #' @param embedding matrix with embedding coordinates
-#' (This should be transpose of final embedding, with coordinates along columns, items in rows)
-#' @param pairs matrix with two columns; rows should link to (from to); indexes 0-based
+#' (This should be transpose of final embedding, with coordinates along
+#' columns, and items in rows)
+#' @param pairs matrix with two columns; rows should link to (from to);
+#' indexes 0-based
 #' @param adjust vector with 0/1 whether to adjust or not
 #' @param nns vector with negative-neighbors-set size
 #' @param abg vector with configuration parameters, a, b, gamma, move_other
@@ -142,8 +145,10 @@ optimize_epoch <- function(embedding, pairs, adjust, nns, abg, alpha) {
 #' @keywords internal
 #' @noRd
 #' @param embedding matrix with embedding coordinates 
-#' (This should be transpose of final embedding, with coordinates along columns, items in rows)
-#' @param pairs matrix with two columns; rows should linke to (from, to); indexes 0-based
+#' (This should be transpose of final embedding, with coordinates along
+#' columns, and items in rows)
+#' @param pairs matrix with two columns; rows should linke to (from, to);
+#' indexes 0-based
 #' @param eps numeric vector, epochs for next sample
 #' @param epns numeric vector, epochs for next negative sample
 #' @param abg vector with configuration parameters, a, b, gamma, move_other

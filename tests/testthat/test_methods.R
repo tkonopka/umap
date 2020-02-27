@@ -1,16 +1,17 @@
-## tests for selecting methods
+# tests for selecting methods
 
 cat("\ntest_methods\n")
 
 
 i.select = c(1:12, 61:72, 121:132)
-i4 = iris[i.select, c("Sepal.Length", "Sepal.Width", "Petal.Length", "Petal.Width")]
+i4 = iris[i.select,
+          c("Sepal.Length", "Sepal.Width", "Petal.Length", "Petal.Width")]
 
 
 
 
-## ############################################################################
-## General expected behavior
+# ############################################################################
+# General expected behavior
 
 
 test_that("error with inappropriate method argument", {
@@ -23,15 +24,16 @@ test_that("reproducible output when seed is set", {
   conf$random_state= 102030405
   conf$init = "random"
   conf$n_epochs = 2
-  ## start rng in this environment
+  # start rng in this environment
   set.seed(9001)
   r1 = runif(1)
 
-  ## restart rng in this environment
+  # restart rng in this environment
   set.seed(9001)
   result.a = umap(i4, conf)
   result.b = umap(i4, conf)
-  ## even though umap uses random numbers, seed in parent should remain unchanged
+  # even though umap uses random numbers,
+  # seed in parent should remain unchanged
   r2 = runif(1)
   
   abdiff = sum(abs(result.a$laytout-result.b$layout))
@@ -53,8 +55,8 @@ test_that("output with rownames", {
 
 
 
-## ############################################################################
-## Settings parameters without configuration object
+# ############################################################################
+# Settings parameters without configuration object
 
 
 test_that("accept parameters in main function", {
@@ -63,7 +65,7 @@ test_that("accept parameters in main function", {
   conf$n_epochs = 2
   conf$init = "random"
   data = i4
-  ## override n_neighbors explicitly 
+  # override n_neighbors explicitly 
   result = umap(data, conf, n_neighbors=3)
   expect_equal(result$config$n_neighbors, 3)
   expect_equal(ncol(result$knn$indexes), 3)
@@ -77,15 +79,15 @@ test_that("supply knn in main", {
   conf$init = "random"
   data = i4
   result1 = umap(data, conf)
-  ## supply knn, result2 should not recompute knn
+  # supply knn, result2 should not recompute knn
   result2 = umap(data, conf, knn=result1$knn)
   expect_equal(result1$knn, result2$knn)
 })
 
 
 
-## ############################################################################
-## Logging 
+# ############################################################################
+# Logging 
 
 
 test_that("log messages in verbose mode", {
@@ -115,20 +117,19 @@ test_that("use of supplied knn", {
   conf$n_epochs = 2
   conf$init = "random"
   data = i4
-  ## override n_neighbors explicitly 
+  # override n_neighbors explicitly 
   result1 = umap(data, conf)
-  ## expect log message
+  # expect log message
   expect_message(umap(data, conf, verbose=TRUE, knn=result1$knn), "supplied")
 })
 
 
 
-## ############################################################################
-## Unusual datasets
+# ############################################################################
+# Unusual datasets
 
 
 test_that("spectral layout on two component data", {
-  ## create dataset with 
   ilarge = rbind(i4, i4+100)  
   conf = umap.defaults
   conf$n_epochs = 0

@@ -1,12 +1,12 @@
-## test for creating embeddings
+# test for creating embeddings
 
 cat("\ntest_embedding\n")
 
 
 
 
-## ############################################################################
-## Tests for function make.initial.embedding
+# ############################################################################
+# Tests for function make.initial.embedding
 
 
 i4 = iris[, grep("Sepal|Petal", colnames(iris))]
@@ -45,22 +45,22 @@ test_that("report bad manual initial embeddings", {
   conf = umap.defaults
   conf$n_components = 2
   VV = nrow(i4m)
-  ## report if columns don't match
+  # report if columns don't match
   conf$init = matrix(0, ncol=3, nrow=nrow(i4m))
   expect_error(make.initial.embedding(VV, conf))
-  ## report if rows don't match
+  # report if rows don't match
   conf$init = matrix(0, ncol=2, nrow=nrow(i4m)+2)
   expect_error(make.initial.embedding(VV, conf))
-  ## pass if all is well
+  # pass if all is well
   conf$init = matrix(0, ncol=2, nrow=nrow(i4m))
   expect_silent(make.initial.embedding(VV, conf))
 })
 
 
 test_that("spectral embedding can revert to random", {
-  ## small dataset with two disjoint components
-  ## spectral embedding should focus on one connected components
-  ## each componet is 3 elements, so should complain about size
+  # small dataset with two disjoint components
+  # spectral embedding should focus on one connected components
+  # each componet is 3 elements, so should complain about size
   mm = matrix(0, ncol=2, nrow=6)
   mm[1, ] = c(0,0)
   mm[2,] = c(1,0)
@@ -70,7 +70,7 @@ test_that("spectral embedding can revert to random", {
   mm[6,] = c(101, 100)
   mmdist = as.matrix(dist(mm))
   
-  ## prepare a graph 
+  # prepare a graph 
   config = umap.defaults
   config$init = "spectral"
   config$input = "dist"
@@ -79,8 +79,9 @@ test_that("spectral embedding can revert to random", {
   knn =  knn.info(mmdist, config)
   graph = naive.fuzzy.simplicial.set(knn, config)
   
-  ## should get warning that spectral embedding is abandoned
-  expect_warning(make.initial.embedding(graph$n.elements, config, graph),"random")
+  # should get warning that spectral embedding is abandoned
+  expect_warning(make.initial.embedding(graph$n.elements, config, graph),
+                 "random")
 })
 
 
@@ -94,7 +95,7 @@ test_that("spectral embedding with multiple components (2D)", {
   mm[12:15, 1:2] = c(0,0,1,1, 0,1,0,1) + 10000
   mmdist = as.matrix(dist(mm))
 
-  ## prepare a graph 
+  # prepare a graph 
   config = umap.defaults
   config$n_components = 2
   config$init = "spectral"
@@ -129,7 +130,7 @@ test_that("spectral embedding with multiple components (1D)", {
   mm[12:15, 1:2] = c(0,0,1,1, 0,1,0,1) + 10000
   mmdist = as.matrix(dist(mm))
 
-  ## prepare a graph 
+  # prepare a graph 
   config = umap.defaults
   config$n_components = 1
   config$init = "spectral"

@@ -71,7 +71,8 @@ find.ab.params = function(spread, min.dist,
 
 
 
-#' Compute a value to capture how often each item contributes to layout optimization
+#' Compute a value to capture how often each item contributes to layout
+#' optimization
 #'
 #' @keywords internal
 #' @noRd
@@ -130,7 +131,7 @@ center.embedding = function(x) {
 #' @keywords internal
 #' @noRd
 #' @param x matrix, items in columns
-#' @param key numeric, a "salt" used trigger different random-like integers if needed
+#' @param key numeric, a "salt" used trigger different random-like integers
 #' @importFrom openssl md5
 #'
 #' @return vector of integers
@@ -144,7 +145,8 @@ column.seeds = function(x, key=123) {
   }
 
   # split up the large matrix into parts, then batch-md5 each part
-  # (splitting into parts avoids creating string-like representations of entire dataset)
+  # (splitting into parts avoids creating string-like representations
+  # of entire dataset)
   xlen = ncol(x)
   xparts = split(seq_len(xlen), floor(seq_len(xlen) / 256))
   result = rep(0, xlen)

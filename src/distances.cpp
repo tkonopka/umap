@@ -1,6 +1,7 @@
 // package umap
 // functions to compute distances
-// it would be great to simplify the "matrix" distance functions into a single function 
+// it would be great to simplify the "matrix" distance functions into a
+// single function 
 
 #include <Rcpp.h>
 #include <math.h>
@@ -143,7 +144,8 @@ NumericVector mdCenteredPearson(const NumericMatrix &m, int origin, const Numeri
 
 //' compute cosine dissimilarity between two vectors
 //'
-//' Note: values output from this function do not satisfy the triangle inequality
+//' Note: values output from this function do not satisfy the
+//' triangle inequality
 //'
 //' @keywords internal
 //' @noRd

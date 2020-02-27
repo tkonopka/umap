@@ -7,12 +7,14 @@ cat("\ntest_universal\n")
 ## Tests for smoothing of knns
 
 
-d2 = matrix(c(1.1, 1.2, 1.3, 1.4, 0, 0, 0.5, 0.8), nrow=2, ncol=4, byrow=T)
+d2 = matrix(c(1.1, 1.2, 1.3, 1.4, 0, 0, 0.5, 0.8),
+            nrow=2, ncol=4, byrow=T)
 
 test_that("smoothing, k2", {
   ## k=2 (expected from python iplementation)
   result2 = smooth.knn.dist(d2, 2)
-  expected2 = list(distances=c(0.16410065, 0.000325), nearest=c(1.1, 0.5))
+  expected2 = list(distances=c(0.16410065, 0.000325),
+                   nearest=c(1.1, 0.5))
   expect_equal(result2, expected2, tolerance=1e-6)
 })
 
@@ -20,7 +22,8 @@ test_that("smoothing, k2", {
 test_that("smoothing, k3", {
   ## k=3 (expected from python implementation)
   result3 = smooth.knn.dist(d2, 3)
-  expected3 = list(distances=c(0.2959671, 0.000325), nearest=c(1.1, 0.5))
+  expected3 = list(distances=c(0.2959671, 0.000325),
+                   nearest=c(1.1, 0.5))
   expect_equal(result3, expected3, tolerance=1e-6)
 })
 
@@ -28,7 +31,8 @@ test_that("smoothing, k3", {
 test_that("smoothing, local 0.5", {
   ## k=2, local.connectivity 0.5 (expected from python implementation)
   result.local05 = smooth.knn.dist(d2, 2, local.connectivity=0.5)
-  expected.local05 = list(distances=c(0.67821503, 0.015625), nearest=c(0.55, 0.25))
+  expected.local05 = list(distances=c(0.67821503, 0.015625),
+                          nearest=c(0.55, 0.25))
   expect_equal(result.local05, expected.local05, tolerance=1e-6)
 })
 
@@ -36,7 +40,8 @@ test_that("smoothing, local 0.5", {
 test_that("smoothing, local 3", {
   ## k=2, local connectivity 3 (expected from python implementation)
   result.local3 = smooth.knn.dist(d2, 2, local.connectivity=3)
-  expected.local3 = list(distances=c(0.00125, 0.000325), nearest=c(1.3, 0.8))
+  expected.local3 = list(distances=c(0.00125, 0.000325),
+                         nearest=c(1.3, 0.8))
   expect_equal(result.local3, expected.local3, tolerance=1e-6)
 })
 

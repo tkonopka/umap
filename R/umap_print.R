@@ -48,9 +48,10 @@ print.umap.config = function(x, ...) {
   }
   
   message("umap configuration parameters")
+  primitives = c("numeric", "integer", "character", "logical")
   vapply(names(x), function(z) {
     zval = x[[z]]
-    if (sum(class(zval) %in% c("numeric", "integer", "character", "logical"))) {
+    if (sum(class(zval) %in% primitives)) {
       message(padspaces(z), paste(zval, collapse=" "))
     } else {
       message(padspaces(z), "[", paste(class(zval), collapse=","), "]")

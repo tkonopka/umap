@@ -9,7 +9,7 @@
 #' @param config list with umap arguments
 #' @param ... other arguments
 #'
-#' @return config object, may contain some different components from config in input
+#' @return config object, may contain different components from config in input
 umap.check.config = function(config=umap.defaults, ...) {
 
   umap.check.config.class(config)
@@ -47,24 +47,28 @@ umap.check.config = function(config=umap.defaults, ...) {
 
   # checks on embedding control via (a, b) vs. (min_dist, spread)
   if (!identical(config$a, NA) & identical(config$b, NA)) {
-    umap.warning("parameter 'a' is set but 'b' is not;\n",
-                 "value of 'a' will be ignored.\n",
-                 "(Embedding will be controlled via 'min_dist' and 'spread')")
+    umap.warning(
+      "parameter 'a' is set but 'b' is not;\n",
+      "value of 'a' will be ignored.\n",
+      "(Embedding will be controlled via 'min_dist' and 'spread')")
   }
   if (!identical(config$b, NA) & identical(config$a, NA)) {
-    umap.warning("parameter 'b' is set but 'a' is not;\n",
-                 "value of 'b' will be ignored.\n",
-                 "(Embedding will be controlled via 'min_dist' and 'spread')") 
+    umap.warning(
+      "parameter 'b' is set but 'a' is not;\n",
+      "value of 'b' will be ignored.\n",
+      "(Embedding will be controlled via 'min_dist' and 'spread')") 
   }
   if (!identical(config$a, NA) & !identical(config$b, NA)) {
     abcontrol = "(Embedding will be controlled via 'a' and 'b')"
     if (!identical(config$min_dist, umap.defaults$min_dist)) {
-      umap.warning("parameters 'min_dist', 'a', 'b' are set to non-default values;\n",
-                   "parameter 'min_dist' will be ignored.\n", abcontrol)
+      umap.warning(
+        "parameters 'min_dist', 'a', 'b' are set to non-default values;\n",
+        "parameter 'min_dist' will be ignored.\n", abcontrol)
     }
     if (!identical(config$spread, umap.defaults$spread)) {
-      umap.warning("parameters 'spread', 'a', 'b' are set to non-default values;\n",
-                   "parameter 'spread' will be ignored.\n", abcontrol)
+      umap.warning(
+        "parameters 'spread', 'a', 'b' are set to non-default values;\n",
+        "parameter 'spread' will be ignored.\n", abcontrol)
     }
   }
   if (config$min_dist >= config$spread) {
@@ -86,9 +90,12 @@ umap.check.config = function(config=umap.defaults, ...) {
     config$metric = "custom"
   } else {
     # replace a distance description by a function
+    # Notes:
+    # mdCenteredPearson - relies on centering during prep
+    # mdCosine - relies on centering during prep
     available.metrics = c(manhattan=mdManhattan,
-                          pearson2=mdCenteredPearson, # relies on centering during prep
-                          pearson=mdCosine, # relies on centering during prep
+                          pearson2=mdCenteredPearson, 
+                          pearson=mdCosine, 
                           cosine=mdCosine,
                           euclidean=mdEuclidean)
     if (config$metric %in% names(available.metrics)) {
