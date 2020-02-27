@@ -329,20 +329,20 @@ smooth.knn.dist = function(k.dist, neighbors,
     
     # iterate to get a normalization factor
     for (n in 2:iterations) {
-      val = sapply(k.dist[i,2:ncol(k.dist)]-rho[i], max, 0)
+      val = pmax(k.dist[i, 2:ncol(k.dist)]-rho[i], 0)
       val = sum(exp(-val/mid))
       if (abs(val-target)<tolerance) {
         break
       }
       if (val>target) {
         hi = mid
-        mid = mean(c(lo, hi))
+        mid = (lo+hi)/2
       } else {
         lo = mid
         if (!is.finite(hi)) {
           mid = mid*2
         } else {
-          mid = mean(c(lo, hi))
+          mid = (lo + hi)/2
         }
       }
     }

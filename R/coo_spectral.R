@@ -54,7 +54,8 @@ laplacian.coo = function(x) {
 
   # get degrees
   degrees = x$coo[order(x$coo[, "from"]), ]
-  degrees = sapply(split(degrees[,"value"], degrees[, "from"]), sum)
+  degrees = vapply(split(degrees[,"value"], degrees[, "from"]), sum,
+                   numeric(1))
   
   # construct diagonal part of the laplacian
   result = identity.coo(x$n.elements, x$names)
@@ -96,7 +97,8 @@ concomp.coo = function(x) {
   
   # make sure only looking at non-zero components
   x = reduce.coo(x)
-  # get lists of neighbors (this will be a list with keys e.g. "1", "2", etc.
+  # get lists of neighbors
+  # (this will be a list with keys e.g. "1", "2", etc.)
   neighbors = split(x$coo[, "to"], x$coo[, "from"])
 
   epoch = 0
