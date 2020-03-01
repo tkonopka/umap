@@ -206,7 +206,7 @@ test_that("knn from data links spectators to primary data", {
   # result should have indexes and distance components
   expect_true(all(c("indexes", "distances") %in% names(result)))
   # indexes should show all observation link to themselves
-  expect_equivalent(result$indexes[,1], 1:nrow(result$indexes))
+  expect_equivalent(result$indexes[,1], seq_len(nrow(result$indexes)))
   # indexes to further neighbors should only link to primary data
   expect_lt(max(result$indexes[, 2:6]), num.primary+1)
 })

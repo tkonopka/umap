@@ -9,9 +9,9 @@ library(reticulate)
 d.train = matrix(rnorm(400), ncol=4)
 d.train[,1] = d.train[,1] - 1
 d.train[,2] = d.train[,2] + 1
-rownames(d.train) = paste0("Train", 1:nrow(d.train))
+rownames(d.train) = paste0("Train", seq_len(nrow(d.train)))
 d.test = matrix(rnorm(200), ncol=4)
-rownames(d.test) = paste0("Test", 1:nrow(d.test))
+rownames(d.test) = paste0("Test", seq_len(nrow(d.test)))
 
 
 

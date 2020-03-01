@@ -22,8 +22,9 @@ coo = function(x) {
   # (relies on as.vector linearizing matrix column-by-column)
   nx = nrow(x)
   coo = matrix(0, ncol=3, nrow=nx*nx)
-  coo[,1] = rep(1:nx, nx)
-  coo[,2] = rep(1:nx, each=nx)
+  coo[,1] = rep(seq_len(nx), nx)
+  coo[,2] = rep(seq_len(nx), each=nx)
+  
   coo[,3] = as.vector(x)
   colnames(coo) = c("from", "to", "value")
   # for convention, sort by (from, to)
@@ -208,7 +209,7 @@ coo2mat = function(x) {
   
   result = matrix(0, ncol=x$n.elements, nrow=x$n.elements)
   mat = x$coo
-  for (i in 1:nrow(mat)) {
+  for (i in seq_len(nrow(mat))) {
     result[mat[i,"from"], mat[i,"to"]] = mat[i, "value"]
   }
   

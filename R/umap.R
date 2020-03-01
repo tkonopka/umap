@@ -25,6 +25,11 @@ NULL
 # This implements a "soft" requirement for python and the umap module
 # i.e. the package should work when those components are absent
 # but gain additional functionality when those components are present
+#' interface to umap-learn via reticulate
+#'
+#' @keywords internal
+#' @noRd
+#' @importFrom reticulate py_module_available import
 python.umap = NULL
 .onLoad = function(libname, pkgname) {
   if (suppressWarnings(suppressMessages(requireNamespace("reticulate")))) {

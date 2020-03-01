@@ -52,7 +52,7 @@ test_that("prep centers input for pearson distance", {
   mat[,1] = 1:3
   mat[,2] = 11:13
   expected = mat
-  for (i in 1:nrow(mat)) {
+  for (i in seq_len(nrow(mat))) {
     expected[i,] = mat[i,] - mean(mat[i,])
   }
   result = umap.prep.input(mat, conf)

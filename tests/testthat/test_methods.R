@@ -47,7 +47,7 @@ test_that("output with rownames", {
   conf$n_epochs = 2
   conf$init = "random"
   data = i4
-  rownames(data) = paste0("S", 1:nrow(i4))
+  rownames(data) = paste0("S", seq_len(nrow(i4)))
   result = umap(data, conf)
   expect_equal(rownames(result$layout), rownames(data))
 })

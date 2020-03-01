@@ -82,7 +82,7 @@ find.ab.params = function(spread, min.dist,
 #' @return numeric vector of same length as w
 make.epochs.per.sample = function(w, epochs) {
   result = w
-  result[1:length(w)] = rep(-1, length(w))
+  result[seq_len(length(w))] = rep(-1, length(w))
   n.samples = epochs*(w/max(w))
   n.positive = n.samples>0
   result[n.positive] = epochs / n.samples[n.positive]

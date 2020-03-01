@@ -103,7 +103,7 @@ umap.naive.predict = function(umap, data) {
                                              fix.observations=V)  
   
   # extract coordinates for just the spectator data
-  embedding = embedding[V+(1:nrow(data)),,drop=FALSE]
+  embedding = embedding[V + seq_len(nrow(data)), , drop=FALSE]
   message.w.date("done", verbose)
   
   embedding
@@ -309,9 +309,9 @@ smooth.knn.dist = function(k.dist, neighbors,
   
   # precompute constants used within loop
   k.dist.mean = mean(k.dist)
-  k.dist.cols = 1:ncol(k.dist)
+  k.dist.cols = seq_len(ncol(k.dist))
   
-  for (i in 1:nrow(k.dist)) {
+  for (i in seq_len(nrow(k.dist))) {
     # identify distances to ith point
     i.dist = k.dist[i,]
     i.nonzero = i.dist[i.dist!=0]

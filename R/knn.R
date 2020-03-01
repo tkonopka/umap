@@ -65,7 +65,7 @@ spectator.knn.info = function(spectators, d, config, brute.force=TRUE) {
   
   distfun = config$metric.function
   Vd = nrow(d)
-  Vdseq = 1:Vd
+  Vdseq = seq_len(Vd)
   Vs = nrow(spectators)
   k = config$n_neighbors
   
@@ -76,7 +76,7 @@ spectator.knn.info = function(spectators, d, config, brute.force=TRUE) {
     # compute distances from spectators to data
     d.dist = matrix(0, ncol=Vd, nrow=Vs)
     rownames(d.dist) = rownames(spectators)
-    for (i in 1:nrow(spectators)) {
+    for (i in seq_len(nrow(spectators))) {
       # compute from the ith spectator to all the 
       d.dist[i, ] = distfun(alldata, Vd+i, Vdseq)
     }
@@ -137,14 +137,14 @@ knn.from.dist = function(d, k) {
   }
   
   # get indexes of nearest neighbors 
-  items = 1:ncol(d)
+  items = seq_len(ncol(d))
   indexes = t(apply(d, 1, function(x) {
     items[order(x)][1:k]
   }))
   
   # extract a subset of the distances
   distances = matrix(0, ncol=k, nrow=nrow(d))
-  for (i in 1:nrow(d)) {
+  for (i in seq_len(nrow(d))) {
     distances[i, ] = d[i, indexes[i, ]]
   }
   
@@ -198,13 +198,13 @@ knn.from.data = function(dT, k, metric.function, subsample.k=0.5,
   }
   
   # Vseq is a set of observations to link to (targets)
-  Vseq = 1:V
+  Vseq = seq_len(V)
   if (!is.null(fix.observations)) {
-    Vseq = 1:fix.observations
+    Vseq = seq_len(fix.observations)
   }
   # kseq is to select first-k items in a list
-  kseq = 1:k
-  Vkseq = rep(1:V, each=k)
+  kseq = seq_len(k)
+  Vkseq = rep(seq_len(V), each=k)
   subsample.ratio = subsample.k/k
   
   # create a set of (neighbor-1) indexes that does not include x
@@ -224,7 +224,7 @@ knn.from.data = function(dT, k, metric.function, subsample.k=0.5,
   # create a neighborhoods using a list
   # each element will be a matrix.
   # Col 1 -> indexes to neighbors, Col2 -> distances 
-  B = lapply(as.list(1:V), function(i) {
+  B = lapply(seq_len(V), function(i) {
     neighbors = pick.random.k(i)
     neighbor.distances = metric.function(dT, i, neighbors)
     # create matrix with indexes to neighbors and distances

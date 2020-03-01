@@ -115,12 +115,13 @@ test_that("predicted layout is reasonable", {
   setsize = nrow(i.train.u$layout)/3
   primary = i.train.u$layout
   cluster.centers = matrix(0, ncol=2, nrow=2)
-  cluster.centers[1,] = colMeans(primary[1:setsize,])
+  cluster.centers[1,] = colMeans(primary[seq_len(setsize),])
   cluster.centers[2,] = colMeans(primary[(setsize+1):nrow(primary),])
   rownames(cluster.centers) = paste0("medoid", 1:2)
   # 2. Look at distances from predicted points to the cluster centers
   distances = as.matrix(dist(rbind(result, cluster.centers)))
-  distances.to.medoids = distances[1:nrow(result), rownames(cluster.centers)]
+  distances.to.medoids = distances[seq_len(nrow(result)),
+                                   rownames(cluster.centers)]
   nearest.medoid = apply(distances.to.medoids, 1, which.min)
   expected = setNames(rep(c(1,2), c(nrow(result)/3, 2*nrow(result)/3)),
                       rownames(result))

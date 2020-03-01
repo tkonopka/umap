@@ -155,10 +155,10 @@ subset.coo = function(x, items) {
     names(result$names) = NULL
   }
   result$n.elements = length(items)
-
+  
   # re-label from-to
   new.indexes = rep(NA, x$n.elements)
-  new.indexes[which(x.keep)] = 1:length(items)
+  new.indexes[which(x.keep)] = seq_along(items)
   
   result$coo[, "from"] = new.indexes[result$coo[, "from"]]
   result$coo[, "to"] = new.indexes[result$coo[, "to"]]
