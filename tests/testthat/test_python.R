@@ -1,7 +1,6 @@
 # tests for running python umap
 
 cat("\ntest_python\n")
-library(reticulate)
 
 
 # for the python implemenation, small iris-based datasets give warnings

@@ -18,8 +18,6 @@
 NULL
 
 
-
-
 # These lines are required to control access to the umap python module
 #
 # This implements a "soft" requirement for python and the umap module
@@ -32,16 +30,12 @@ NULL
 #' @importFrom reticulate py_module_available import
 python.umap = NULL
 .onLoad = function(libname, pkgname) {
-  if (suppressWarnings(suppressMessages(requireNamespace("reticulate")))) {
-    has.pkg.umap = reticulate::py_module_available("umap")
-    if (has.pkg.umap) {
-      # assignment in parent environment!
-      python.umap <<- reticulate::import("umap", delay_load=TRUE)
-    }
+  has.pkg.umap = reticulate::py_module_available("umap")
+  if (has.pkg.umap) {
+    # assignment in parent environment!
+    python.umap <<- reticulate::import("umap", delay_load=TRUE)
   }
 }
-
-
 
 
 #' Default configuration for umap 
