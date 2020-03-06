@@ -19,10 +19,16 @@ rownames(d.test) = paste0("Test", seq_len(nrow(d.test)))
 # Only test if umap is available as python package
 
 
-if (reticulate::py_module_available("umap")) {
-  # Note: a more elegant approach with skip() does not seem to work
-  # devtools::test() stops when skip() is invoked
-  
+# this "try" block is necessary because:
+# a system that does not have python at all will generate a warning,
+# which can generate a NOTE during R CMD check (winbuilder)
+has.umap.learn = FALSE
+try({
+  has.umap.learn = reticulate::py_module_available("umap")
+}, silent=TRUE)
+
+
+if (has.umap.learn) {  
   # create initial embedding
   u1 = umap(d.train, method="umap-learn", n_neighbors=10)
 

@@ -18,8 +18,11 @@
 NULL
 
 
-# These lines are required to control access to the umap python module
-#
+# For interfacing with python and "umap-learn"
+#' @importFrom reticulate py_module_available import
+NULL
+
+
 # This implements a "soft" requirement for python and the umap module
 # i.e. the package should work when those components are absent
 # but gain additional functionality when those components are present
@@ -27,17 +30,19 @@ NULL
 #'
 #' @keywords internal
 #' @noRd
-#' @importFrom reticulate py_module_available import
 python.umap = NULL
 .onLoad = function(libname, pkgname) {
-  has.pkg.umap = reticulate::py_module_available("umap")
-  if (has.pkg.umap) {
-    # assignment in parent environment!
+  # this "try" block is necessary because:
+  # a system that python but not umap-learn stops during the test suite
+  # with the following sequence of commands (devtools)
+  # document(); test(); test()
+  # note that test() only fails at second round
+  try({
     python.umap <<- reticulate::import("umap", delay_load=TRUE)
-  }
+  }, silent=TRUE)
 }
 
-
+  
 #' Default configuration for umap 
 #'
 #' A list with parameters customizing a UMAP embedding. Each component of the
