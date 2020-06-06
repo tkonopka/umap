@@ -101,7 +101,7 @@ detect.umap.learn = function(config) {
   main.version = paste(strsplit(learn.version, "\\.")[[1]][1:2], collapse=".")
   
   args.version = list(
-    "0.2" = c("n_neighbors", "n_components","metric", "n_epochs", "alpha",
+    "0.2" = c("n_neighbors", "n_components", "metric", "n_epochs", "alpha",
               "init", "spread", "min_dist", "set_op_mix_ratio",
               "local_connectivity", "bandwidth", "gamma",
               "negative_sample_rate",
@@ -113,15 +113,34 @@ detect.umap.learn = function(config) {
               "negative_sample_rate",
               "transform_queue_size", "a", "b", "random_state",
               "angular_rp_forest", "target_n_neighbors",
-              "target_metric", "target_weight", "transform_seed", "verbose")
+              "target_metric", "target_weight", "transform_seed", "verbose"),
+    "0.4" = c("n_neighbors", "n_components",
+              "metric", "metric_kwds", "output_metric", "output_metric_kwds",
+              "n_epochs", "learning_rate", 
+              "init",
+              "min_dist", "spread",
+              "low_memory", "set_op_mix_ratio",
+              "local_connectivity", "repulsion_strength",
+              "negative_sample_rate",
+              "transform_queue_size", "a", "b", "random_state",
+              "angular_rp_forest",
+              "target_n_neighbors",
+              "target_metric", "target_metric_kwds", "target_weight",
+              "transform_seed", "force_approximation_algorithm",
+              "verbose", "unique")
   )
-  args.version$latest = args.version[["0.3"]]
-
+  latest.name = "0.4"
+  args.version$latest = args.version[[latest.name]]
+  
   if (main.version %in% names(args.version)) {    
     config$umap_learn_args = args.version[[main.version]]
   } else {
-    warning(paste0("cannot recognize umap-learn version ", learn.version,
-                   "; set umap_learn_args manually"))
+    version.msg = c("Detected umap-learn ", learn.version, " ",
+                    "but last supported version is ", latest.name, ";\n",
+                    "setting arguments to match version ", latest.name, ".\n",
+                    "To override this behavior, ",
+                    "set config$umap_learn_args manually.")
+    warning(version.msg)
     config$umap_learn_args = args.version$latest
   }
   config$umap_learn_args = intersect(config$umap_learn_args, names(config))
