@@ -6,6 +6,7 @@
 */*.log
 */*.pdf
 */*.out
+.idea
 
 ## compiled cpp
 *o

@@ -2,6 +2,36 @@
 # functions to compute k nearest neighbors
 
 
+#' construct a umap.knn object descibing nearest neighbors
+#'
+#' @export
+#' @param indexes matrix, integers linking data points to nearest neighbors
+#' @param distances matrix, distance values between pairs of points specified
+#' in the matrix of indexes
+#'
+#' @return object of class umap.knn
+#'
+#' @examples
+#'
+#' # this example describes a set of three data points (indexes 1,2,3)
+#' # which are equidistant from each other. Hence the distance between
+#' # pairs (i, j) is 0 for i=j and 1 otherwise.
+#' three.indexes = matrix(c(1,2,3,
+#'                          2,1,3,
+#'                          3,1,2), nrow=3, ncol=3)
+#' three.distances = matrix(c(0, 1, 1,
+#'                            0, 1, 1,
+#'                            0, 1, 1), nrow=3, ncol=3)
+#'
+#' umap.knn(three.indexes, three.distances)
+#'
+umap.knn = function(indexes, distances) {
+  result = list(indexes=indexes, distances=distances)
+  class(result) = "umap.knn"
+  result
+}
+
+
 #' Compute knn information
 #'
 #' This function determines whether to obtain knn information using an exact
@@ -45,7 +75,6 @@ knn.info = function(d, config, brute.force=TRUE) {
     result = knn.from.data.reps(d, k, distfun, reps=config$knn_repeats)
   }
 
-  class(result) = "umap.knn"
   result
 }
 
@@ -94,8 +123,7 @@ spectator.knn.info = function(spectators, d, config, brute.force=TRUE) {
     result$indexes = result$indexes[Vd+(1:Vs), ]
     result$distances = result$distances[Vd+(1:Vs),]
   }
-  
-  class(result) = "umap.knn"
+
   result
 }
 
@@ -149,8 +177,7 @@ knn.from.dist = function(d, k) {
   }
   
   rownames(indexes) = rownames(distances) = rownames(d)
-  
-  list(indexes=indexes, distances=distances)
+  umap.knn(indexes, distances)
 }
 
 
@@ -309,8 +336,7 @@ knn.from.data = function(dT, k, metric.function, subsample.k=0.5,
   # by definition, distances to self are zero
   distances[,1] = 0
   rownames(indexes) = rownames(distances) = colnames(dT)
-
-  list(indexes=indexes, distances=distances)
+  umap.knn(indexes, distances)
 }
 
 
@@ -339,10 +365,10 @@ knn.from.data.reps = function(d, k, metric.function, subsample.k=0.5, reps=2) {
   }
   
   # perform more knn, keep best results
-  for (rr in 2:reps) {
+  for (rr in seq(2, reps)) {
     counter = 0
     newresult = knn.from.data(dT, k, metric.function, subsample.k)
-    for (i in 1:V) {
+    for (i in seq_len(V)) {
       nowdist = sum(result$distances[i,])
       newdist = sum(newresult$distances[i,])
       if (newdist<nowdist) {

@@ -89,9 +89,9 @@ umap.naive.predict = function(umap, data) {
   # obtain nearest neighbors
   message.w.date("creating graph of nearest neighbors", verbose)
   spectator.knn = spectator.knn.info(data, umap$data, config)
-  knn = list(indexes=rbind(umap$knn$indexes, spectator.knn$indexes),
-             distances=rbind(umap$knn$distances, spectator.knn$distances))  
-  
+  knn = umap.knn(rbind(umap$knn$indexes, spectator.knn$indexes),
+                 rbind(umap$knn$distances, spectator.knn$distances))
+
   # create graph representation of primary and spectator data together
   graph = naive.fuzzy.simplicial.set(knn, config)
   message.w.date("creating initial embedding", verbose)

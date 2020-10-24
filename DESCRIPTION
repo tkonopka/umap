@@ -1,6 +1,6 @@
 Package: umap
 Title: Uniform Manifold Approximation and Projection
-Version: 0.2.6.0
+Version: 0.2.7.0
 Authors@R: 
     person("Tomasz", "Konopka", , "tokonopka@gmail.com", role = c("aut", "cre"))
 Author: Tomasz Konopka [aut, cre]
@@ -32,4 +32,4 @@ Suggests:
     testthat
 VignetteBuilder: knitr
 Encoding: UTF-8
-RoxygenNote: 7.0.2
+RoxygenNote: 7.1.1

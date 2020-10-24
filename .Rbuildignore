@@ -10,6 +10,9 @@
 
 ^images$
 
+## IDE
+.idea
+
 ## Temporary files
 ^R/.+~$
 ^vignettes/.+~$

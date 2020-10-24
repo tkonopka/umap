@@ -63,6 +63,7 @@ test_that("k nearest neighbors information", {
 
 test_that("knn.from.data should preserve rownames", {
   result = knn.from.data(t(syn0), 3, mdEuclidean)
+  expect_is(result, "umap.knn")
   expect_equal(rownames(syn0), rownames(result$indexes))
   expect_equal(rownames(syn0), rownames(result$distances))
 })
@@ -71,6 +72,7 @@ test_that("knn.from.data should preserve rownames", {
 test_that("knn.from.data should preserve rownames", {
   syn0dist = as.matrix(syn0.dist)
   result = knn.from.dist(syn0dist, 3)
+  expect_is(result, "umap.knn")
   expect_equal(rownames(syn0), rownames(result$indexes))
   expect_equal(rownames(syn0), rownames(result$distances))  
 })
@@ -94,6 +96,7 @@ test_that("knn.info (from data) should preserve rownames", {
   result = knn.info(syn0, conf, brute.force=FALSE)
   expected.rownames = c(rownames(result$indexes), rownames(result$distances))
   result.rownames = c(rownames(syn0), rownames(syn0))
+  expect_is(result, "umap.knn")
   expect_equal(result.rownames, expected.rownames)
 })
 
