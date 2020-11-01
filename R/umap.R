@@ -33,7 +33,7 @@ NULL
 python.umap = NULL
 .onLoad = function(libname, pkgname) {
   # this "try" block is necessary because:
-  # a system that python but not umap-learn stops during the test suite
+  # a system that has python but not umap-learn stops during the test suite
   # with the following sequence of commands (devtools)
   # document(); test(); test()
   # note that test() only fails at second round
@@ -105,6 +105,8 @@ python.umap = NULL
 #' transform_state: integer; seed for random number generation used during
 #' predict()
 #'
+#' knn: object of class umap.knn; precomputed nearest neighbors
+#'
 #' knn.repeat: number of times to restart knn search
 #'
 #' verbose: logical or integer; determines whether to show progress messages
@@ -140,6 +142,7 @@ umap.defaults = list(
   spread=1,
   random_state=NA,
   transform_state=NA,
+  knn=NA,
   knn_repeats=1,
   verbose=FALSE,
   umap_learn_args = NA
@@ -155,7 +158,8 @@ class(umap.defaults) = "umap.config"
 #' @param method character, implementation. Available methods are 'naive'
 #' (an implementation written in pure R) and 'umap-learn' (requires python
 #' package 'umap-learn')
-#' @param ... list of settings; overwrite default values from config
+#' @param ... list of settings; values overwrite defaults from config;
+#' see documentation of umap.default for details about available settings
 #'
 #' @return object of class umap, containing at least a component
 #' with an embedding and a component with configuration settings

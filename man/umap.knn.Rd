@@ -2,7 +2,7 @@
 % Please edit documentation in R/knn.R
 \name{umap.knn}
 \alias{umap.knn}
-\title{construct a umap.knn object descibing nearest neighbors}
+\title{construct a umap.knn object describing nearest neighbors}
 \usage{
 umap.knn(indexes, distances)
 }
@@ -13,10 +13,11 @@ umap.knn(indexes, distances)
 in the matrix of indexes}
 }
 \value{
-object of class umap.knn
+object of class umap.knn, which is a list with matrices with indexes
+of nearest neighbors and distances to those neighbors
 }
 \description{
-construct a umap.knn object descibing nearest neighbors
+construct a umap.knn object describing nearest neighbors
 }
 \examples{
 

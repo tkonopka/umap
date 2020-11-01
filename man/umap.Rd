@@ -15,7 +15,8 @@ umap(d, config = umap.defaults, method = c("naive", "umap-learn"), ...)
 (an implementation written in pure R) and 'umap-learn' (requires python
 package 'umap-learn')}
 
-\item{...}{list of settings; overwrite default values from config}
+\item{...}{list of settings; values overwrite defaults from config;
+see documentation of umap.default for details about available settings}
 }
 \value{
 object of class umap, containing at least a component

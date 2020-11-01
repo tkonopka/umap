@@ -2,14 +2,15 @@
 # functions to compute k nearest neighbors
 
 
-#' construct a umap.knn object descibing nearest neighbors
+#' construct a umap.knn object describing nearest neighbors
 #'
 #' @export
 #' @param indexes matrix, integers linking data points to nearest neighbors
 #' @param distances matrix, distance values between pairs of points specified
 #' in the matrix of indexes
 #'
-#' @return object of class umap.knn
+#' @return object of class umap.knn, which is a list with matrices with indexes
+#' of nearest neighbors and distances to those neighbors
 #'
 #' @examples
 #'
