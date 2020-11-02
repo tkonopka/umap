@@ -1,9 +1,5 @@
 ## tests for universal functions (umap_universal.R)
 
-cat("\ntest_utils\n")
-
-
-
 ## ############################################################################
 ## Tests for exact nearest neighbors extraction
 

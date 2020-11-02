@@ -1,13 +1,10 @@
 # tests for universal functions (umap_universal.R)
 
-cat("\ntest_knn\n")
 source("synthetic.R")
 source("train_test.R")
 
-
 # ############################################################################
 # Tests for exact nearest neighbors extraction
-
 
 test_that("k nearest neighbors complains when k is too large or too small", {
   # da is a distance matrix (not necessarily metric)

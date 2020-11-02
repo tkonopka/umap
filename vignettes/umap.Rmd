@@ -269,6 +269,8 @@ The UMAP algorithm uses random numbers and thus results may vary from run to run
 
 As shown in the section on tuning, embedding of a raw dataset can be stabilized by setting a seed for random number generation. However, the results are stable only when the raw data are re-processed in exactly the same way. Results are bound to change if data are presented in a different order.
 
+A separate consideration is about the effect of the randomness within the umap algorithms on the state of the random-number generator in the calling environment. By default, the `umap` function preserves the external random state. This has some pros and cons in various situations. One important consequence of the default setting is that when two calls are made `umap` one after the other, they both receive the same random state. If this is not a desired behavior, those calls should be made either with their own explicit seeds, or setting argument `preserve.seed=FALSE`.
+
 
 ### Prediction
 
@@ -298,7 +300,7 @@ The second available implementation is a wrapper for a python package `umap-lear
 iris.umap.learn = umap(iris.data, method="umap-learn")
 ```
 
-This command has several dependencies. The `reticulate` package must be installed and loaded (use `install.packages("reticulate")` and `library(reticulate)`). Furthermore, the `umap-learn` python package must be available (see the [package repo](https://github.com/lmcinnes/umap) for instructions). If either of these components is not available, the above command will display an error message.
+This command has several dependencies. The `reticulate` package must be installed and loaded (use `install.packages("reticulate")` and `library(reticulate)`). Furthermore, the `umap-learn` python package must be available (see the [package repository](https://github.com/lmcinnes/umap) for instructions). If either of these components is not available, the above command will display an error message.
 
 A separate vignette explains additional aspects of interfacing with `umap-learn`, including handling of discrepancies between releases.
 

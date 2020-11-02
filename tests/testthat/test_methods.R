@@ -1,8 +1,5 @@
 # tests for selecting methods
 
-cat("\ntest_methods\n")
-
-
 i.select = c(1:12, 61:72, 121:132)
 i4 = iris[i.select,
           c("Sepal.Length", "Sepal.Width", "Petal.Length", "Petal.Width")]

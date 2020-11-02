@@ -1,9 +1,7 @@
 # tests using naive method
 
-cat("\ntest_naive\n")
 source("synthetic.R")
 source("train_test.R")
-
 
 # configuration for testing
 conf.testing = umap.defaults
@@ -81,10 +79,23 @@ test_that("prediction based on one component", {
 })
 
 
+# ############################################################################
+# seeds and randomness
+
+test_that("umap naive without seeds can create different layouts each time", {
+  fast.config = umap.defaults
+  fast.config$n_neighbors = 5
+  fast.config$n_epochs = 10
+  result_1 = umap(i.train, config=fast.config, preserve.seed=FALSE)
+  result_2 = umap(i.train, config=fast.config, preserve.seed=FALSE)
+  expect_false(identical(result_1$config$random_state,
+                         result_2$config$random_state))
+  expect_false(identical(result_1$layout[,1], result_2$layout[,2]))
+})
+
 
 # ############################################################################
 # predictions (this uses data from train_test.R)
-
 
 test_that("predict checks knn, data components are available", {
   usmall = i.train.u

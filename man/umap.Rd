@@ -4,7 +4,13 @@
 \alias{umap}
 \title{Computes a manifold approximation and projection}
 \usage{
-umap(d, config = umap.defaults, method = c("naive", "umap-learn"), ...)
+umap(
+  d,
+  config = umap.defaults,
+  method = c("naive", "umap-learn"),
+  preserve.seed = TRUE,
+  ...
+)
 }
 \arguments{
 \item{d}{matrix, input data}
@@ -14,6 +20,10 @@ umap(d, config = umap.defaults, method = c("naive", "umap-learn"), ...)
 \item{method}{character, implementation. Available methods are 'naive'
 (an implementation written in pure R) and 'umap-learn' (requires python
 package 'umap-learn')}
+
+\item{preserve.seed}{logical, leave TRUE to insulate external code from
+randomness within the umap algorithms; set FALSE to allow randomness used
+in umap algorithms to alter the external random-number generator}
 
 \item{...}{list of settings; values overwrite defaults from config;
 see documentation of umap.default for details about available settings}

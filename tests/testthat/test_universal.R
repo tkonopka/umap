@@ -1,8 +1,5 @@
 ## tests for universal functions (umap_universal.R)
 
-cat("\ntest_universal\n")
-
-
 ## ############################################################################
 ## Tests for smoothing of knns
 

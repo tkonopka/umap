@@ -1,8 +1,5 @@
 # tests for running python umap
 
-cat("\ntest_python\n")
-
-
 # for the python implemenation, small iris-based datasets give warnings
 # so generate synthetic data 
 d.train = matrix(rnorm(400), ncol=4)
@@ -76,7 +73,19 @@ if (has.umap.learn) {
     result4 = umap(d.train, uconf, method="umap-learn", spread=2)
     expect_false(identical(result3, result4))
   })
-  
+
+
+  test_that("umap-learn without seeds creates different layouts each time", {
+    uconf = umap.defaults
+    uconf$n_neighbors = 5
+    uconf$n_epochs = 10
+    result_1 = umap(i.train, uconf, preserve.seed=FALSE)
+    result_2 = umap(i.train, uconf, preserve.seed=FALSE)
+    expect_false(identical(result_1$config$random_state,
+                           result_2$config$random_state))
+    expect_false(identical(result_1$layout[,1], result_2$layout[,2]))
+  })
+
   
   test_that("transform requires presence of UMAP components", {
     u1small = u1

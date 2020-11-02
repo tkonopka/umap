@@ -1,10 +1,5 @@
 ## tests using naive method
 
-cat("\ntest_checks\n")
-
-
-
-
 ## ############################################################################
 ## Tests for primary input
 

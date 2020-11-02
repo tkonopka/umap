@@ -1,7 +1,5 @@
 ## tests for configuration updating
 
-cat("\ntest_print\n")
-
 
 test_that("assemble umap configuration from default object and arguments", {
   cc = umap.check.config()

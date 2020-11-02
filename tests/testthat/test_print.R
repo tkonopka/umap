@@ -1,8 +1,5 @@
 ## tests for output of print functions
 
-cat("\ntest_print\n")
-
-
 ## ############################################################################
 ## Tests for printing config objects
 

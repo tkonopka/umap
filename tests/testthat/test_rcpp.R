@@ -1,8 +1,5 @@
 ## tests for Rcpp components
 
-cat("\ntest_rcpp\n")
-
-
 ## ############################################################################
 ## Tests for clipping
 

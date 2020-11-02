@@ -1,13 +1,9 @@
 ## tests for coo functions
 
-cat("\ntest_coo\n")
-
 
 ## create a simple connectivity matrix for testing purposes
 conmat = matrix(1:9, ncol=3, nrow=3)
 diag(conmat) = 0
-
-
 
 
 ## ############################################################################

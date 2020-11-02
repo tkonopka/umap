@@ -1,9 +1,5 @@
 ## test for predictions
 
-
-cat("\ntest_predict\n")
-
-
 ## set up training and testing datasets
 iris.columns = c("Sepal.Length", "Sepal.Width", "Petal.Length", "Petal.Width")
 i.train    = iris[c(1:12, 61:72, 121:132), iris.columns]

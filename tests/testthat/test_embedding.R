@@ -1,10 +1,5 @@
 # test for creating embeddings
 
-cat("\ntest_embedding\n")
-
-
-
-
 # ############################################################################
 # Tests for function make.initial.embedding
 

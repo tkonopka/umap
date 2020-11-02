@@ -1,6 +1,5 @@
 # tests using a complete synthetic example
 
-cat("\ntest_synthetic\n")
 source("synthetic.R")
 
 

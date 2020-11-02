@@ -1,10 +1,5 @@
 ## tests for small datasets
 
-cat("\ntest small\n")
-
-
-
-
 ## ############################################################################
 ## General expected behavior
 

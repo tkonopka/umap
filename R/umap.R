@@ -158,6 +158,9 @@ class(umap.defaults) = "umap.config"
 #' @param method character, implementation. Available methods are 'naive'
 #' (an implementation written in pure R) and 'umap-learn' (requires python
 #' package 'umap-learn')
+#' @param preserve.seed logical, leave TRUE to insulate external code from
+#' randomness within the umap algorithms; set FALSE to allow randomness used
+#' in umap algorithms to alter the external random-number generator
 #' @param ... list of settings; values overwrite defaults from config;
 #' see documentation of umap.default for details about available settings
 #'
@@ -175,7 +178,9 @@ class(umap.defaults) = "umap.config"
 #' head(iris.umap$layout)
 #'
 umap = function(d, config=umap.defaults,
-                method=c("naive", "umap-learn"), ...) {
+                method=c("naive", "umap-learn"),
+                preserve.seed=TRUE,
+                ...) {
   
   # prep - check inputs, configuration settings
   method = config$method = match.arg(method)
@@ -201,7 +206,9 @@ umap = function(d, config=umap.defaults,
   class(result) = "umap"
   
   # restore state and finish
-  set.global.seed(old.seed)
+  if (preserve.seed) {
+    set.global.seed(old.seed)
+  }
   result
 }
 

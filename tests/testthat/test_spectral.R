@@ -1,8 +1,5 @@
 ## tests for spectral analysis using coos
 
-cat("\ntest_spectral\n")
-
-
 ## ############################################################################
 ## Tests for counting of connected components using coo
 
