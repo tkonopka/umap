@@ -85,7 +85,7 @@ set.seed(123456)
 
 ## Introduction
 
-Uniform Manifold Approximation and Projection (UMAP) is an algorithm for dimensional reduction proposed by [McInnes and Healy](https://arxiv.org/abs/1802.03426). Its official implementation is available through a python package [umap-learn](https://github.com/lmcinnes/umap). The `umap` package described in this vignette is a separate work that provides two implementations for using UMAP within the R environment. One implementation is written from-scratch and another links to the official umap-learn. (Another R package, [uwot](https://CRAN.R-project.org/package=uwot), provides a separate implementation with a slightly different interface).
+Uniform Manifold Approximation and Projection (UMAP) is an algorithm for dimensional reduction. Its details are described by [McInnes, Healy, and Melville](https://arxiv.org/abs/1802.03426) and its official implementation is available through a python package [umap-learn](https://github.com/lmcinnes/umap). The R package `umap` described in this vignette is a separate work that provides two implementations for using UMAP within the R environment. One implementation is written from-scratch and another links to the official umap-learn. (Another R package, [uwot](https://CRAN.R-project.org/package=uwot), provides a separate implementation with a slightly different interface).
 
 The vignette covers basic usage, tuning, stability and reproducibility, and discusses toggling between different implementations. Throughout, the vignette uses a small dataset as an example, but the package is suited to processing larger data with many thousands of data points.
 
