@@ -39,7 +39,6 @@ body {
 </style>
 
 
-
 ```{r, echo=FALSE}
 ## block with some startup/background objects functions
 library(umap)
@@ -136,8 +135,6 @@ plot.iris(iris.umap, iris.labels)
 ```
 
 
-
-
 ### Projecting new data
 
 Once we have a 'umap' object describing an embedding of a dataset into a low-dimensional layout, we can project other data onto the same manifold.
@@ -165,7 +162,6 @@ plot.iris(iris.wnoise.umap, iris.labels, add=T, pch=4, legend.suffix=" (with noi
 ```
 
 The new observations lie close to their original counterparts.
-
 
 
 
@@ -233,7 +229,7 @@ iris.umap.dist = umap(iris.dist, config=custom.config, input="dist")
 iris.umap.dist
 ```
 
-Because `iris.umap.dist` is computed with our custom configuration, it holds the same embedding layout as `iris.umap.config` above (check it!). However, this object does not carry the original data. As such, it cannot be used to 'predict' new data into the embedding: attempting a command like `predict(iris.umap.dist, iris.wnoise)` will generate an error. This is because the algorithm will not have sufficient information to computing distances between new data points and previously embedded data.
+Because `iris.umap.dist` is computed with the custom configuration, it holds the same embedding layout as `iris.umap.config` above (check it!). However, this object does not carry the original data. As such, it cannot be used to 'predict' new data into the embedding: attempting a command like `predict(iris.umap.dist, iris.wnoise)` will generate an error. This is because the algorithm will not have sufficient information to computing distances between new data points and previously embedded data.
 
 Another way to provide data to function `umap` is via precomputed nearest neighbors. As we saw above, each object of class 'umap' has a component called 'knn'. We can preview this component by printing it.
 
@@ -256,7 +252,7 @@ iris.knn.10
 iris.umap.knn = umap(iris.data, config=custom.config, n_neighbors=10, knn=iris.knn.10)
 ```
 
-In this function call to `umap`, argument `config` specifies most of the parameter values. Because, the custom configuration has `n_neighbors` at 15 and here we want to use 10 instead, the next argument sets this new value. The final argument provides our prepared object. Functions `umap` detect the availability of this object and can skip calculating nearest neighbors. This can substantially improve running times.
+In this function call, argument `config` specifies most of the parameter values. Because the custom configuration has `n_neighbors` at 15 and here we want to use 10 instead, the next argument sets this new value. The final argument provides our prepared object. Functions `umap` detect the availability of this object and can skip calculating nearest neighbors. This can substantially improve running times.
 
 
 
@@ -284,7 +280,6 @@ predict(iris.umap, iris.wnoise[1,,drop=FALSE])
 ```
 
 The mechanism that enables stability between batch and individual predictions also ensures that predictions are stable when data are presented in a different order. However, this mechanism is not enforced (for performance reasons) when the new data contain more than a thousand rows. This is an implementation detail and may change in future versions.
-
 
 
 
@@ -316,7 +311,6 @@ The custom plot function used to visualize the Iris dataset:
 ```{r show.plot.iris}
 plot.iris
 ```
-
 
 
 Summary of R session:
