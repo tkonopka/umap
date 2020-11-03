@@ -23,11 +23,11 @@ h2, h3 {
   margin-bottom: 0.7em;
 }
 p {
-  font-size: 18px;
+  font-size: 17px;
   margin-bottom: 0.7em;
 }
 pre {
-  font-size: 18px;
+  font-size: 16px;
   line-height: 1.35;
 }
 body {
@@ -70,10 +70,9 @@ set.seed(123456)
 
 ## Introduction
 
-(For general information on usage of package `umap`, see the introductory vignette.)
+R package `umap` provides an interface to uniform manifold approximation and projection (UMAP) algorithms. There are now several implementations, including versions of python package `umap-learn`. This vignette explains some aspects of interfacing with the python package.
 
-R package `umap` provides an interface to uniform manifold approximation and projection (UMAP) algorithms. There are now several implementations, including versions of python package `umap-learn'. This vignette explains some aspects of interfacing with the python package.
-
+(For general information on usage of package `umap`, see the [introductory vignette](https://CRAN.R-project.org/package=umap).)
 
 
 
@@ -86,9 +85,9 @@ library(umap)
 iris.data = iris[, grep("Sepal|Petal", colnames(iris))]
 ```
 
-The basic command to perform dimensional reduction is `umap`. By default, this function uses an implementation written in R. To use an alternative implementation via the `umap-learn` python package, that package and its dependencies must be installed separately (see [python package index](https://pypi.org/project/umap-learn/) or the [package source](https://github.com/lmcinnes/umap)). You must also install and load the `reticulate` library (use `install.packages('reticulate') and library('reticulate')`).
+The basic command to perform dimensional reduction is `umap`. By default, this function uses an implementation written in R. To use the python package `umap-learn` instead, that package and its dependencies must be installed separately (see [python package index](https://pypi.org/project/umap-learn/) or the [package source](https://github.com/lmcinnes/umap)). The R package `reticulate` is also required (use `install.packages('reticulate') and library('reticulate')`).
 
-After completing installations, the UMAP transformation can be performed by specifying a `method` argument.
+After completing installations, the python implementation is activated by specifying a `method` argument.
 
 ```{r umap.learn, eval=FALSE}
 library(reticulate)
@@ -144,9 +143,9 @@ Inspecting the output configuration will reveal that both `foo` and `n_epochs` a
 
 ### Versions
 
-Various version of `umap-learn` take different parameters as input. The R package is coded to work with `umap-learn` versions 0.2 and 0.3 and will adjust arguments automatically to suit those versions.
+Various version of `umap-learn` take different parameters as input. The R package is coded to work with `umap-learn` versions 0.2, 0.3, and 0.4. It will adjust arguments automatically to suit those versions.
 
-Note, however, that some arguments that are acceptable in 0.3 are not set in the default configuration object. To use those features (see python package documentation), set the appropriate arguments manually, either by preparing a custom configuration object or by specifying the arguments during the `umap` function call.
+Note, however, that some arguments that are acceptable in new versions of umap-learn are not set in the default configuration object. To use those features (see python package documentation), set the appropriate arguments manually, either by preparing a custom configuration object or by specifying the arguments during the `umap` function call.
 
 
 
