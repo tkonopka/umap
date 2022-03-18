@@ -33,7 +33,7 @@ umap.learn = function(d, config) {
   if (is.na(config$random_state)) {
     config$random_state= as.integer(runif(1, 0, 2^30))
   }
-  config$verbose = 0+as.logical(config$verbose)
+  config$verbose = as.integer(0 + as.logical(config$verbose))
 
   # construct python object and create embedding
   wo.NA = names(config[!is.na(config)])
