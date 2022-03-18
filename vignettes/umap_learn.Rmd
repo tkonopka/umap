@@ -1,5 +1,5 @@
 ---
-title: Interfacing with python package 'umap-learn'
+title: Interfacing with 'umap-learn'
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteEngine{knitr::rmarkdown}
@@ -143,7 +143,7 @@ Inspecting the output configuration will reveal that both `foo` and `n_epochs` a
 
 ### Versions
 
-Various version of `umap-learn` take different parameters as input. The R package is coded to work with `umap-learn` versions 0.2, 0.3, and 0.4. It will adjust arguments automatically to suit those versions.
+Various version of `umap-learn` take different parameters as input. The R package is coded to work with `umap-learn` versions 0.2, 0.3, 0.4, and 0.5. It will adjust arguments automatically to suit those versions.
 
 Note, however, that some arguments that are acceptable in new versions of umap-learn are not set in the default configuration object. To use those features (see python package documentation), set the appropriate arguments manually, either by preparing a custom configuration object or by specifying the arguments during the `umap` function call.
 

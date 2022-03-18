@@ -6,7 +6,7 @@ output:
     toc: true
 vignette: >
   %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteIndexEntry{Uniform Manifold Approximate and Projection in R}
+  %\VignetteIndexEntry{Uniform Manifold Approximation and Projection in R}
   %\usepackage[UTF-8]{inputenc}
 ---
 

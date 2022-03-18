@@ -127,9 +127,27 @@ detect.umap.learn = function(config) {
               "target_n_neighbors",
               "target_metric", "target_metric_kwds", "target_weight",
               "transform_seed", "force_approximation_algorithm",
-              "verbose", "unique")
+              "verbose", "unique"),
+    "0.5" = c("n_neighbors", "n_components",
+              "metric", "metric_kwds", "output_metric", "output_metric_kwds",
+              "n_epochs", "learning_rate",
+              "init",
+              "min_dist", "spread",
+              "low_memory", "n_jobs", "set_op_mix_ratio",
+              "local_connectivity", "repulsion_strength",
+              "negative_sample_rate", "transform_queue_size", "a", "b",
+              "random_state",
+              "angular_rp_forest",
+              "target_n_neighbors", "target_metric", "target_metric_kwds",
+              "target_weight",
+              "transform_seed", "transform_mode",
+              "force_approximation_algorithm",
+              "verbose", "tqdm_kwds", "unique",
+              "densmap", "dens_lambda", "dens_frac", "dens_var_shift",
+              "output_dens", "disconnection_distance",
+              "precomputed_knn")
   )
-  latest.name = "0.4"
+  latest.name = "0.5"
   args.version$latest = args.version[[latest.name]]
   
   if (main.version %in% names(args.version)) {    
