@@ -114,6 +114,28 @@ if (has.umap.learn) {
                n_neighbors=5, min_dist=0.2, random_state=11)
     expect_false(identical(md1$layout, md2$layout))
   })
-  
+
+  test_that("transform and predict on sparse dgCMatrix", {
+    library(Matrix)
+    sm <- Matrix(0, ncol=4, nrow=40)
+    sm[, 1] <- seq(0, 1, length=40)
+    sm <- as(sm, "dgCMatrix")
+    result <- umap(sm, n_neighbors=10, method="umap-learn")
+    expect_equal(dim(result$layout), c(40, 2))
+    prediction <- predict(result, sm[1:6, ])
+    expect_equal(dim(prediction), c(6, 2))
+  })
+
+  test_that("transform and predict on sparse dgTMatrix ", {
+    library(Matrix)
+    sm <- Matrix(0, ncol=4, nrow=40)
+    sm[, 1] <- seq(0, 1, length=40)
+    sm <- as(sm, "dgTMatrix")
+    result <- umap(sm, n_neighbors=10, method="umap-learn")
+    expect_equal(dim(result$layout), c(40, 2))
+    prediction <- predict(result, sm[1:4, ])
+    expect_equal(dim(prediction), c(4, 2))
+  })
+
 }
 

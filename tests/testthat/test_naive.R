@@ -80,6 +80,33 @@ test_that("prediction based on one component", {
 
 
 # ############################################################################
+# sparse data
+
+test_that("accept sparse data as dgCMatrix", {
+  library(Matrix)
+  sm <- Matrix(0, ncol=4, nrow=40)
+  sm[, 1] <- seq(0, 1, length=40)
+  sm <- as(sm, "dgCMatrix")
+  result <- umap(sm)
+  expect_equal(dim(result$layout), c(40, 2))
+  prediction <- predict(result, sm[1:4, ])
+  expect_equal(dim(prediction), c(4, 2))
+})
+
+
+test_that("accept sparse data as dgTMatrix", {
+  library(Matrix)
+  sm <- Matrix(0, ncol=4, nrow=40)
+  sm[, 1] <- seq(0, 1, length=40)
+  sm <- as(sm, "dgTMatrix")
+  result <- umap(sm)
+  expect_equal(dim(result$layout), c(40, 2))
+  prediction <- predict(result, sm[1:4, ])
+  expect_equal(dim(prediction), c(4, 2))
+})
+
+
+# ############################################################################
 # seeds and randomness
 
 test_that("umap naive without seeds can create different layouts each time", {

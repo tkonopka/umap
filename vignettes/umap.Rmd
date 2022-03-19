@@ -276,7 +276,7 @@ Projection of new data onto an existing embedding uses a separate random number 
 # predict in batch, display first item
 predict(iris.umap, iris.wnoise)[1, , drop=FALSE]
 # predict only first item
-predict(iris.umap, iris.wnoise[1,,drop=FALSE])
+predict(iris.umap, iris.wnoise[1, , drop=FALSE])
 ```
 
 The mechanism that enables stability between batch and individual predictions also ensures that predictions are stable when data are presented in a different order. However, this mechanism is not enforced (for performance reasons) when the new data contain more than a thousand rows. This is an implementation detail and may change in future versions.

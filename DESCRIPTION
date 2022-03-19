@@ -15,6 +15,7 @@ Description: Uniform manifold approximation and projection is a technique
 Depends:
     R (>= 3.1.2)
 Imports:
+    Matrix,
     methods,
     openssl,
     reticulate,

@@ -26,7 +26,7 @@
 umap.naive = function(d, config) {
   
   verbose = config$verbose
-  
+
   # prep parameters
   message.w.date("starting umap", verbose)
   if (is.na(config$a) | is.na(config$b)) {
@@ -34,6 +34,9 @@ umap.naive = function(d, config) {
   }
   if (is.na(config$random_state)) {
     config$random_state= as.integer(runif(1, 0, 2^30))
+  }
+  if (is(d, "Matrix")) {
+    d = Matrix::as.matrix(d)
   }
   
   # perhaps extract knn from input
@@ -78,6 +81,9 @@ umap.naive.predict = function(umap, data) {
   missing = setdiff(c("knn", "data", "config"), names(umap))
   if (length(missing)>0) {
     umap.error("missing components: ", paste(missing, collapse=", "))
+  }
+  if (is(data, "Matrix")) {
+    data = Matrix::as.matrix(data)
   }
 
   # create a configuration for the prediction

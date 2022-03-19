@@ -117,14 +117,14 @@ umap.check.config = function(config=umap.defaults, ...) {
 #'
 #' @keywords internal
 #' @noRd
-#' @param d matrix or compatible
+#' @param d matrix or a matrix-compatible object
 #' @param config list with settings
 #' @importFrom methods is
 #'
 #' @return d as matrix
 umap.prep.input = function(d, config) {
-  # for d into a matrix
-  if (is(d, "matrix")) {
+  # ensure that d is a matrix
+  if (is(d, "matrix") | is (d, "Matrix")) {
     d = d
   } else if (is(d, "data.frame")) {
     d = as.matrix(d)
