@@ -1,17 +1,12 @@
 # umap
 R implementation of Uniform Manifold Approximation and Projection
 
-![Status](https://travis-ci.org/tkonopka/umap.svg?branch=master)
-[![codecov](https://codecov.io/gh/tkonopka/umap/branch/master/graph/badge.svg)](https://codecov.io/gh/tkonopka/umap)
+[![R-CMD-check](https://github.com/tkonopka/umap/workflows/R-CMD-check/badge.svg)](https://github.com/tkonopka/umap/actions)
 [![CRAN](https://www.r-pkg.org/badges/version/umap)](https://cran.r-project.org/web/packages/umap/)
 
 
-[![R-CMD-check](https://github.com/tkonopka/umap/workflows/R-CMD-check/badge.svg)](https://github.com/tkonopka/umap/actions)
-
 Uniform manifold approximation and projection (UMAP) is a technique for dimensional reduction. The original algorithm is described by [McInnes, Heyes, and Melville](https://arxiv.org/abs/1802.03426) and is
 implemented in a python package [umap](https://github.com/lmcinnes/umap). This package provides an interface to the UMAP algorithm in R, including a translation of the original algorithm into R with minimal dependencies. 
-
-
 
 
 ## Examples
@@ -27,8 +22,6 @@ The package also allows to project data onto an existing embedding. Below, the f
 <img src="https://github.com/tkonopka/umap/blob/master/images/readme_mnist_test.png?raw=true" alt="A UMAP visualization of the MNIST digits dataset" width="350px"></img>
 
 More information on usage can be found in the package [vignettes](https://github.com/tkonopka/umap/tree/master/vignettes).
-
-
 
 
 ## Implementations
@@ -57,5 +50,4 @@ McInnes, Leland, and John Healy. "UMAP: Uniform Manifold Approximation and Proje
 ### License
 
 MIT License.
-
 
