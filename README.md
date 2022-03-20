@@ -5,6 +5,9 @@ R implementation of Uniform Manifold Approximation and Projection
 [![codecov](https://codecov.io/gh/tkonopka/umap/branch/master/graph/badge.svg)](https://codecov.io/gh/tkonopka/umap)
 [![CRAN](https://www.r-pkg.org/badges/version/umap)](https://cran.r-project.org/web/packages/umap/)
 
+
+[![R-CMD-check](https://github.com/tkonopka/umap/workflows/R-CMD-check/badge.svg)](https://github.com/tkonopka/umap/actions)
+
 Uniform manifold approximation and projection (UMAP) is a technique for dimensional reduction. The original algorithm is described by [McInnes, Heyes, and Melville](https://arxiv.org/abs/1802.03426) and is
 implemented in a python package [umap](https://github.com/lmcinnes/umap). This package provides an interface to the UMAP algorithm in R, including a translation of the original algorithm into R with minimal dependencies. 
 
