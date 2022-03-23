@@ -26,7 +26,6 @@ License: MIT + file LICENSE
 URL: https://github.com/tkonopka/umap
 BugReports: https://github.com/tkonopka/umap/issues
 LinkingTo: Rcpp
-LazyData: true
 Suggests:
     knitr,
     rmarkdown,
