@@ -13,7 +13,7 @@ Description: Uniform manifold approximation and projection is a technique
     is a wrapper for 'python' package 'umap-learn' (requires separate
     installation, see vignette for more details).
 Depends:
-    R (>= 3.5.0)
+    R (>= 3.6.0)
 Imports:
     Matrix,
     methods,
