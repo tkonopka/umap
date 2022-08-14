@@ -1,6 +1,6 @@
 Package: umap
 Title: Uniform Manifold Approximation and Projection
-Version: 0.2.8.0
+Version: 0.2.9.0
 Authors@R: 
     person("Tomasz", "Konopka", , "tokonopka@gmail.com", role = c("aut", "cre"))
 Author: Tomasz Konopka [aut, cre]

@@ -11,17 +11,14 @@
 # and a umap() function. 
 #
 
-
 # These three lines required to use Rcpp; do not remove
 #' @useDynLib umap
 #' @importFrom Rcpp sourceCpp
 NULL
 
-
 # For interfacing with python and "umap-learn"
 #' @importFrom reticulate py_module_available import
 NULL
-
 
 # This implements a "soft" requirement for python and the umap module
 # i.e. the package should work when those components are absent
@@ -30,8 +27,8 @@ NULL
 #'
 #' @keywords internal
 #' @noRd
-python.umap = NULL
-.onLoad = function(libname, pkgname) {
+python.umap <- NULL
+.onLoad <- function(libname, pkgname) {
   # this "try" block is necessary because:
   # a system that has python but not umap-learn stops during the test suite
   # with the following sequence of commands (devtools)
@@ -42,7 +39,6 @@ python.umap = NULL
   }, silent=TRUE)
 }
 
-  
 #' Default configuration for umap 
 #'
 #' A list with parameters customizing a UMAP embedding. Each component of the
@@ -96,7 +92,7 @@ python.umap = NULL
 #' When left at NA, a suitable value will be estimated automatically.
 #'
 #' b: numeric; contributes to gradient calculations during layout optimization.
-#  When left at NA, a suitable value will be estimated automatically.
+#'  When left at NA, a suitable value will be estimated automatically.
 #'
 #' spread: numeric; used during automatic estimation of a/b parameters.
 #'
@@ -123,7 +119,7 @@ python.umap = NULL
 #' custom.settings
 #' 
 #' @export
-umap.defaults = list(
+umap.defaults <- list(
   n_neighbors=15,
   n_components=2,
   metric="euclidean",
@@ -147,8 +143,7 @@ umap.defaults = list(
   verbose=FALSE,
   umap_learn_args = NA
 )
-class(umap.defaults) = "umap.config"
-
+class(umap.defaults) <- "umap.config"
 
 #' Computes a manifold approximation and projection
 #'
@@ -177,33 +172,33 @@ class(umap.defaults) = "umap.config"
 #' # display embedding coordinates
 #' head(iris.umap$layout)
 #'
-umap = function(d, config=umap.defaults,
-                method=c("naive", "umap-learn"),
-                preserve.seed=TRUE,
-                ...) {
+umap <- function(d, config=umap.defaults,
+                 method=c("naive", "umap-learn"),
+                 preserve.seed=TRUE,
+                 ...) {
   
   # prep - check inputs, configuration settings
-  method = config$method = match.arg(method)
-  config = umap.check.config(config, ...)  
-  d = umap.prep.input(d, config)
+  method <- config$method <- match.arg(method)
+  config <- umap.check.config(config, ...)
+  d <- umap.prep.input(d, config)
 
   # save existing RNG seed, set "internal" seed
-  old.seed = get.global.seed()
+  old.seed <- get.global.seed()
   if (!is.na(config$random_state)) {
     set.seed(config$random_state)
   }
   
   # perform the actual work with a specific umap implementation
   if (nrow(d)<=2) {
-    result = umap.small(d, config)
+    result <- umap.small(d, config)
   } else {
-    implementations = c(naive=umap.naive,
+    implementations <- c(naive=umap.naive,
                         "umap-learn"=umap.learn)
     if (method %in% names(implementations)) {
-      result = implementations[[method]](d, config)
+      result <- implementations[[method]](d, config)
     } 
   }  
-  class(result) = "umap"
+  class(result) <- "umap"
   
   # restore state and finish
   if (preserve.seed) {
@@ -211,7 +206,6 @@ umap = function(d, config=umap.defaults,
   }
   result
 }
-
 
 #' project data points onto an existing umap embedding
 #'
@@ -235,7 +229,7 @@ umap = function(d, config=umap.defaults,
 #' # output is a matrix with embedding coordinates
 #' head(perturbed.embedding)
 #'
-predict.umap = function(object, data, ...) {
+predict.umap <- function(object, data, ...) {
   
   umap.check.config.class(object$config)
   if (object$config$input == "dist") {
@@ -245,21 +239,21 @@ predict.umap = function(object, data, ...) {
     umap.error("predict cannot work when too-small initial training set")
   }
 
-  old.seed = get.global.seed()
+  old.seed <- get.global.seed()
   if (!is.na(object$config$transform_state)) {
     set.seed(object$config$transform_state)
   }
   
   # extract method from the umap object
-  method = object$config$method
-  implementations = c(naive=umap.naive.predict,
-                      "umap-learn"=umap.learn.predict)
+  method <- object$config$method
+  implementations <- c(naive=umap.naive.predict,
+                       "umap-learn"=umap.learn.predict)
   if (!method %in% names(implementations)) {
     umap.error("unknown prediction method")
   }
   
   # carry out the predictions
-  result = implementations[[method]](object, data)
+  result <- implementations[[method]](object, data)
   
   # restore state and finish
   set.global.seed(old.seed)

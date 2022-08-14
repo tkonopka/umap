@@ -63,6 +63,7 @@ a: numeric; contributes to gradient calculations during layout optimization.
 When left at NA, a suitable value will be estimated automatically.
 
 b: numeric; contributes to gradient calculations during layout optimization.
+ When left at NA, a suitable value will be estimated automatically.
 
 spread: numeric; used during automatic estimation of a/b parameters.
 

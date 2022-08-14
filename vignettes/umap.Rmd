@@ -43,19 +43,19 @@ body {
 ## block with some startup/background objects functions
 library(umap)
 
-plot.iris = function(x, labels,
+plot.iris <- function(x, labels,
          main="A UMAP visualization of the Iris dataset",
          colors=c("#ff7f00", "#e377c2", "#17becf"),
          pad=0.1, cex=0.6, pch=19, add=FALSE, legend.suffix="",
          cex.main=1, cex.legend=0.85) {
 
-  layout = x
+  layout <- x
   if (is(x, "umap")) {
-    layout = x$layout
+    layout <- x$layout
   } 
   
-  xylim = range(layout)
-  xylim = xylim + ((xylim[2]-xylim[1])*pad)*c(-0.5, 0.5)
+  xylim <- range(layout)
+  xylim <- xylim + ((xylim[2]-xylim[1])*pad)*c(-0.5, 0.5)
   if (!add) {
     par(mar=c(0.2,0.7,1.2,0.7), ps=10)
     plot(xylim, xylim, type="n", axes=F, frame=F)
@@ -65,12 +65,12 @@ plot.iris = function(x, labels,
          cex=cex, pch=pch)
   mtext(side=3, main, cex=cex.main)
 
-  labels.u = unique(labels)
-  legend.pos = "topleft"
-  legend.text = as.character(labels.u)
+  labels.u <- unique(labels)
+  legend.pos <- "topleft"
+  legend.text <- as.character(labels.u)
   if (add) {
-    legend.pos = "bottomleft"
-    legend.text = paste(as.character(labels.u), legend.suffix)
+    legend.pos <- "bottomleft"
+    legend.text <- paste(as.character(labels.u), legend.suffix)
   }
 
   legend(legend.pos, legend=legend.text, inset=0.03,
@@ -103,8 +103,8 @@ The first four columns contain data and the last column contains a label. It wil
 separate those components.
 
 ```{r}
-iris.data = iris[, grep("Sepal|Petal", colnames(iris))]
-iris.labels = iris[, "Species"]
+iris.data <- iris[, grep("Sepal|Petal", colnames(iris))]
+iris.labels <- iris[, "Species"]
 ```
 
 ### Creating a projection
@@ -113,7 +113,7 @@ Let's load the `umap` package and apply the UMAP transformation.
 
 ```{r iris.umap}
 library(umap)
-iris.umap = umap(iris.data)
+iris.umap <- umap(iris.data)
 ```
 
 The output is an object and we can get a summary of its contents by printing it.
@@ -142,15 +142,15 @@ Once we have a 'umap' object describing an embedding of a dataset into a low-dim
 To demonstrate this, we need a second dataset with the same data features as the training data. Let's create such data by adding some noise to the original.
 
 ```{r}
-iris.wnoise = iris.data + matrix(rnorm(150*40, 0, 0.1), ncol=4)
-colnames(iris.wnoise) = colnames(iris.data)
+iris.wnoise <- iris.data + matrix(rnorm(150*40, 0, 0.1), ncol=4)
+colnames(iris.wnoise) <- colnames(iris.data)
 head(iris.wnoise, 3)
 ```
 
 We can now arrange these perturbed observations onto the same layout as before. Following R's design pattern for fitted models, this is performed via `predict`.
    
 ```{r}
-iris.wnoise.umap = predict(iris.umap, iris.wnoise)
+iris.wnoise.umap <- predict(iris.umap, iris.wnoise)
 head(iris.wnoise.umap, 3)
 ```
 
@@ -187,14 +187,14 @@ For a description of each field, see the documentation in `help(umap.defaults)` 
 To create a custom configuration, we can make a copy of the default object and then update its fields. For example, let's change the seed for random number generation.
 
 ```{r custom.config, eval=TRUE}
-custom.config = umap.defaults
-custom.config$random_state = 123
+custom.config <- umap.defaults
+custom.config$random_state <- 123
 ```
 
 We can observe the changed settings by inspecting the object again (try it). To perform the UMAP projection with these settings, we can run the projection again and provide the configuration object as a second argument.
 
 ```{r custom2, fig.width=3.6, fig.height=3.6, dpi=150}
-iris.umap.config = umap(iris.data, config=custom.config)
+iris.umap.config <- umap(iris.data, config=custom.config)
 plot.iris(iris.umap.config, iris.labels,
           main="Another UMAP visualization (different seed)")
 ```
@@ -208,7 +208,7 @@ The result is slightly different than before due to a new instantiation of the r
 Another way to customize the algorithm is to specify the parameter values one-by-one as arguments to the function call. The command below achieves equivalent results to the above.
 
 ```{r custom3, eval=FALSE}
-iris.umap.args = umap(iris.data, random_state=123)
+iris.umap.args <- umap(iris.data, random_state=123)
 ```
 
 The coordinates in this output object should match the ones from `iris.umap.config` (check it!).
@@ -224,8 +224,8 @@ All the examples above apply the umap transformation on a raw dataset. The first
 To use a distance matrix instead of raw data, we can set the `input` argument to 'dist'.
 
 ```{r}
-iris.dist = as.matrix(dist(iris.data))
-iris.umap.dist = umap(iris.dist, config=custom.config, input="dist")
+iris.dist <- as.matrix(dist(iris.data))
+iris.umap.dist <- umap(iris.dist, config=custom.config, input="dist")
 iris.umap.dist
 ```
 
@@ -243,13 +243,13 @@ To see how to use this data structure, let's construct an object describing 10 n
 
 ```{r}
 # extract information on 10 nearest neighbors from iris.umap
-iris.neighbors = iris.umap$knn$indexes[, 1:10]
-iris.neighbors.distances = iris.umap$knn$distances[, 1:10]
+iris.neighbors <- iris.umap$knn$indexes[, 1:10]
+iris.neighbors.distances <- iris.umap$knn$distances[, 1:10]
 # construct an object with indexes and distances
-iris.knn.10 = umap.knn(indexes=iris.neighbors, distances=iris.neighbors.distances)
+iris.knn.10 <- umap.knn(indexes=iris.neighbors, distances=iris.neighbors.distances)
 iris.knn.10
 # perform an embedding using the precomputed nearest neighbors
-iris.umap.knn = umap(iris.data, config=custom.config, n_neighbors=10, knn=iris.knn.10)
+iris.umap.knn <- umap(iris.data, config=custom.config, n_neighbors=10, knn=iris.knn.10)
 ```
 
 In this function call, argument `config` specifies most of the parameter values. Because the custom configuration has `n_neighbors` at 15 and here we want to use 10 instead, the next argument sets this new value. The final argument provides our prepared object. Functions `umap` detect the availability of this object and can skip calculating nearest neighbors. This can substantially improve running times.
@@ -292,7 +292,7 @@ The implementation written in R is the default. It follows the design principles
 The second available implementation is a wrapper for a python package `umap-learn`. To enable this implementation, specify the argument `method`.
 
 ```{r, eval=FALSE}
-iris.umap.learn = umap(iris.data, method="umap-learn")
+iris.umap.learn <- umap(iris.data, method="umap-learn")
 ```
 
 This command has several dependencies. The `reticulate` package must be installed and loaded (use `install.packages("reticulate")` and `library(reticulate)`). Furthermore, the `umap-learn` python package must be available (see the [package repository](https://github.com/lmcinnes/umap) for instructions). If either of these components is not available, the above command will display an error message.
