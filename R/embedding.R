@@ -36,7 +36,7 @@ spectral.eigenvectors <- function(x, k) {
                   j = as.integer(x.laplacian$coo[, "to"]-1),
                   Dim = as.integer(rep(x.laplacian$n.elements, 2)),
                   x = as.numeric(x.laplacian$coo[, "value"]))
-  x.sparse <- as(x.sparse, "dgCMatrix")
+  x.sparse <- as(as(as(x.sparse, "dMatrix"), "generalMatrix"), "CsparseMatrix")
   result <- eigs(x.sparse, k, which="SM")$vectors
   rownames(result) <- x$names
   result
