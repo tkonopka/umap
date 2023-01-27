@@ -70,9 +70,13 @@ set.seed(123456)
 
 ## Introduction
 
-R package `umap` provides an interface to uniform manifold approximation and projection (UMAP) algorithms. There are now several implementations, including versions of python package `umap-learn`. This vignette explains some aspects of interfacing with the python package.
+R package `umap` provides an interface to uniform manifold approximation and
+projection (UMAP) algorithms. There are now several implementations,
+including versions of python package `umap-learn`. This vignette explains
+some aspects of interfacing with the python package.
 
-(For general information on usage of package `umap`, see the [introductory vignette](https://CRAN.R-project.org/package=umap).)
+(For general information on usage of package `umap`, see the
+[introductory vignette](https://CRAN.R-project.org/package=umap).)
 
 
 
@@ -85,22 +89,34 @@ library(umap)
 iris.data <- iris[, grep("Sepal|Petal", colnames(iris))]
 ```
 
-The basic command to perform dimensional reduction is `umap`. By default, this function uses an implementation written in R. To use the python package `umap-learn` instead, that package and its dependencies must be installed separately (see [python package index](https://pypi.org/project/umap-learn/) or the [package source](https://github.com/lmcinnes/umap)). The R package `reticulate` is also required (use `install.packages('reticulate') and library('reticulate')`).
+The basic command to perform dimensional reduction is `umap`. By default,
+this function uses an implementation written in R. To use the python package
+`umap-learn` instead, that package and its dependencies must be installed
+separately (see [python package index](https://pypi.org/project/umap-learn/)
+or the [package source](https://github.com/lmcinnes/umap)). The R package
+`reticulate` is also required (use `install.packages('reticulate') and
+library('reticulate')`).
 
-After completing installations, the python implementation is activated by specifying `method="umap-learn"`.
+After completing installations, the python implementation is activated by
+specifying `method="umap-learn"`.
 
 ```{r umap.learn, eval=FALSE}
 library(reticulate)
 iris.umap_learn <- umap(iris.data, method="umap-learn")
 ```
 
-(This command is not actually executed in the vignette because `umap-learn` may not be available on the rendering system. If `umap-learn` is available, the command should execute quietly and create a new object `iris.umap_learn` that contains an embedding.)
+(This command is not actually executed in the vignette because `umap-learn`
+may not be available on the rendering system. If `umap-learn` is available,
+the command should execute quietly and create a new object `iris.umap_learn`
+that contains an embedding.)
 
 
 
 ## Tuning umap-learn
 
-As covered in the introductory vignette, tuning parameters can be set via a configuration object and via explicit arguments in the `umap` function call. The default configuration is accessible as object `umap.defaults`.
+As covered in the introductory vignette, tuning parameters can be set via a
+configuration object and via explicit arguments in the `umap` function call.
+The default configuration is accessible as object `umap.defaults`.
 
 
 ```{r defaults, eval=FALSE}
@@ -111,16 +127,25 @@ umap.defaults
 umap.defaults
 ```	
 
-Note the entry `umap_learn_args` toward the end. It is set to `NA` by default. This indicates that appropriate arguments will be selected automatically and passed to umap-learn.
+Note the entry `umap_learn_args` toward the end. It is set to `NA` by
+default. This indicates that appropriate arguments will be selected
+automatically and passed to umap-learn.
 
-After executing dimensional reduction, the output object contains a copy of the configuration with the values actually used to produce the output. We can examine the effective configuration that was used for our embedding.
+After executing dimensional reduction, the output object contains a copy of
+the configuration with the values actually used to produce the output. We
+can examine the effective configuration that was used for our embedding.
 
 ```{r umap.learn.config, eval=FALSE}
 iris.umap_learn$config
 ```
-(Again, this command is not executed in the vignette because `umap-learn` may not be available on the rendering system. When `umap-learn` is available, this should produce a configuration printout.)
+(Again, this command is not executed in the vignette because `umap-learn`
+may not be available on the rendering system. When `umap-learn` is available,
+this should produce a configuration printout.)
 
-The entry for `umap_learn_args` should contain a vector of all the arguments passed from the configuration object to the python package. An entry in the configuration should also reveal the version of the python package used to perform the calculation.
+The entry for `umap_learn_args` should contain a vector of all the arguments
+passed from the configuration object to the python package. An entry in the
+configuration should also reveal the version of the python package used to
+perform the calculation.
 
 
 
@@ -129,7 +154,9 @@ The entry for `umap_learn_args` should contain a vector of all the arguments pas
 
 ### Verifying arguments
 
-A configuration object can contain many components, but not all may be used in a calculation. To verify that a setting is actually passed to `umap-learn`, ensure that it appears in `umap_learn_args` in the output.
+A configuration object can contain many components, but not all may be used
+in a calculation. To verify that a setting is actually passed to
+`umap-learn`, ensure that it appears in `umap_learn_args` in the output.
 
 As an example, consider setting `foo` and `n_epochs` during the function call. 
 
@@ -139,14 +166,23 @@ iris.foo <- umap(iris.data, method="umap-learn", foo=4, n_epochs=100)
 iris.foo$config
 ```
 
-Inspecting the output configuration will reveal that both `foo` and `n_epochs` are recorded (in the latter case, the default value is replaced by the new value). However, `foo` should not appear in `umap_learn_args`. This means that `foo` was not actually passed on to `umap-learn`.
+Inspecting the output configuration will reveal that both `foo` and
+`n_epochs` are recorded (in the latter case, the default value is replaced
+by the new value). However, `foo` should not appear in `umap_learn_args`.
+This means that `foo` was not actually passed on to `umap-learn`.
 
 
 ### Versions
 
-Various version of `umap-learn` take different parameters as input. The R package is coded to work with `umap-learn` versions 0.2, 0.3, 0.4, and 0.5. It will adjust arguments automatically to suit those versions.
+Various version of `umap-learn` take different parameters as input. The R
+package is coded to work with `umap-learn` versions 0.2, 0.3, 0.4, and 0.5.
+It will adjust arguments automatically to suit those versions.
 
-Note, however, that some arguments that are acceptable in new versions of umap-learn are not set in the default configuration object. To use those features (see python package documentation), set the appropriate arguments manually, either by preparing a custom configuration object or by specifying the arguments during the `umap` function call.
+Note, however, that some arguments that are acceptable in new versions of
+umap-learn are not set in the default configuration object. To use those
+features (see python package documentation), set the appropriate arguments
+manually, either by preparing a custom configuration object or by specifying
+the arguments during the `umap` function call.
 
 
 

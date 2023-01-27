@@ -85,22 +85,35 @@ set.seed(123456)
 
 ## Introduction
 
-Uniform Manifold Approximation and Projection (UMAP) is an algorithm for dimensional reduction. Its details are described by [McInnes, Healy, and Melville](https://arxiv.org/abs/1802.03426) and its official implementation is available through a python package [umap-learn](https://github.com/lmcinnes/umap). The R package `umap` described in this vignette is a separate work that provides two implementations for using UMAP within the R environment. One implementation is written from-scratch and another links to the official umap-learn. (Another R package, [uwot](https://CRAN.R-project.org/package=uwot), provides a separate implementation with a slightly different interface).
+Uniform Manifold Approximation and Projection (UMAP) is an algorithm for
+dimensional reduction. Its details are described by [McInnes, Healy, and
+Melville](https://arxiv.org/abs/1802.03426) and its official implementation
+is available through a python package [umap-learn](https://github.
+com/lmcinnes/umap). The R package `umap` described in this vignette is a
+separate work that provides two implementations for using UMAP within the R
+environment. One implementation is written from-scratch and another links to
+the official umap-learn. (Another R package,
+[uwot](https://CRAN.R-project.org/package=uwot), provides a separate
+implementation with a slightly different interface).
 
-The vignette covers basic usage, tuning, stability and reproducibility, and discusses toggling between different implementations. Throughout, the vignette uses a small dataset as an example, but the package is suited to processing larger data with many thousands of data points.
+The vignette covers basic usage, tuning, stability and reproducibility, and
+discusses toggling between different implementations. Throughout, the
+vignette uses a small dataset as an example, but the package is suited to
+processing larger data with many thousands of data points.
 
 
 
 ## Overview
 
-For a practical demonstration, let's use the [Iris dataset](https://en.wikipedia.org/wiki/Iris_flower_data_set).
+For a practical demonstration, let's use the
+[Iris dataset](https://en.wikipedia.org/wiki/Iris_flower_data_set).
 
 ```{r}
 head(iris, 3)
 ```
 
-The first four columns contain data and the last column contains a label. It will be useful to 
-separate those components.
+The first four columns contain data and the last column contains a label. It
+will be useful to separate those components.
 
 ```{r}
 iris.data <- iris[, grep("Sepal|Petal", colnames(iris))]
@@ -122,13 +135,15 @@ The output is an object and we can get a summary of its contents by printing it.
 iris.umap
 ```
 
-The main component of the object is 'layout', which holds a matrix with coordinates.
+The main component of the object is 'layout', which holds a matrix with
+coordinates.
 
 ```{r umap.layout}
 head(iris.umap$layout, 3)
 ```
 
-These coordinates can be used to visualize the dataset. (The custom plot function, `plot.iris`, is available at the end of this vignette.)
+These coordinates can be used to visualize the dataset. (The custom plot
+function, `plot.iris`, is available at the end of this vignette.)
 
 ```{r, fig.width=3.2, fig.height=3.2, dpi=150}
 plot.iris(iris.umap, iris.labels)
@@ -137,9 +152,11 @@ plot.iris(iris.umap, iris.labels)
 
 ### Projecting new data
 
-Once we have a 'umap' object describing an embedding of a dataset into a low-dimensional layout, we can project other data onto the same manifold.
+Once we have a 'umap' object describing an embedding of a dataset into a
+low-dimensional layout, we can project other data onto the same manifold.
 
-To demonstrate this, we need a second dataset with the same data features as the training data. Let's create such data by adding some noise to the original.
+To demonstrate this, we need a second dataset with the same data features as
+the training data. Let's create such data by adding some noise to the original.
 
 ```{r}
 iris.wnoise <- iris.data + matrix(rnorm(150*40, 0, 0.1), ncol=4)
@@ -147,18 +164,22 @@ colnames(iris.wnoise) <- colnames(iris.data)
 head(iris.wnoise, 3)
 ```
 
-We can now arrange these perturbed observations onto the same layout as before. Following R's design pattern for fitted models, this is performed via `predict`.
+We can now arrange these perturbed observations onto the same layout as
+before. Following R's design pattern for fitted models, this is performed
+via `predict`.
    
 ```{r}
 iris.wnoise.umap <- predict(iris.umap, iris.wnoise)
 head(iris.wnoise.umap, 3)
 ```
 
-The output is a matrix with coordinates. We can	visualize these points alongside the original.
+The output is a matrix with coordinates. We can	visualize these points
+alongside the original.
 
 ```{r, fig.width=3.6, fig.height=3.6, dpi=150}
 plot.iris(iris.umap, iris.labels)
-plot.iris(iris.wnoise.umap, iris.labels, add=T, pch=4, legend.suffix=" (with noise)")
+plot.iris(iris.wnoise.umap, iris.labels,
+          add=T, pch=4, legend.suffix=" (with noise)")
 ```
 
 The new observations lie close to their original counterparts.
@@ -167,12 +188,15 @@ The new observations lie close to their original counterparts.
 
 ## Tuning
 
-The example above uses function `umap` with a single argument - the input dataset - so the embedding is performed with default settings. However, the algorithm can be tuned via configuration objects or via additional arguments.
+The example above uses function `umap` with a single argument - the input
+dataset - so the embedding is performed with default settings. However, the
+algorithm can be tuned via configuration objects or via additional arguments.
 
 
 ### Configuration objects
 
-The default configuration object is called `umap.defaults`. This is a list encoding default values for all the parameters used by the algorithm.
+The default configuration object is called `umap.defaults`. This is a list
+encoding default values for all the parameters used by the algorithm.
 
 ```{r defaults, eval=FALSE}
 umap.defaults
@@ -182,16 +206,21 @@ umap.defaults
 umap.defaults
 ```
 
-For a description of each field, see the documentation in `help(umap.defaults)` or the original publication.
+For a description of each field, see the documentation in
+`help(umap.defaults)` or the original publication.
 
-To create a custom configuration, we can make a copy of the default object and then update its fields. For example, let's change the seed for random number generation.
+To create a custom configuration, we can make a copy of the default object
+and then update its fields. For example, let's change the seed for random
+number generation.
 
 ```{r custom.config, eval=TRUE}
 custom.config <- umap.defaults
 custom.config$random_state <- 123
 ```
 
-We can observe the changed settings by inspecting the object again (try it). To perform the UMAP projection with these settings, we can run the projection again and provide the configuration object as a second argument.
+We can observe the changed settings by inspecting the object again (try it).
+To perform the UMAP projection with these settings, we can run the
+projection again and provide the configuration object as a second argument.
 
 ```{r custom2, fig.width=3.6, fig.height=3.6, dpi=150}
 iris.umap.config <- umap(iris.data, config=custom.config)
@@ -199,29 +228,40 @@ plot.iris(iris.umap.config, iris.labels,
           main="Another UMAP visualization (different seed)")
 ```
 
-The result is slightly different than before due to a new instantiation of the random number generator.
+The result is slightly different than before due to a new instantiation of
+the random number generator.
 
 
 
 ### Additional arguments
 
-Another way to customize the algorithm is to specify the parameter values one-by-one as arguments to the function call. The command below achieves equivalent results to the above.
+Another way to customize the algorithm is to specify the parameter values
+one-by-one as arguments to the function call. The command below achieves
+equivalent results to the above.
 
 ```{r custom3, eval=FALSE}
 iris.umap.args <- umap(iris.data, random_state=123)
 ```
 
-The coordinates in this output object should match the ones from `iris.umap.config` (check it!).
+The coordinates in this output object should match the ones from
+`iris.umap.config` (check it!).
 
-Behind the scenes, the `umap` function call extracts most of the parameter values from the default configuration, and then replaces the value of `random_state` with the newly specified value. It is also possible to use a custom configuration and parameter values together.
+Behind the scenes, the `umap` function call extracts most of the parameter
+values from the default configuration, and then replaces the value of
+`random_state` with the newly specified value. It is also possible to use a
+custom configuration and parameter values together.
 
 
 
 ### Input types
 
-All the examples above apply the umap transformation on a raw dataset. The first stage in the algorithm is the calculation of nearest neighbors and distances between them. In cases when these distances or nearest neighbors are known a-priori, the `umap` function can start with those inputs instead.
+All the examples above apply the umap transformation on a raw dataset. The
+first stage in the algorithm is the calculation of nearest neighbors and
+distances between them. In cases when these distances or nearest neighbors
+are known a-priori, the `umap` function can start with those inputs instead.
 
-To use a distance matrix instead of raw data, we can set the `input` argument to 'dist'.
+To use a distance matrix instead of raw data, we can set the `input`
+argument to 'dist'.
 
 ```{r}
 iris.dist <- as.matrix(dist(iris.data))
@@ -229,48 +269,87 @@ iris.umap.dist <- umap(iris.dist, config=custom.config, input="dist")
 iris.umap.dist
 ```
 
-Because `iris.umap.dist` is computed with the custom configuration, it holds the same embedding layout as `iris.umap.config` above (check it!). However, this object does not carry the original data. As such, it cannot be used to 'predict' new data into the embedding: attempting a command like `predict(iris.umap.dist, iris.wnoise)` will generate an error. This is because the algorithm will not have sufficient information to computing distances between new data points and previously embedded data.
+Because `iris.umap.dist` is computed with the custom configuration, it holds
+the same embedding layout as `iris.umap.config` above (check it!). However,
+this object does not carry the original data. As such, it cannot be used to
+'predict' new data into the embedding: attempting a command like
+`predict(iris.umap.dist, iris.wnoise)` will generate an error. This is
+because the algorithm will not have sufficient information to computing
+distances between new data points and previously embedded data.
 
-Another way to provide data to function `umap` is via precomputed nearest neighbors. As we saw above, each object of class 'umap' has a component called 'knn'. We can preview this component by printing it.
+Another way to provide data to function `umap` is via precomputed nearest
+neighbors. As we saw above, each object of class 'umap' has a component
+called 'knn'. We can preview this component by printing it.
 
 ```{r}
 iris.umap$knn
 ```
 
-This is actually a list with two matrices. One matrix associates each data point to a fixed number of nearest neighbors (the default is 15). The other matrix specifies the distances between them.
+This is actually a list with two matrices. One matrix associates each data
+point to a fixed number of nearest neighbors (the default is 15). The other
+matrix specifies the distances between them.
 
-To see how to use this data structure, let's construct an object describing 10 nearest neighbors, and then perform an embedding.
+To see how to use this data structure, let's construct an object describing
+10 nearest neighbors, and then perform an embedding.
 
 ```{r}
 # extract information on 10 nearest neighbors from iris.umap
 iris.neighbors <- iris.umap$knn$indexes[, 1:10]
 iris.neighbors.distances <- iris.umap$knn$distances[, 1:10]
 # construct an object with indexes and distances
-iris.knn.10 <- umap.knn(indexes=iris.neighbors, distances=iris.neighbors.distances)
+iris.knn.10 <- umap.knn(indexes=iris.neighbors,
+                        distances=iris.neighbors.distances)
 iris.knn.10
 # perform an embedding using the precomputed nearest neighbors
-iris.umap.knn <- umap(iris.data, config=custom.config, n_neighbors=10, knn=iris.knn.10)
+iris.umap.knn <- umap(iris.data, config=custom.config,
+                      n_neighbors=10, knn=iris.knn.10)
 ```
 
-In this function call, argument `config` specifies most of the parameter values. Because the custom configuration has `n_neighbors` at 15 and here we want to use 10 instead, the next argument sets this new value. The final argument provides our prepared object. Functions `umap` detect the availability of this object and can skip calculating nearest neighbors. This can substantially improve running times.
+In this function call, argument `config` specifies most of the parameter
+values. Because the custom configuration has `n_neighbors` at  15 and here
+we want to use 10 instead, the next argument sets this new value. The final
+argument provides our prepared object. Functions `umap` detect the
+availability of this object and can skip calculating nearest neighbors. This
+can substantially improve running times.
 
 
 
 ## Stability and reproducibility
 
-The UMAP algorithm uses random numbers and thus results may vary from run to run. As we have seen, it is possible to obtain a minimal level of reproducibility by setting seeds. Nonetheless, there are some subtle points worth covering in more detail.
+The UMAP algorithm uses random numbers and thus results may vary from run to
+run. As we have seen, it is possible to obtain a minimal level of
+reproducibility by setting seeds. Nonetheless, there are some subtle points
+worth covering in more detail.
 
 
 ### Initial embedding
 
-As shown in the section on tuning, embedding of a raw dataset can be stabilized by setting a seed for random number generation. However, the results are stable only when the raw data are re-processed in exactly the same way. Results are bound to change if data are presented in a different order.
+As shown in the section on tuning, embedding of a raw dataset can be
+stabilized by setting a seed for random number generation. However, the
+results are stable only when the raw data are re-processed in exactly the
+same way. Results are bound to change if data are presented in a different
+order.
 
-A separate consideration is about the effect of the randomness within the umap algorithms on the state of the random-number generator in the calling environment. By default, the `umap` function preserves the external random state. This has some pros and cons in various situations. One important consequence of the default setting is that when two calls are made `umap` one after the other, they both receive the same random state. If this is not a desired behavior, those calls should be made either with their own explicit seeds, or setting argument `preserve.seed=FALSE`.
+A separate consideration is about the effect of the randomness within the
+umap algorithms on the state of the random-number generator in the calling
+environment. By default, the `umap` function preserves the external random
+state. This has some pros and cons. One important consequence of the default
+setting is that when two `umap` calls are made one after the other, they
+both receive the same random state. If this is not a desired behavior, use
+one of the following strategies: (1) make each `umap` call with a distinct
+seed, (2) advance the random number generator manually, for example by
+calling `runif()` between subsequent calls to `umap`, or (3) set argument
+`preserve.seed=FALSE`.
 
 
 ### Prediction
 
-Projection of new data onto an existing embedding uses a separate random number generator, which is controlled via parameter `transform_state`. This seed ensures that predictions executed in exactly the same way produce identical output each time. The default algorithm further implements a mechanism by which predictions are consistent when performed individually or in batch. Let's look at an example based on the Iris data.
+Projection of new data onto an existing embedding uses a separate random
+number generator, which is controlled via parameter `transform_state`. This
+seed ensures that predictions executed in exactly the same way produce
+identical output each time. The default algorithm further implements a
+mechanism by which predictions are consistent when performed individually or
+in batch. Let's look at an example based on the Iris data.
 
 ```{r, eval=TRUE}
 # predict in batch, display first item
@@ -279,27 +358,47 @@ predict(iris.umap, iris.wnoise)[1, , drop=FALSE]
 predict(iris.umap, iris.wnoise[1, , drop=FALSE])
 ```
 
-The mechanism that enables stability between batch and individual predictions also ensures that predictions are stable when data are presented in a different order. However, this mechanism is not enforced (for performance reasons) when the new data contain more than a thousand rows. This is an implementation detail and may change in future versions.
+The mechanism that enables stability between batch and individual
+predictions also ensures that predictions are stable when data are presented
+in a different order. However, this mechanism is not enforced (for
+performance reasons) when the new data contain more than a thousand rows.
+This is an implementation detail and may change in future versions.
 
 
 
 ## Implementations
 
-The package provides two implementations of the umap method, one written in R (with help from several packages from CRAN) and one accessed via an external python module.
+The package provides two implementations of the umap method, one written in
+R (with help from several packages from CRAN) and one accessed via an
+external python module.
 
-The implementation written in R is the default. It follows the design principles of the UMAP algorithm and its running time scales better-than-quadratically with the number of items (points) in a dataset. It is thus in principle suitable for use on datasets with thousands of points. This implementation is the default because it should be functional without extensive dependencies.
+The implementation written in R is the default. It follows the design
+principles of the UMAP algorithm and its running time scales
+better-than-quadratically with the number of items (points) in a dataset. It
+is thus in principle suitable for use on datasets with thousands of points.
+This implementation is the default because it should be functional without
+extensive dependencies.
 
-The second available implementation is a wrapper for a python package `umap-learn`. To enable this implementation, specify the argument `method`.
+The second available implementation is a wrapper for a python package
+`umap-learn`. To enable this implementation, specify the argument `method`.
 
 ```{r, eval=FALSE}
 iris.umap.learn <- umap(iris.data, method="umap-learn")
 ```
 
-This command has several dependencies. The `reticulate` package must be installed and loaded (use `install.packages("reticulate")` and `library(reticulate)`). Furthermore, the `umap-learn` python package must be available (see the [package repository](https://github.com/lmcinnes/umap) for instructions). If either of these components is not available, the above command will display an error message.
+This command has several dependencies. The `reticulate` package must be
+installed and loaded (use `install.packages("reticulate")` and `library
+(reticulate)`). Furthermore, the `umap-learn` python package must be
+available (see the [package repository](https://github.com/lmcinnes/umap)
+for instructions). If either of these components is not available, the above
+command will display an error message.
 
-A separate vignette explains additional aspects of interfacing with `umap-learn`, including handling of discrepancies between releases.
+A separate vignette explains additional aspects of interfacing with
+`umap-learn`, including handling of discrepancies between releases.
 
-Note that it will not be possible to produce exactly the same output from the two implementations due to inequivalent random number generators in R and python, and due to slight discrepancies in the implementations.
+Note that it will not be possible to produce exactly the same output from
+the two implementations due to inequivalent random number generators in R
+and python, and due to slight discrepancies in the implementations.
 
 
 &nbsp;
