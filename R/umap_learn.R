@@ -16,8 +16,6 @@
 umap.learn <- function(d, config) {
   check.learn.available()
 
-  # get an update config object
-  # that includes a vector of arguments for umap-learn
   config <- detect.umap.learn(config)
 
   message.w.date(
@@ -28,9 +26,6 @@ umap.learn <- function(d, config) {
     config$verbose)
   
   # adjust values in config to please python type checkers
-  if (is.na(config$random_state)) {
-    config$random_state <- as.integer(runif(1, 0, 2^30))
-  }
   config$verbose <- as.integer(0 + as.logical(config$verbose))
 
   # construct python object and create embedding

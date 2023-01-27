@@ -6,7 +6,7 @@ source("train_test.R")
 # configuration for testing
 conf.testing <- umap.defaults
 conf.testing$n_neighbors <- 5
-conf.testing <- umap.check.config(conf.testing)
+conf.testing <- umap.prep.config(conf.testing)
 
 test_that("synthetic fuzzy simplicial set (from dist)", {
   conf <- conf.testing
@@ -109,6 +109,19 @@ test_that("umap naive without seeds can create different layouts each time", {
   expect_false(identical(result_1$config$random_state,
                          result_2$config$random_state))
   expect_false(identical(result_1$layout[,1], result_2$layout[,2]))
+})
+
+test_that("umap naive gives reproducible results with random_state", {
+  result_1 <- umap(i.train, random_state=25)
+  result_2 <- umap(i.train, random_state=25)
+  expect_true(identical(result_1, result_2))
+})
+
+test_that("umap naive records random state in config", {
+  result_1 <- umap(i.train)
+  expect_true(result_1$config$random_state > 0)
+  result_2 <- umap(i.train, random_state=result_1$config$random_state)
+  expect_true(identical(result_1, result_2))
 })
 
 # ############################################################################

@@ -114,7 +114,7 @@ if (has.umap.learn) {
     expect_equal(dim(prediction), c(6, 2))
   })
 
-  test_that("transform and predict on sparse dgTMatrix ", {
+  test_that("transform and predict on sparse dgTMatrix", {
     library(Matrix)
     sm <- Matrix(0, ncol=4, nrow=40)
     sm[, 1] <- seq(0, 1, length=40)
@@ -125,4 +125,19 @@ if (has.umap.learn) {
     expect_equal(dim(prediction), c(4, 2))
   })
 
+  test_that("produces reproducible results", {
+    result_1 <- umap(d.train, method="umap-learn", random_state=17)
+    expect_equal(result_1$config$random_state, 17)
+    result_2 <- umap(d.train, method="umap-learn", random_state=17)
+    expect_true(identical(result_1$layout, result_2$layout))
+  })
+
+  test_that("produces reproducible results with automatic seed", {
+    result_1 <- umap(d.train, method="umap-learn")
+    expect_true(result_1$config$random_state > 0)
+    random_state <- result_1$config$random_state
+    result_2 <- umap(d.train, method="umap-learn", random_state=random_state)
+    expect_true(identical(result_1$layout, result_2$layout))
+  })  
+  
 }

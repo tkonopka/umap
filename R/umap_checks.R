@@ -1,7 +1,7 @@
 # package umap
 # functions for argument checking
 
-#' Validator functions for umap settings
+#' Validate and prep settings
 #'
 #' @keywords internal
 #' @noRd
@@ -9,7 +9,7 @@
 #' @param ... other arguments
 #'
 #' @return config object, may contain different components from config in input
-umap.check.config <- function(config=umap.defaults, ...) {
+umap.prep.config <- function(config=umap.defaults, ...) {
 
   umap.check.config.class(config)
   
@@ -105,7 +105,11 @@ umap.check.config <- function(config=umap.defaults, ...) {
       }
     }
   }
-  
+
+  if (is.na(config$random_state)) {
+    config$random_state <- as.integer(runif(1, 0, 2^30))
+  }
+
   config
 }
 

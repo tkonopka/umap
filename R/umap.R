@@ -176,17 +176,15 @@ umap <- function(d, config=umap.defaults,
                  method=c("naive", "umap-learn"),
                  preserve.seed=TRUE,
                  ...) {
-  
+
+  # save existing RNG seed, will use "internal" seed later
+  old.seed <- get.global.seed()
+
   # prep - check inputs, configuration settings
   method <- config$method <- match.arg(method)
-  config <- umap.check.config(config, ...)
+  config <- umap.prep.config(config, ...)
   d <- umap.prep.input(d, config)
-
-  # save existing RNG seed, set "internal" seed
-  old.seed <- get.global.seed()
-  if (!is.na(config$random_state)) {
-    set.seed(config$random_state)
-  }
+  set.seed(config$random_state)
   
   # perform the actual work with a specific umap implementation
   if (nrow(d)<=2) {

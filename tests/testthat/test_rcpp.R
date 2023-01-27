@@ -78,7 +78,7 @@ test_that("layout optimization", {
   conf <- umap.defaults
   conf$n.neighbors <- 3
   conf$n.epochs <- 2
-  conf <- umap.check.config(conf)
+  conf <- umap.prep.config(conf, random_state=123)
   i4 <- iris[c(1:5,61:65, 111:115), 1:4]
   knn <- knn.info(i4, conf)
   graph <- naive.fuzzy.simplicial.set(knn, conf)

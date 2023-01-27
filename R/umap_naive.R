@@ -31,9 +31,6 @@ umap.naive <- function(d, config) {
   if (is.na(config$a) | is.na(config$b)) {
     config[c("a", "b")] <- find.ab.params(config$spread, config$min_dist)
   }
-  if (is.na(config$random_state)) {
-    config$random_state <- as.integer(runif(1, 0, 2^30))
-  }
   if (is(d, "Matrix")) {
     d <- Matrix::as.matrix(d)
   }

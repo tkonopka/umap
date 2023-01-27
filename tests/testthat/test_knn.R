@@ -191,7 +191,7 @@ train.size <- nrow(i.train)/3
 test.size <- nrow(i.test)/3
 
 test_that("spectator.info by brute force links spectators to primary data", {
-  conf <- umap.check.config(umap.defaults)
+  conf <- umap.prep.config(umap.defaults, random_state=123)
   conf$n_neighbors <- 5
   result <- spectator.knn.info(i.test, i.train, conf, brute.force=TRUE)
   # check output sizes
@@ -213,7 +213,7 @@ test_that("spectator.info by brute force links spectators to primary data", {
 })
 
 test_that("spectator.info by stochastic method links to primary data", {
-  conf <- umap.check.config(umap.defaults)
+  conf <- umap.prep.config(umap.defaults, random_state=123)
   conf$n_neighbors <- 5
   result <- spectator.knn.info(i.test, i.train, conf, brute.force=FALSE)
   # check output sizes
