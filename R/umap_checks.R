@@ -112,7 +112,7 @@ umap.prep.config <- function(config=umap.defaults, ...) {
 
   if(config$method == "umap-learn" && "n_jobs" %in% names(config)) {
     if(!is.numeric(config$n_jobs) | length(config$n_jobs) > 1)
-      umap.error("n_jobs must be one numeric value: ", config$n_jobs
+      umap.error("n_jobs must be one numeric value: ", config$n_jobs)
 
     if(config$n_jobs < 1)
       umap.error("n_jobs must be a positive integer: ", config$n_jobs)
