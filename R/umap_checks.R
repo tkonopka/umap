@@ -106,8 +106,19 @@ umap.prep.config <- function(config=umap.defaults, ...) {
     }
   }
 
-  if (is.na(config$random_state)) {
+  if (is.na(config$random_state) && config$method != "umap-learn") {
     config$random_state <- as.integer(runif(1, 0, 2^30))
+  }
+
+  if(config$method == "umap-learn" && "n_jobs" %in% names(config)) {
+    if(!is.numeric(config$n_jobs) | length(config$n_jobs) > 1)
+      umap.error("n_jobs must be one numeric value: ", config$n_jobs
+
+    if(config$n_jobs < 1)
+      umap.error("n_jobs must be a positive integer: ", config$n_jobs)
+
+    if(!is.integer(config$n_jobs))
+      config$n_jobs <- as.integer(config$n_jobs)
   }
 
   config
