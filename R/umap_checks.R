@@ -12,7 +12,7 @@
 umap.prep.config <- function(config=umap.defaults, ...) {
 
   umap.check.config.class(config)
-  
+
   # transfer values from arguments into the config object
   arguments <- list(...)
   for (onearg in names(arguments)) {
@@ -55,7 +55,7 @@ umap.prep.config <- function(config=umap.defaults, ...) {
     umap.warning(
       "parameter 'b' is set but 'a' is not;\n",
       "value of 'b' will be ignored.\n",
-      "(Embedding will be controlled via 'min_dist' and 'spread')") 
+      "(Embedding will be controlled via 'min_dist' and 'spread')")
   }
   if (!identical(config$a, NA) & !identical(config$b, NA)) {
     abcontrol <- "(Embedding will be controlled via 'a' and 'b')"
@@ -76,13 +76,13 @@ umap.prep.config <- function(config=umap.defaults, ...) {
   if (config$min_dist <=0) {
     umap.error("setting 'min_dist' must be > 0")
   }
-  
+
   # force some data types
   for (x in c("n_epochs", "n_neighbors", "n_components",
               "random_state", "negative_sample_rate", "transform_state")) {
     config[[x]] <- as.integer(config[[x]])
   }
-  
+
   # always give a metric name
   if (is(config$metric, "function")) {
     config$metric.function <- config$metric
@@ -106,9 +106,36 @@ umap.prep.config <- function(config=umap.defaults, ...) {
     }
   }
 
-  if (is.na(config$random_state)) {
+
+  ## check n_jobs for method umap-learn
+  is_umap_learn <- "method" %in% names(config) &&
+    config$method == "umap-learn"
+  is_more_than_one_job <- F
+
+  if(is_umap_learn && "n_jobs" %in% names(config)) {
+    if(!is.numeric(config$n_jobs) | length(config$n_jobs) > 1)
+      umap.error("n_jobs must be one numeric value: ", config$n_jobs)
+
+    if(config$n_jobs < 1)
+      umap.error("n_jobs must be a positive integer: ", config$n_jobs)
+
+    if(!is.integer(config$n_jobs))
+      config$n_jobs <- as.integer(config$n_jobs)
+
+    if(config$n_jobs > 1L)
+      is_more_than_one_job <- T
+  }
+
+  if(is_umap_learn && !"n_jobs" %in% names(config)) {
+    config$n_jobs <- 1L
+  }
+
+  ## set random state when NA and naive or n_jobs == 1
+  if (is.na(config$random_state) &&
+      (!is_umap_learn || !is_more_than_one_job)) {
     config$random_state <- as.integer(runif(1, 0, 2^30))
   }
+
 
   config
 }
@@ -133,7 +160,7 @@ umap.prep.input <- function(d, config) {
   }
   # ensure data is numeric (not integer or other data type)
   d[, 1] <- as.numeric(d[, 1])
-  
+
   # perhaps adjust the data matrix
   if (config$metric %in% c("pearson", "pearson2")) {
     # for pearson correlation distance, center by-sample
@@ -141,7 +168,7 @@ umap.prep.input <- function(d, config) {
     d <- t(d)
     d <- t(d) - apply(d, 2, mean)
   }
-  
+
   d
 }
 

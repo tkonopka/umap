@@ -184,7 +184,9 @@ umap <- function(d, config=umap.defaults,
   method <- config$method <- match.arg(method)
   config <- umap.prep.config(config, ...)
   d <- umap.prep.input(d, config)
-  set.seed(config$random_state)
+  if(!is.na(config$random_state)) {
+    set.seed(config$random_state)
+  }
   
   # perform the actual work with a specific umap implementation
   if (nrow(d)<=2) {
